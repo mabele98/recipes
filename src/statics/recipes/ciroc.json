@@ -1,5 +1,6 @@
 {
     "The Diddy": {
+        "description": "Try The Diddy cocktail recipe combining CÎROC™ Vodka & Lemonade. Stir and enjoy your vodka cocktail!",
         "vodka": "Vodka",
         "ingredients": {
             "Vodka": {
@@ -13,6 +14,7 @@
         }
     },
     "La Piña": {
+        "description": "Enjoy a La Piña, this easy vodka drink uses CÎROC™ Pineapple, pineapple juice and a pineapple wedge garnish.",
         "vodka": "Pineapple",
         "ingredients": {
             "Vodka": {
@@ -26,6 +28,7 @@
         }
     },
     "Black & Gold": {
+        "description": "Try our Black & Gold recipe combining CÎROC™ Amaretto & Cola. Stir and enjoy your vodka cocktail!",
         "vodka": "Amaretto",
         "ingredients": {
             "Vodka": {
@@ -39,6 +42,7 @@
         }
     },
     "Naughty and Nice": {
+        "description": "Enjoy a Naughty and Nice, this refreshing vodka drink is made with CÎROC™ French Vanilla Flavored Vodka and dessert wine.",
         "vodka": "French Vanilla",
         "ingredients": {
             "Vodka": {
@@ -68,6 +72,7 @@
         }
     },
     "Harlem Sour": {
+        "description": "Try our Harlem Sour recipe combining CÎROC™ Amaretto & Orange Juice. Shake and enjoy your vodka cocktail!",
         "vodka": "Amaretto",
         "ingredients": {
             "Vodka": {
@@ -89,6 +94,7 @@
         }
     },
     "St. Tropez Punch": {
+        "description": "Enjoy a St. Tropez Punch, this refreshing vodka drink is made with CÎROC™ French Vanilla Flavored Vodka, champagne and apricots.",
         "vodka": "French Vanilla",
         "ingredients": {
             "Vodka": {
@@ -113,11 +119,12 @@
             },
             "Dried apricots and mint sprigs": {
                 "type": "garnish",
-                "oz": 0
+                "amount": ""
             }
         }
     },
     "Hot Mama": {
+        "description": "Try our Hot Mama recipe combining CÎROC™ Coconut & Watermelon Juice. Shake and enjoy your vodka cocktail!",
         "vodka": "Coconut",
         "ingredients": {
             "Vodka": {
@@ -138,11 +145,12 @@
             },
             "Jalapeño": {
                 "type": "garnish",
-                "amount": "1 Slice"
+                "amount": "1 Slice of "
             }
         }
     },
     "On the Beach": {
+        "description": "Try our On the Beach cocktail recipe combining CÎROC™ Peach & Cranberry Juice. Stir and enjoy your vodka cocktail!",
         "vodka": "Peach",
         "ingredients": {
             "Vodka": {
@@ -160,6 +168,7 @@
         }
     },
     "Cîroc Lola": {
+        "description": "Enjoy Ciroc Lola using CÎROC™ Ultra-Premium Vodka, pomegranate juice, elderflower liqueur and a splash of champagne.",
         "vodka": "Vodka",
         "ingredients": {
             "Vodka": {
@@ -176,11 +185,12 @@
             },
             "Champagne": {
                 "type": "alcohol",
-                "amount": "1 Splash"
+                "amount": "1 Splash of"
             }
         }
     },
     "Cîroc Cosmo": {
+        "description": "Try our Cîroc Cosmo recipe combining CÎROC™ Red Berry & Cranberry Juice. Add lime and enjoy your vodka cocktail!",
         "vodka": "Red Berry",
         "ingredients": {
             "Vodka": {
@@ -193,11 +203,12 @@
             },
             "Lime Juice": {
                 "type": "juice",
-                "amount": "1 Squeeze"
+                "amount": "1 Squeeze of"
             }
         }
     },
     "Peach Bellini": {
+        "description": "Try a CÎROC™ Peach Bellini, this decadent bellini recipe calls for CÎROC™ Peach, champagne and enjoy!",
         "vodka": "Peach",
         "ingredients": {
             "Vodka": {
@@ -211,6 +222,7 @@
         }
     },
     "Cîroc Colada": {
+        "description": "Try our delicious Pina Colada recipe using CÎROC™ Pineapple, lime juice, simple syrup in a shaker with ice and enjoy!",
         "vodka": "Pineapple",
         "ingredients": {
             "Vodka": {
@@ -231,11 +243,12 @@
             },
             "Club Soda": {
                 "type": "pop",
-                "amount": "1 Splash"
+                "amount": "1 Splash of"
             }
         }
     },
     "Cîroc Appletini": {
+        "description": "Try our delicious Appletini recipe using CÎROC™ Apple, fresh lemon juice and simple syrup. Shake and enjoy!",
         "vodka": "Apple",
         "ingredients": {
             "Vodka": {
@@ -253,6 +266,7 @@
         }
     },
     "Cîroc Apple Smash": {
+        "description": "Try our Vodka Cranberry recipe combining CÎROC™ Apple & Cranberry Juice. Shake and enjoy your vodka cocktail!",
         "vodka": "Apple",
         "ingredients": {
             "Vodka": {
@@ -270,6 +284,7 @@
         }
     },
     "Cîroc Apple Mimosa": {
+        "description": "Try our Apple Mimosa recipe combining CÎROC™ Apple & Elderflower Liqueur. Top with a splash of champagne and enjoy!",
         "vodka": "Apple",
         "ingredients": {
             "Vodka": {
@@ -287,6 +302,7 @@
         }
     },
     "Cîroc-Star Martini": {
+        "description": "Enjoy a Cîroc Star Martini, this refreshing vodka drink is made with CÎROC™ French Vanilla Flavored Vodka and champagne.",
         "vodka": "French Vanilla",
         "ingredients": {
             "Vodka": {
@@ -317,6 +333,7 @@
         }
     },
     "Cîroc Crisp": {
+        "description": "Try our Cîroc Crisp recipe combining CÎROC™ Apple, Strawberries & Ginger Beer. Shake and enjoy your vodka cocktail!",
         "vodka": "Apple",
         "ingredients": {
             "Vodka": {
@@ -325,15 +342,16 @@
             },
             "Strawberries": {
                 "type": "garnish",
-                "amount": 4
+                "pieces": 4
             },
             "Ginger Beer": {
                 "type": "alcohol",
-                "amount": "1 Splash"
+                "amount": "1 Splash of "
             }
         }
     },
     "Ruby Apple": {
+        "description": "Try our Ruby Apple recipe combining CÎROC™ Apple, Wine & Grapefruit. Shake and enjoy your vodka cocktail!",
         "vodka": "Apple",
         "ingredients": {
             "Vodka": {
@@ -351,6 +369,7 @@
         }
     },
     "Cîroc Apple Sangria": {
+        "description": "Try our Apple Sangria recipe combining CÎROC™ Apple, Wine, Ginger Ale & Fresh Fruit. Stir and enjoy your vodka cocktail!",
         "vodka": "Apple",
         "ingredients": {
             "Vodka": {
@@ -367,15 +386,16 @@
             },
             "Apple": {
                 "type": "garnish",
-                "amount": "6 Pieces"
+                "pieces": 6
             },
             "Mixed Berries": {
                 "type": "garnish",
-                "oz": "6 Pieces"
+                "pieces": 6
             }
         }
     },
     "Cîroc Bramble": {
+        "description": "Try our Bramble Recipe combining CÎROC Black Raspberry, lime juice and simple syrup. Shake and combine on a rocks glass with muddled blackberries and enjoy your vodka cocktail!",
         "vodka": "Black Raspberry",
         "ingredients": {
             "Vodka": {
@@ -392,11 +412,12 @@
             },
             "Blackberries": {
                 "type": "garnish",
-                "amount": 3
+                "pieces": 3
             }
         }
     },
     "Black Raspberry Royale": {
+        "description": "Try our Black Raspberry Royale recipe, combining CÎROC Black Raspberry, lemon juice, simple syrup and raspberry liqueur. Top with a splash of champagne and enjoy!",
         "vodka": "Black Raspberry",
         "ingredients": {
             "Vodka": {
@@ -422,6 +443,7 @@
         }
     },
     "Cîroc Black Smash": {
+        "description": "Try our Black Smash cocktail that combines CÎROC Black Raspberry, lemon juice, simple syrup, mint leaves and blackberries. Shake and enjoy!",
         "vodka": "Black Raspberry",
         "ingredients": {
             "Vodka": {
@@ -438,15 +460,16 @@
             },
             "Mint Leaves": {
                 "type": "garnish",
-                "amount": 4
+                "pieces": 4
             },
             "Blackberries": {
                 "type": "garnish",
-                "amount": 5
+                "pieces": 5
             }
         }
     },
     "Cîroc Preparada": {
+        "description": "Try our fun new cocktail Preparada, combining CÎROC Black Raspberry, lime juice, grenadine and chamoy. Add amber beer with rimmed chili/salt glass and enjoy!",
         "vodka": "Black Raspberry",
         "ingredients": {
             "Vodka": {
@@ -472,6 +495,7 @@
         }
     },
     "Cîroc White Grape 75": {
+        "description": "Try our sweet and celebratory White Grape 75 recipe created with champagne and Cîroc White Grape Vodka. Combine and enjoy your vodka cocktail!",
         "vodka": "White Grape Vodka",
         "ingredients": {
             "Vodka": {
@@ -484,15 +508,16 @@
             },
             "Sugar Cube": {
                 "type": "add",
-                "amount": 1
+                "amount": "A "
             },
             "Peychaud or Angostura bitters": {
                 "type": "add",
-                "amount": "2 Dashes"
+                "amount": "2 Dashes of "
             }
         }
     },
     "Cîroc French Grape Martini": {
+        "description": "Try our French Grape Martini recipe. Shake and enjoy your vodka cocktail!",
         "vodka": "White Grape Vodka",
         "ingredients": {
             "Vodka": {
@@ -509,15 +534,16 @@
             },
             "Lemon Twist": {
                 "type": "garnish",
-                "amount": 1
+                "amount": "A "
             },
             "Frozen Grape": {
                 "type": "garnish",
-                "amount": 1
+                "amount": "A "
             }
         }
     },
     "Cîroc French Plunge": {
+        "description": "Try our show stopping CÎROC White Grape sharing cocktail recipe created with CÎROC White Grape and served with lime and pineapple. Stir and enjoy your vodka cocktail with a group of friends!",
         "vodka": "White Grape Vodka",
         "ingredients": {
             "Vodka": {
@@ -538,15 +564,16 @@
             },
             "Lime Wedge": {
                 "type": "garnish",
-                "amount": 1
+                "amount": "A "
             },
             "Pineapple Triangle": {
                 "type": "garnish",
-                "amount": 1
+                "amount": "A "
             }
         }
     },
     "Cîroc Mediterranean Side": {
+        "description": "Try our exclusive CÎROC Mediterranean Side cocktail recipe that combines CÎROC White Grape Vodka with lemonade and club soda. Build over ice and enjoy your vodka cocktail!",
         "vodka": "White Grape Vodka",
         "ingredients": {
             "Vodka": {
@@ -563,11 +590,12 @@
             },
             "Rosemary Sprig or Lemon wedge": {
                 "type": "garnish",
-                "amount": 1
+                "amount": "A "
             }
         }
     },
     "Cîroc White Grape Cosmo": {
+        "description": "Try our smooth White Grape Cosmo cocktail recipe. Add the ingredients together, garnish with a lemon twist and enjoy your vodka cocktail!",
         "vodka": "White Grape Vodka",
         "ingredients": {
             "Vodka": {
@@ -588,11 +616,12 @@
             },
             "Lemon Twist": {
                 "type": "garnish",
-                "amount": 1
+                "amount": "A "
             }
         }
     },
     "Cîroc French Codder": {
+        "description": "Try our winter CÎROC French Codder cocktail recipe created with CÎROC White Grape and cranberry juice. Stir and enjoy your white grape vodka cocktail!",
         "vodka": "White Grape Vodka",
         "ingredients": {
             "Vodka": {
@@ -609,7 +638,7 @@
             },
             "Lime Wedge": {
                 "type": "garnish",
-                "amount": 1
+                "amount": "A "
             }
         }
     }

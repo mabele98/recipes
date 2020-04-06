@@ -1,8 +1,8 @@
 <template>
-  <q-page class="flex flex-left">
+  <q-page class="flex flex-left" style="background-color:#232323">
     <div class="full column justify-start items-start content-start">
       <div class="q-gutter-y-md">
-        <q-toolbar class="bg-green text-white q-my-md shadow-2">
+        <q-toolbar style="width:100vw" class="bg-green text-white q-my-md shadow-2">
           <q-btn-dropdown auto-close stretch flat label="Cîroc Vodka">
             <div class="q-pa-md">
               <q-option-group
@@ -61,17 +61,39 @@
         </q-toolbar>
       </div>
       <div class="q-pa-md row items-start q-gutter-md">
-        <q-card class="my-card bg-orange text-white" v-for="drink in drinks" v-bind:key="drink">
-          <q-card-section>
-            <div class="text-h6">{{ drink }} </div>
-            <div class="text-subtitle2">Cîroc {{ recipes[drink].vodka }}</div>
+        <q-card  
+          v-for="drink in drinks" v-bind:key="drink"
+          v-bind:class="selectedDrink == drink ? 'my-card text-white bg-orange' : 'my-card text-black bg-white'"
+          >
+          <q-card-section horizontal>
+            <img 
+              style="height:30vh;width:auto" 
+              class="q-pt-lg q-pl-md"
+              v-bind:src="'statics/img/'+drink+'.png'"
+            />
+            <q-card-section vertical>
+              <div class="q-pr-sm text-h5 text-weight-bold text-no-wrap">{{ drink }} </div>
+              <div class="text-subtitle2">Cîroc {{ recipes[drink].vodka }}</div>
+              <q-card-section v-if="selectedDrink == drink">
+                <div class="text-body2 text-no-wrap" v-for="(val,key) in recipes[drink].ingredients" v-bind:key="key">
+                  <div v-if="key == 'Vodka'"> {{val.oz}} oz. of Cîroc {{ recipes[drink].vodka }} </div>
+                  <div v-else-if="val.amount"> {{val.amount}} {{key}} </div>
+                  <div v-else-if="val.pieces"> {{val.pieces}} pieces of {{key}} </div>
+                  <div v-else> {{val.oz}} oz. of {{ key}} </div>
+                </div>
+              </q-card-section>
+              <q-card-section v-else>
+                <div class="text-body2" style="width:200px">
+                    {{ recipes[drink].description }}
+                </div>
+              </q-card-section>
+            </q-card-section>
           </q-card-section>
-          <q-seperator/>
-          <q-card-section>
-            <div class="text-subtitle3" v-for="(val,key) in recipes[drink].ingredients" v-bind:key="item">
-              <div v-if="key != 'Vodka'"> {{key}} </div>
-            </div>
-          </q-card-section>
+
+          <q-card-actions align="center">
+            <q-btn v-if="selectedDrink == drink" flat @click="selectedDrink = ''">Unselect</q-btn>
+            <q-btn v-else flat @click="selectedDrink = drink">Select</q-btn>
+          </q-card-actions>
         </q-card>
       </div>
     </div>
@@ -83,6 +105,8 @@ export default {
   name: 'PageIndex',
   data () {
     return {
+      selectedDrink: '',
+
       recipes: {},
 
       vodka: [],
@@ -230,24 +254,6 @@ export default {
       return options;
     },
 
-    loadRecipe(drink){
-      let _drink = drink;
-      if(drink == "Cîroc Colada") _drink = "pina-colada"
-      else if(drink == "Cîroc Appletini") _drink = "appletini"
-      else if(drink == "Cîroc Apple Smash") _drink = "vodka-cranberry"
-      else{
-        let _drink = drink.replace(' &', '')
-        _drink = _drink.replace('.', '')
-        _drink = _drink.replace('î', 'i')
-        _drink = _drink.split(' ').join('-');
-        _drink = _drink.toLowerCase();
-      }
-      let link = "https://www.ciroc.com/en-us/vodka-drinks/"+_drink+'#'
-      window.open(link);
-    }
-
-
-    
   },
   mounted() {
     this.loadDrinks();
