@@ -1,7 +1,7 @@
 {
   "name": "recipes",
   "version": "0.0.1",
-  "description": "A Quasar Framework app",
+  "description": "Ciroc Recipes Website",
   "productName": "Ciroc Recipes",
   "cordovaId": "org.cordova.quasar.app",
   "capacitorId": "",
