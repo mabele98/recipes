@@ -60,9 +60,13 @@
           </q-btn-dropdown>
         </q-toolbar>
       </div>
-      
-      <div class="q-pa-md q-gutter-sm" v-for="drink in drinks" v-bind:key=drink>
-        <q-btn color="white" text-color="black" v-bind:label="drink" @click="loadRecipe(drink)"/>
+      <div class="q-pa-md row items-start q-gutter-md">
+        <q-card class="my-card bg-orange text-white" v-for="drink in drinks" v-bind:key="drink">
+          <q-card-section>
+            <div class="text-h6">{{ drink }} </div>
+            <div class="text-subtitle2">Cîroc {{ recipes[drink].vodka }}</div>
+          </q-card-section>
+        </q-card>
       </div>
     </div>
   </q-page>
