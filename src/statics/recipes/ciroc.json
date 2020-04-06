@@ -1,0 +1,616 @@
+{
+    "The Diddy": {
+        "vodka": "Vodka",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Lemonade": {
+                "type": "juice",
+                "oz": 1.5
+            }
+        }
+    },
+    "La Piña": {
+        "vodka": "Pineapple",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Pineapple Juice": {
+                "type": "juice",
+                "oz": 3.0
+            }
+        }
+    },
+    "Black & Gold": {
+        "vodka": "Amaretto",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Cola": {
+                "type": "pop",
+                "oz": 3.0
+            }
+        }
+    },
+    "Naughty and Nice": {
+        "vodka": "French Vanilla",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.0
+            },
+            "Pink Grapefruit Juice": {
+                "type": "juice",
+                "oz": 0.75
+            },
+            "Honey": {
+                "type": "add",
+                "oz": 0.5
+            },
+            "Ginger Cordial": {
+                "type": "juice",
+                "oz": 0.5
+            },
+            "French Dessert Wine": {
+                "type": "alcohol",
+                "oz": 1.75
+            },
+            "Sparkling Water": {
+                "type": "juice",
+                "oz": 1.75
+            }
+        }
+    },
+    "Harlem Sour": {
+        "vodka": "Amaretto",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Orange Juice": {
+                "type": "juice",
+                "oz": 0.5
+            },
+            "Lemon Juice": {
+                "type": "juice",
+                "oz": 0.5
+            },
+            "Simple Syrup": {
+                "type": "syrup",
+                "oz": 0.5
+            }
+        }
+    },
+    "St. Tropez Punch": {
+        "vodka": "French Vanilla",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 12.0
+            },
+            "Passionfruit Syrup": {
+                "type": "syrup",
+                "oz": 5.0
+            },
+            "Sugar": {
+                "type": "add",
+                "oz": 5.5
+            },
+            "Lime Juice": {
+                "type": "juice",
+                "oz": 7.0
+            },
+            "Champagne": {
+                "type": "alcohol",
+                "oz": 17.0
+            },
+            "Dried apricots and mint sprigs": {
+                "type": "garnish",
+                "oz": 0
+            }
+        }
+    },
+    "Hot Mama": {
+        "vodka": "Coconut",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Watermellon Juice": {
+                "type": "juice",
+                "oz": 3.0
+            },
+            "Lime Juice": {
+                "type": "juice",
+                "oz": 1.0
+            },
+            "Simple Syrup": {
+                "type": "syrup",
+                "oz": 1.0
+            },
+            "Jalapeño": {
+                "type": "garnish",
+                "amount": "1 Slice"
+            }
+        }
+    },
+    "On the Beach": {
+        "vodka": "Peach",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Cranberry Juice": {
+                "type": "juice",
+                "oz": 3.0
+            },
+            "Orange Juice": {
+                "type": "juice",
+                "oz": 1.0
+            }
+        }
+    },
+    "Cîroc Lola": {
+        "vodka": "Vodka",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Pomegranate Juice": {
+                "type": "juice",
+                "oz": 1.5
+            },
+            "Elderflower Liqueur": {
+                "type": "alcohol",
+                "oz": 0.25
+            },
+            "Champagne": {
+                "type": "alcohol",
+                "amount": "1 Splash"
+            }
+        }
+    },
+    "Cîroc Cosmo": {
+        "vodka": "Red Berry",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Cranberry Juice": {
+                "type": "juice",
+                "oz": 2.0
+            },
+            "Lime Juice": {
+                "type": "juice",
+                "amount": "1 Squeeze"
+            }
+        }
+    },
+    "Peach Bellini": {
+        "vodka": "Peach",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.25
+            },
+            "Champagne": {
+                "type": "alcohol",
+                "oz": 0.25
+            }
+        }
+    },
+    "Cîroc Colada": {
+        "vodka": "Pineapple",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Coconut Water": {
+                "type": "juice",
+                "oz": 1.0
+            },
+            "Lime Juice": {
+                "type": "juice",
+                "oz": 0.5
+            },
+            "Simple Syrup": {
+                "type": "syrup",
+                "oz": 0.5
+            },
+            "Club Soda": {
+                "type": "pop",
+                "amount": "1 Splash"
+            }
+        }
+    },
+    "Cîroc Appletini": {
+        "vodka": "Apple",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Lemon Juice": {
+                "type": "juice",
+                "oz": 0.75
+            },
+            "Simple Syrup": {
+                "type": "syrup",
+                "oz": 0.75
+            }
+        }
+    },
+    "Cîroc Apple Smash": {
+        "vodka": "Apple",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Cranberry Juice": {
+                "type": "juice",
+                "oz": 2.0
+            },
+            "Lime Juice": {
+                "type": "juice",
+                "oz": 0.25
+            }
+        }
+    },
+    "Cîroc Apple Mimosa": {
+        "vodka": "Apple",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Elderflower Liqueur": {
+                "type": "alcohol",
+                "oz": 0.25
+            },
+            "Champagne": {
+                "type": "alcohol",
+                "oz": 0.25
+            }
+        }
+    },
+    "Cîroc-Star Martini": {
+        "vodka": "French Vanilla",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.25
+            },
+            "Passionfruit Syrup": {
+                "type": "syrup",
+                "oz": 0.5
+            },
+            "Rhubarb Aperitif": {
+                "type": "alcohol",
+                "oz": 0.25
+            },
+            "White Peach Puree": {
+                "type": "add",
+                "oz": 1
+            },
+            "Lemon Juice": {
+                "type": "juice",
+                "oz": 0.15
+            },
+            "Champagne": {
+                "type": "alcohol",
+                "oz": 1.5,
+                "note": "on the side"
+            }
+        }
+    },
+    "Cîroc Crisp": {
+        "vodka": "Apple",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Strawberries": {
+                "type": "garnish",
+                "amount": 4
+            },
+            "Ginger Beer": {
+                "type": "alcohol",
+                "amount": "1 Splash"
+            }
+        }
+    },
+    "Ruby Apple": {
+        "vodka": "Apple",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.0
+            },
+            "Apertif White Wine": {
+                "type": "alcohol",
+                "oz": 1.0
+            },
+            "Fresh Pink Grapefruit Juice": {
+                "type": "juice",
+                "oz": 0.25
+            }
+        }
+    },
+    "Cîroc Apple Sangria": {
+        "vodka": "Apple",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1
+            },
+            "Dry Rose Wine": {
+                "type": "alcohol",
+                "oz": 1.5
+            },
+            "Ginger Ale": {
+                "type": "juice",
+                "oz": 1.5
+            },
+            "Apple": {
+                "type": "garnish",
+                "amount": "6 Pieces"
+            },
+            "Mixed Berries": {
+                "type": "garnish",
+                "oz": "6 Pieces"
+            }
+        }
+    },
+    "Cîroc Bramble": {
+        "vodka": "Black Raspberry",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Lime Juice": {
+                "type": "juice",
+                "oz": 0.5
+            },
+            "Simple Syrup": {
+                "type": "syrup",
+                "oz": 0.5
+            },
+            "Blackberries": {
+                "type": "garnish",
+                "amount": 3
+            }
+        }
+    },
+    "Black Raspberry Royale": {
+        "vodka": "Black Raspberry",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Lemon Juice": {
+                "type": "juice",
+                "oz": 0.5
+            },
+            "Simple Syrup": {
+                "type": "syrup",
+                "oz": 0.5
+            },
+            "Raspberry Liqueur": {
+                "type": "alcohol",
+                "oz": 0.5
+            },
+            "Champagne": {
+                "type": "alcohol",
+                "instruction": "Top off with Champagne"
+            }
+        }
+    },
+    "Cîroc Black Smash": {
+        "vodka": "Black Raspberry",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Lemon Juice": {
+                "type": "juice",
+                "oz": 0.5
+            },
+            "Simple Syrup": {
+                "type": "syrup",
+                "oz": 0.5
+            },
+            "Mint Leaves": {
+                "type": "garnish",
+                "amount": 4
+            },
+            "Blackberries": {
+                "type": "garnish",
+                "amount": 5
+            }
+        }
+    },
+    "Cîroc Preparada": {
+        "vodka": "Black Raspberry",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Chamoy": {
+                "type": "add",
+                "oz": 0.5
+            },
+            "Lime Juice": {
+                "type": "juice",
+                "oz": 0.5
+            },
+            "Grenadine": {
+                "type": "syrup",
+                "oz": 0.5
+            },
+            "Amber Beer": {
+                "type": "alcohol",
+                "oz": 2.0
+            }
+        }
+    },
+    "Cîroc White Grape 75": {
+        "vodka": "White Grape Vodka",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Champagne": {
+                "type": "alcohol",
+                "oz": 4
+            },
+            "Sugar Cube": {
+                "type": "add",
+                "amount": 1
+            },
+            "Peychaud or Angostura bitters": {
+                "type": "add",
+                "amount": "2 Dashes"
+            }
+        }
+    },
+    "Cîroc French Grape Martini": {
+        "vodka": "White Grape Vodka",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 1.5
+            },
+            "Blanc Vermouth": {
+                "type": "alcohol",
+                "oz": 0.75
+            },
+            "Dry Vermouth": {
+                "type": "alcohol",
+                "oz": 0.75
+            },
+            "Lemon Twist": {
+                "type": "garnish",
+                "amount": 1
+            },
+            "Frozen Grape": {
+                "type": "garnish",
+                "amount": 1
+            }
+        }
+    },
+    "Cîroc French Plunge": {
+        "vodka": "White Grape Vodka",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 6.0
+            },
+            "Pineapple Juice": {
+                "type": "juice",
+                "oz": 12.0
+            },
+            "Cranberry Juice": {
+                "type": "juice",
+                "oz": 6.0
+            },
+            "Lemon Juice": {
+                "type": "juice",
+                "oz": 0.1
+            },
+            "Lime Wedge": {
+                "type": "garnish",
+                "amount": 1
+            },
+            "Pineapple Triangle": {
+                "type": "garnish",
+                "amount": 1
+            }
+        }
+    },
+    "Cîroc Mediterranean Side": {
+        "vodka": "White Grape Vodka",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 2.0
+            },
+            "Lemonade": {
+                "type": "juice",
+                "oz": 2.0
+            },
+            "Club Soda": {
+                "type": "pop",
+                "oz": 4.0
+            },
+            "Rosemary Sprig or Lemon wedge": {
+                "type": "garnish",
+                "amount": 1
+            }
+        }
+    },
+    "Cîroc White Grape Cosmo": {
+        "vodka": "White Grape Vodka",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 2.0
+            },
+            "White Cranberry Juice": {
+                "type": "juice",
+                "oz": 1.0
+            },
+            "Lemon Juice": {
+                "type": "juice",
+                "oz": 0.5
+            },
+            "Simple Syrup": {
+                "type": "syrup",
+                "oz": 0.5
+            },
+            "Lemon Twist": {
+                "type": "garnish",
+                "amount": 1
+            }
+        }
+    },
+    "Cîroc French Codder": {
+        "vodka": "White Grape Vodka",
+        "ingredients": {
+            "Vodka": {
+                "type": "main",
+                "oz": 2.0
+            },
+            "Cranberry Juice": {
+                "type": "juice",
+                "oz": 2.0
+            },
+            "Club Soda": {
+                "type": "pop",
+                "oz": 4.0
+            },
+            "Lime Wedge": {
+                "type": "garnish",
+                "amount": 1
+            }
+        }
+    }
+}
