@@ -66,6 +66,12 @@
             <div class="text-h6">{{ drink }} </div>
             <div class="text-subtitle2">Cîroc {{ recipes[drink].vodka }}</div>
           </q-card-section>
+          <q-seperator/>
+          <q-card-section>
+            <div class="text-subtitle3" v-for="(val,key) in recipes[drink].ingredients" v-bind:key="item">
+              <div v-if="key != 'Vodka'"> {{key}} </div>
+            </div>
+          </q-card-section>
         </q-card>
       </div>
     </div>
