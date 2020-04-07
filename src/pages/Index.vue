@@ -3,6 +3,8 @@
     <div class="full column justify-start items-start content-start">
       <div class="q-gutter-y-md">
         <q-toolbar style="width:100vw" class="bg-green text-white q-my-md shadow-2">
+          <q-btn color="green-8" text-color="black" icon="shuffle" @click="randomize()" />
+          <q-toolbar-title>Cîroc Recipes</q-toolbar-title>
           <q-btn-dropdown auto-close stretch flat label="Cîroc Vodka">
             <div class="q-pa-md">
               <q-option-group
@@ -143,6 +145,7 @@ export default {
             drinks.push(vodka)
           }
         }
+        this.drinks = this.drinks.sort()
 
         for(let i in drinks) {
           this.vodka.push(
@@ -236,6 +239,7 @@ export default {
       for(let i in drinks){
         if(drinks[i]) this.drinks.push(i)
       }
+      this.drinks = this.drinks.sort()
     },
 
     checkIngredients(type1, type2, array){
@@ -253,6 +257,19 @@ export default {
       }
       return options;
     },
+
+    randomize(){
+      let temp = this.drinks;
+      this.drinks = [];
+      var j, x, i;
+      for (i = temp.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = temp[i];
+        temp[i] = temp[j];
+        temp[j] = x;
+      }
+      this.drinks = temp;
+    }
 
   },
   mounted() {
