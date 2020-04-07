@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-left" style="background-color:#232323">
+  <q-page class="flex flex-left">
     <div class="full column justify-start items-start content-start">
       <div class="q-gutter-y-md">
         <q-toolbar style="width:100vw" class="bg-green text-white q-my-md shadow-2">
@@ -74,7 +74,7 @@
             <img 
               style="height:30vh;width:auto" 
               class="q-pt-lg q-pl-md"
-              v-bind:src="'statics/img/'+drink+'.png'"
+              v-bind:src="'statics/img/'+images[drink]+'.png'"
             />
             <q-card-section vertical>
               <q-card-section v-if="selectedDrink == drink">
@@ -128,6 +128,8 @@ export default {
       checkAlcohol: [],
 
       drinks: [],
+      
+      images: {},
     }
   },
   methods: {
@@ -141,6 +143,7 @@ export default {
 
         for(let i in response.data){
           this.drinks.push(i);
+          this.loadImages(i);
           let vodka = response.data[i].vodka
           if(drinks.includes(vodka) == false){
             drinks.push(vodka)
@@ -205,6 +208,14 @@ export default {
           { label: alcohols[i], value: alcohols[i], color: 'yellow'},
         )
       }
+    },
+
+    loadImages(drink) {
+      let img = drink;
+      if(drink.includes("î")){
+        img = img.replace("î","i");
+      }
+      this.images[drink] = img;
     },
 
     updateDrinks(){
