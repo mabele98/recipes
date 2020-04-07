@@ -62,7 +62,7 @@
           </q-btn-dropdown>
         </q-toolbar>
       </div>
-      <div class="q-pa-md row items-start q-gutter-md">
+      <div class="q-pa-md row justify-evenly items-start q-gutter-md">
         <q-card  
           v-for="drink in drinks" v-bind:key="drink"
           v-bind:class="selectedDrink == drink ? 'my-card text-white bg-orange' : 'my-card text-black bg-white'"
@@ -145,7 +145,8 @@ export default {
             drinks.push(vodka)
           }
         }
-        this.drinks = this.drinks.sort()
+        this.drinks = this.drinks.sort();
+        drinks = drinks.sort();
 
         for(let i in drinks) {
           this.vodka.push(
@@ -178,6 +179,10 @@ export default {
           }
         }
       }
+      juices = juices.sort();
+      adds = adds.sort();
+      garnishes = garnishes.sort();
+      alcohols = alcohols.sort();
 
       for(let i in juices) {
         this.juice.push(
