@@ -64,9 +64,12 @@
       </div>
       <div class="q-pa-md row justify-evenly items-start q-gutter-md">
         <q-card  
+          style="width:31vw"
           v-for="drink in drinks" v-bind:key="drink"
           v-bind:class="selectedDrink == drink ? 'my-card text-white bg-orange' : 'my-card text-black bg-white'"
           >
+          <div class="q-pt-lg text-center text-h4 text-weight-bold text-no-wrap">{{ drink }} </div>
+          <div class="text-center text-italic text-subtitle1">Cîroc {{ recipes[drink].vodka }}</div>
           <q-card-section horizontal>
             <img 
               style="height:30vh;width:auto" 
@@ -74,18 +77,16 @@
               v-bind:src="'statics/img/'+drink+'.png'"
             />
             <q-card-section vertical>
-              <div class="q-pr-sm text-h5 text-weight-bold text-no-wrap">{{ drink }} </div>
-              <div class="text-subtitle2">Cîroc {{ recipes[drink].vodka }}</div>
               <q-card-section v-if="selectedDrink == drink">
-                <div class="text-body2 text-no-wrap" v-for="(val,key) in recipes[drink].ingredients" v-bind:key="key">
-                  <div v-if="key == 'Vodka'"> {{val.oz}} oz. of Cîroc {{ recipes[drink].vodka }} </div>
-                  <div v-else-if="val.amount"> {{val.amount}} {{key}} </div>
-                  <div v-else-if="val.pieces"> {{val.pieces}} pieces of {{key}} </div>
-                  <div v-else> {{val.oz}} oz. of {{ key}} </div>
-                </div>
+                <ul class="text-body1" v-for="(val,key) in recipes[drink].ingredients" v-bind:key="key">
+                  <li v-if="key == 'Vodka'"> {{val.oz}} oz. of Cîroc {{ recipes[drink].vodka }} </li>
+                  <li v-else-if="val.amount"> {{val.amount}} {{key}} </li>
+                  <li v-else-if="val.pieces"> {{val.pieces}} pieces of {{key}} </li>
+                  <li v-else> {{val.oz}} oz. of {{ key}} </li>
+                </ul>
               </q-card-section>
               <q-card-section v-else>
-                <div class="text-body2" style="width:200px">
+                <div class="text-body2">
                     {{ recipes[drink].description }}
                 </div>
               </q-card-section>
