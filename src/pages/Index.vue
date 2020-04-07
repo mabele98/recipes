@@ -1,8 +1,8 @@
 <template>
   <q-page class="flex flex-left">
-    <div class="full column justify-start items-start content-start">
+    <q-header reveal>
       <div class="q-gutter-y-md">
-        <q-toolbar style="width:100vw" class="bg-green text-white q-my-md shadow-2">
+        <q-toolbar>
           <q-btn color="green-8" text-color="black" icon="shuffle" @click="randomize()" />
           <q-toolbar-title>Cîroc Recipes</q-toolbar-title>
           <q-btn-dropdown auto-close stretch flat label="Cîroc Vodka">
@@ -62,9 +62,12 @@
           </q-btn-dropdown>
         </q-toolbar>
       </div>
+    </q-header>
+    <div class="full column justify-start items-start content-start">
       <div class="q-pa-md row justify-evenly items-start q-gutter-md">
         <q-card  
           style="width:31vw"
+          elevated
           v-for="drink in drinks" v-bind:key="drink"
           v-bind:class="selectedDrink == drink ? 'my-card text-white bg-orange' : 'my-card text-black bg-white'"
           >
@@ -291,6 +294,8 @@ export default {
   },
   mounted() {
     this.loadDrinks();
+    this.$q.screen.setSizes({ sm: 300, md: 500, lg: 1000, xl: 2000 })
+    console.log(this.$q.screen.lg)
   }
 }
 </script>
