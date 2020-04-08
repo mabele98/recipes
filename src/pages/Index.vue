@@ -1,10 +1,15 @@
 <template>
   <q-page class="flex flex-left">
     <q-header reveal>
+      <q-scroll-area
+      horizontal
+      style="height: 50px; width: 100vw;"
+      class="rounded-borders"
+      >
       <div class="q-gutter-y-md">
         <q-toolbar>
           <q-btn color="green-8" text-color="black" icon="shuffle" @click="randomize()" />
-          <q-toolbar-title>Cîroc Recipes</q-toolbar-title>
+          <q-toolbar-title> <div class="text-weight-bold"> Cîroc Recipes </div> </q-toolbar-title>
           <q-btn-dropdown auto-close stretch flat label="Cîroc Vodka">
             <div class="q-pa-md">
               <q-option-group
@@ -62,26 +67,42 @@
           </q-btn-dropdown>
         </q-toolbar>
       </div>
+      </q-scroll-area>
     </q-header>
     <div class="full column justify-start items-start content-start">
       <div class="q-pa-md row justify-evenly items-start q-gutter-md">
         <q-card  
-          style="width:31vw"
+          v-bind:style="!size.lg ? size.sm ? 'width:92vw' : 'width:47vw' : 'width:31vw'"
           elevated
           v-for="drink in drinks" v-bind:key="drink"
           v-bind:class="selectedDrink == drink ? 'my-card text-white bg-orange' : 'my-card text-black bg-white'"
           >
-          <div class="q-pt-lg text-center text-h4 text-weight-bold text-no-wrap">{{ drink }} </div>
-          <div class="text-center text-italic text-subtitle1">Cîroc {{ recipes[drink].vodka }}</div>
+          <div 
+            v-bind:class="size.sm ? 'text-h5' : 'text-h4'"
+            class="q-pt-lg text-center text-weight-bold text-no-wrap"
+          >
+            <div v-bind:style="selectedDrink == drink ? 'color: white' : color[recipes[drink].vodka]"> 
+              {{ drink }}
+            </div>
+          </div>
+          <div 
+            v-bind:class="size.sm ? 'text-subtitle2' : 'text-subtitle1'"
+            class="text-center text-italic"
+          >
+            <div v-bind:style="selectedDrink == drink ? 'color: white' : color[recipes[drink].vodka]"> 
+              Cîroc {{ recipes[drink].vodka }} 
+            </div>
+          </div>
           <q-card-section horizontal>
             <img 
-              style="height:30vh;width:auto" 
+              v-if="size.sm ? selectedDrink == drink ? false : true : true"
+              style="height:30vh;width:auto"
               class="q-pt-lg q-pl-md"
               v-bind:src="'statics/img/'+images[drink]+'.png'"
             />
             <q-card-section vertical>
               <q-card-section v-if="selectedDrink == drink">
-                <ul class="text-body1" v-for="(val,key) in recipes[drink].ingredients" v-bind:key="key">
+                <ul class="text-body1 text-weight-bold" v-for="(val,key) in recipes[drink].ingredients" v-bind:key="key">
                   <li v-if="key == 'Vodka'"> {{val.oz}} oz. of Cîroc {{ recipes[drink].vodka }} </li>
                   <li v-else-if="val.amount"> {{val.amount}} {{key}} </li>
                   <li v-else-if="val.pieces"> {{val.pieces}} pieces of {{key}} </li>
@@ -89,8 +110,12 @@
                 </ul>
               </q-card-section>
               <q-card-section v-else>
-                <div class="text-body2">
-                    {{ recipes[drink].description }}
+                <div 
+                  class="text-body2 text-grey-9 text-weight-bold" 
+                  style="line-height:2.00rem; letter-spacing: 0.02786em"
+                  v-for="(val,key) in recipes[drink].ingredients" v-bind:key="key" 
+                  >
+                    <div style="inline" v-if="key != 'Vodka'"> {{key}} </div>
                 </div>
               </q-card-section>
             </q-card-section>
@@ -98,7 +123,7 @@
 
           <q-card-actions align="center">
             <q-btn v-if="selectedDrink == drink" flat @click="selectedDrink = ''">Unselect</q-btn>
-            <q-btn v-else flat @click="selectedDrink = drink">Select</q-btn>
+            <q-btn v-else flat @click="selectedDrink = drink">Recipe</q-btn>
           </q-card-actions>
         </q-card>
       </div>
@@ -111,12 +136,15 @@ export default {
   name: 'PageIndex',
   data () {
     return {
+      size: this.$q.screen,
+
       selectedDrink: '',
 
       recipes: {},
 
       vodka: [],
       checkVodka: [],
+      color: {},
 
       juice: [],
       checkJuice: [],
@@ -149,9 +177,11 @@ export default {
           this.loadImages(i);
           let vodka = response.data[i].vodka
           if(drinks.includes(vodka) == false){
+            this.vodkaColor(vodka);
             drinks.push(vodka)
           }
         }
+        console.log(this.color)
         this.drinks = this.drinks.sort();
         drinks = drinks.sort();
 
@@ -215,9 +245,8 @@ export default {
 
     loadImages(drink) {
       let img = drink;
-      if(drink.includes("î")){
-        img = img.replace("î","i");
-      }
+      if(drink.includes("î")) img = img.replace("î","i");
+      if(drink.includes("ñ")) img = img.replace("ñ","n")
       this.images[drink] = img;
     },
 
@@ -289,13 +318,25 @@ export default {
         temp[j] = x;
       }
       this.drinks = temp;
-    }
+    },
 
+    vodkaColor(vodka){
+      if(vodka == "Vodka") this.color[vodka] = 'color:#243090'
+      else if(vodka == "Pineapple") this.color[vodka] = 'color:#FAC300'
+      else if(vodka == "Amaretto") this.color[vodka] = 'color:#6B0F05'
+      else if(vodka == "French Vanilla") this.color[vodka] = 'color:#EA9F42'
+      else if(vodka == "Coconut") this.color[vodka] = 'color:#5B5957'
+      else if(vodka == "Peach") this.color[vodka] = 'color:#F28500'
+      else if(vodka == "Red Berry") this.color[vodka] = 'color:#A60000'
+      else if(vodka == "Apple") this.color[vodka] = "color:#00B939"
+      else if(vodka == "White Grape Vodka") this.color[vodka] = 'color:#E0CFAF'
+      else this.color[vodka] = 'color:black'
+    }
   },
   mounted() {
     this.loadDrinks();
-    this.$q.screen.setSizes({ sm: 300, md: 500, lg: 1000, xl: 2000 })
-    console.log(this.$q.screen.lg)
+    this.$q.screen.setSizes({sm: 300, md: 500, lg: 1000, xl: 2000 })
+    console.log(this.$q.screen)
   }
 }
 </script>

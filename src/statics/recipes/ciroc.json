@@ -35,7 +35,7 @@
                 "type": "main",
                 "oz": 1.5
             },
-            "Cola": {
+            "Coca-Cola": {
                 "type": "pop",
                 "oz": 3.0
             }
@@ -438,7 +438,7 @@
             },
             "Champagne": {
                 "type": "alcohol",
-                "instruction": "Top off with Champagne"
+                "amount": "Top off with "
             }
         }
     },
@@ -516,7 +516,7 @@
             }
         }
     },
-    "Cîroc French Grape Martini": {
+    "French Grape Martini": {
         "description": "Try our French Grape Martini recipe. Shake and enjoy your vodka cocktail!",
         "vodka": "White Grape Vodka",
         "ingredients": {
