@@ -1,644 +1,763 @@
 {
-    "The Diddy": {
-        "description": "Try The Diddy cocktail recipe combining CÎROC™ Vodka & Lemonade. Stir and enjoy your vodka cocktail!",
-        "vodka": "Vodka",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Lemonade": {
-                "type": "juice",
-                "oz": 1.5
+    "Ciroc Recipes":{
+        "1": {
+            "name": "The Diddy",
+            "description": "Try The Diddy cocktail recipe combining CÎROC™ Vodka & Lemonade. Stir and enjoy your vodka cocktail!",
+            "ingredients": {
+                "1": {
+                    "name": "Vodka",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Lemonade",
+                    "type": "JUICE",
+                    "oz": 1.5
+                }
             }
-        }
-    },
-    "La Piña": {
-        "description": "Enjoy a La Piña, this easy vodka drink uses CÎROC™ Pineapple, pineapple juice and a pineapple wedge garnish.",
-        "vodka": "Pineapple",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Pineapple Juice": {
-                "type": "juice",
-                "oz": 3.0
+        },
+        "2": {
+            "name": "La Piña",
+            "description": "Enjoy a La Piña, this easy vodka drink uses CÎROC™ Pineapple, pineapple juice and a pineapple wedge garnish.",
+            "ingredients": {
+                "1": {
+                    "name": "Pineapple",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Pineapple Juice",
+                    "type": "JUICE",
+                    "oz": 3.0
+                }
             }
-        }
-    },
-    "Black & Gold": {
-        "description": "Try our Black & Gold recipe combining CÎROC™ Amaretto & Cola. Stir and enjoy your vodka cocktail!",
-        "vodka": "Amaretto",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Coca-Cola": {
-                "type": "pop",
-                "oz": 3.0
+        },
+        "3": {
+            "name": "Black & Gold",
+            "description": "Try our Black & Gold recipe combining CÎROC™ Amaretto & Cola. Stir and enjoy your vodka cocktail!",
+            "ingredients": {
+                "1": {
+                    "name": "Amaretto",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Coca-Cola",
+                    "type": "POP",
+                    "oz": 3.0
+                }
             }
-        }
-    },
-    "Naughty and Nice": {
-        "description": "Enjoy a Naughty and Nice, this refreshing vodka drink is made with CÎROC™ French Vanilla Flavored Vodka and dessert wine.",
-        "vodka": "French Vanilla",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.0
-            },
-            "Pink Grapefruit Juice": {
-                "type": "juice",
-                "oz": 0.75
-            },
-            "Honey": {
-                "type": "add",
-                "oz": 0.5
-            },
-            "Ginger Cordial": {
-                "type": "juice",
-                "oz": 0.5
-            },
-            "French Dessert Wine": {
-                "type": "alcohol",
-                "oz": 1.75
-            },
-            "Sparkling Water": {
-                "type": "juice",
-                "oz": 1.75
+        },
+        "4": {
+            "name": "Naughty and Nice",
+            "description": "Enjoy a Naughty and Nice, this refreshing vodka drink is made with CÎROC™ French Vanilla Flavored Vodka and dessert wine.",
+            "ingredients": {
+                "1": {
+                    "name": "French Vanilla",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.0
+                },
+                "2": {
+                    "name": "Pink Grapefruit Juice",
+                    "type": "JUICE",
+                    "oz": 0.75
+                },
+                "3": {
+                    "name": "Honey",
+                    "type": "ADD IN",
+                    "oz": 0.5
+                },
+                "4": {
+                    "name": "Ginger Cordial",
+                    "type": "JUICE",
+                    "oz": 0.5
+                },
+                "5": {
+                    "name": "French Desert Wine",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "oz": 1.75
+                },
+                "6": {
+                    "name": "Sparking Water",
+                    "type": "JUICE",
+                    "oz": 1.75
+                }
             }
-        }
-    },
-    "Harlem Sour": {
-        "description": "Try our Harlem Sour recipe combining CÎROC™ Amaretto & Orange Juice. Shake and enjoy your vodka cocktail!",
-        "vodka": "Amaretto",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Orange Juice": {
-                "type": "juice",
-                "oz": 0.5
-            },
-            "Lemon Juice": {
-                "type": "juice",
-                "oz": 0.5
-            },
-            "Simple Syrup": {
-                "type": "syrup",
-                "oz": 0.5
+        },
+        "5": {
+            "name": "Harlem Sour",
+            "description": "Try our Harlem Sour recipe combining CÎROC™ Amaretto & Orange Juice. Shake and enjoy your vodka cocktail!",
+            "ingredients": {
+                "1": {
+                    "name": "Amaretto",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Orange Juice",
+                    "type": "JUICE",
+                    "oz": 0.5
+                },
+                "3": {
+                    "name": "Lemon Juice",
+                    "type": "JUICE",
+                    "oz": 0.5
+                },
+                "4": {
+                    "name": "Simple Syrup",
+                    "type": "SYRUP",
+                    "oz": 0.5
+                }
             }
-        }
-    },
-    "St. Tropez Punch": {
-        "description": "Enjoy a St. Tropez Punch, this refreshing vodka drink is made with CÎROC™ French Vanilla Flavored Vodka, champagne and apricots.",
-        "vodka": "French Vanilla",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 12.0
-            },
-            "Passionfruit Syrup": {
-                "type": "syrup",
-                "oz": 5.0
-            },
-            "Sugar": {
-                "type": "add",
-                "oz": 5.5
-            },
-            "Lime Juice": {
-                "type": "juice",
-                "oz": 7.0
-            },
-            "Champagne": {
-                "type": "alcohol",
-                "oz": 17.0
-            },
-            "Dried Apricots and Mint Sprigs": {
-                "type": "garnish",
-                "amount": "Some "
+        },
+        "6": {
+            "name": "St. Tropez Punch",
+            "description": "Enjoy a St. Tropez Punch, this refreshing vodka drink is made with CÎROC™ French Vanilla Flavored Vodka, champagne and apricots.",
+            "ingredients": {
+                "1": {
+                    "name": "French Vanilla",
+                    "type": "CÎROC VODKA",
+                    "oz": 12.0
+                },
+                "2": {
+                    "name": "Passionfruit Syrup",
+                    "type": "SYRUP",
+                    "oz": 5.0
+                },
+                "3": {
+                    "name": "Sugar",
+                    "type": "ADD IN",
+                    "oz": 5.5
+                },
+                "4": {
+                    "name": "Lime Juice",
+                    "type": "JUICE",
+                    "oz": 7.0
+                },
+                "5": {
+                    "name": "Champagne",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "oz": 17.0
+                },
+                "6": {
+                    "name": "Dried Apricots and Mint Sprigs",
+                    "type": "GARNISH",
+                    "amount": "Some "
+                }
             }
-        }
-    },
-    "Hot Mama": {
-        "description": "Try our Hot Mama recipe combining CÎROC™ Coconut & Watermelon Juice. Shake and enjoy your vodka cocktail!",
-        "vodka": "Coconut",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Watermellon Juice": {
-                "type": "juice",
-                "oz": 3.0
-            },
-            "Lime Juice": {
-                "type": "juice",
-                "oz": 1.0
-            },
-            "Simple Syrup": {
-                "type": "syrup",
-                "oz": 1.0
-            },
-            "Jalapeño": {
-                "type": "garnish",
-                "amount": "1 Slice of "
+        },
+        "7": {
+            "name": "Hot Mama",
+            "description": "Try our Hot Mama recipe combining CÎROC™ Coconut & Watermelon Juice. Shake and enjoy your vodka cocktail!",
+            "ingredients": {
+                "1": {
+                    "name": "Coconut",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Watermello Juice",
+                    "type": "JUICE",
+                    "oz": 3.0
+                },
+                "3": {
+                    "name": "Lime Juice",
+                    "type": "JUICE",
+                    "oz": 1.0
+                },
+                "4": {
+                    "name": "Simple Syrup",
+                    "type": "SYRUP",
+                    "oz": 1.0
+                },
+                "5": {
+                    "name": "Jalapeño",
+                    "type": "GARNISH",
+                    "amount": "1 Slice of "
+                }
             }
-        }
-    },
-    "On the Beach": {
-        "description": "Try our On the Beach cocktail recipe combining CÎROC™ Peach & Cranberry Juice. Stir and enjoy your vodka cocktail!",
-        "vodka": "Peach",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Cranberry Juice": {
-                "type": "juice",
-                "oz": 3.0
-            },
-            "Orange Juice": {
-                "type": "juice",
-                "oz": 1.0
+        },
+        "8": {
+            "name": "On the Beach",
+            "description": "Try our On the Beach cocktail recipe combining CÎROC™ Peach & Cranberry Juice. Stir and enjoy your vodka cocktail!",
+            "ingredients": {
+                "1": {
+                    "name": "Peach",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Cranberry Juice",
+                    "type": "JUICE",
+                    "oz": 3.0
+                },
+                "3": {
+                    "name": "Orange Juice",
+                    "type": "JUICE",
+                    "oz": 1.0
+                }
             }
-        }
-    },
-    "Cîroc Lola": {
-        "description": "Enjoy Ciroc Lola using CÎROC™ Ultra-Premium Vodka, pomegranate juice, elderflower liqueur and a splash of champagne.",
-        "vodka": "Vodka",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Pomegranate Juice": {
-                "type": "juice",
-                "oz": 1.5
-            },
-            "Elderflower Liqueur": {
-                "type": "alcohol",
-                "oz": 0.25
-            },
-            "Champagne": {
-                "type": "alcohol",
-                "amount": "1 Splash of"
+        },
+        "9": {
+            "name": "Cîroc Lola",
+            "description": "Enjoy Ciroc Lola using CÎROC™ Ultra-Premium Vodka, pomegranate juice, elderflower liqueur and a splash of champagne.",
+            "ingredients": {
+                "1": {
+                    "name": "Vodka",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Pomegranate Juice",
+                    "type": "JUICE",
+                    "oz": 1.5
+                },
+                "3": {
+                    "name": "Elderflower Liqueur",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "oz": 0.25
+                },
+                "4": {
+                    "name": "Champagne",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "amount": "1 Splash of"
+                }
             }
-        }
-    },
-    "Cîroc Cosmo": {
-        "description": "Try our Cîroc Cosmo recipe combining CÎROC™ Red Berry & Cranberry Juice. Add lime and enjoy your vodka cocktail!",
-        "vodka": "Red Berry",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Cranberry Juice": {
-                "type": "juice",
-                "oz": 2.0
-            },
-            "Lime Juice": {
-                "type": "juice",
-                "amount": "1 Squeeze of"
+        },
+        "10": {
+            "name": "Cîroc Cosmo",
+            "description": "Try our Cîroc Cosmo recipe combining CÎROC™ Red Berry & Cranberry Juice. Add lime and enjoy your vodka cocktail!",
+            "ingredients": {
+                "1": {
+                    "name": "Red Berry",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Cranberry Juice",
+                    "type": "JUICE",
+                    "oz": 2.0
+                },
+                "3": {
+                    "name": "Lime Juice",
+                    "type": "JUICE",
+                    "amount": "1 Squeeze of"
+                }
             }
-        }
-    },
-    "Peach Bellini": {
-        "description": "Try a CÎROC™ Peach Bellini, this decadent bellini recipe calls for CÎROC™ Peach, champagne and enjoy!",
-        "vodka": "Peach",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.25
-            },
-            "Champagne": {
-                "type": "alcohol",
-                "oz": 0.25
+        },
+        "11": {
+            "name": "Peach Bellini",
+            "description": "Try a CÎROC™ Peach Bellini, this decadent bellini recipe calls for CÎROC™ Peach, champagne and enjoy!",
+            "ingredients": {
+                "1": {
+                    "name": "Peach",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.25
+                },
+                "2": {
+                    "name": "Champagne",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "oz": 0.25
+                }
             }
-        }
-    },
-    "Cîroc Colada": {
-        "description": "Try our delicious Pina Colada recipe using CÎROC™ Pineapple, lime juice, simple syrup in a shaker with ice and enjoy!",
-        "vodka": "Pineapple",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Coconut Water": {
-                "type": "juice",
-                "oz": 1.0
-            },
-            "Lime Juice": {
-                "type": "juice",
-                "oz": 0.5
-            },
-            "Simple Syrup": {
-                "type": "syrup",
-                "oz": 0.5
-            },
-            "Club Soda": {
-                "type": "pop",
-                "amount": "1 Splash of"
+        },
+        "12": {
+            "name": "Cîroc Colada",
+            "description": "Try our delicious Pina Colada recipe using CÎROC™ Pineapple, lime juice, simple syrup in a shaker with ice and enjoy!",
+            "ingredients": {
+                "1": {
+                    "name": "Pineapple",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Coconut Water",
+                    "type": "JUICE",
+                    "oz": 1.0
+                },
+                "3": {
+                    "name": "Lime Juice",
+                    "type": "JUICE",
+                    "oz": 0.5
+                },
+                "4": {
+                    "name": "Simple Syrup",
+                    "type": "SYRUP",
+                    "oz": 0.5
+                },
+                "5": {
+                    "name": "Club Soda",
+                    "type": "POP",
+                    "amount": "1 Splash of"
+                }
             }
-        }
-    },
-    "Cîroc Appletini": {
-        "description": "Try our delicious Appletini recipe using CÎROC™ Apple, fresh lemon juice and simple syrup. Shake and enjoy!",
-        "vodka": "Apple",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Lemon Juice": {
-                "type": "juice",
-                "oz": 0.75
-            },
-            "Simple Syrup": {
-                "type": "syrup",
-                "oz": 0.75
+        },
+        "13": {
+            "name": "Cîroc Appletini",
+            "description": "Try our delicious Appletini recipe using CÎROC™ Apple, fresh lemon juice and simple syrup. Shake and enjoy!",
+            "ingredients": {
+                "1": {
+                    "name": "Apple",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Lemon Juice",
+                    "type": "JUICE",
+                    "oz": 0.75
+                },
+                "3": {
+                    "name": "Simple Syrup",
+                    "type": "SYRUP",
+                    "oz": 0.75
+                }
             }
-        }
-    },
-    "Cîroc Apple Smash": {
-        "description": "Try our Vodka Cranberry recipe combining CÎROC™ Apple & Cranberry Juice. Shake and enjoy your vodka cocktail!",
-        "vodka": "Apple",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Cranberry Juice": {
-                "type": "juice",
-                "oz": 2.0
-            },
-            "Lime Juice": {
-                "type": "juice",
-                "oz": 0.25
+        },
+        "14": {
+            "name": "Cîroc Apple Smash",
+            "description": "Try our Vodka Cranberry recipe combining CÎROC™ Apple & Cranberry Juice. Shake and enjoy your vodka cocktail!",
+            "ingredients": {
+                "1": {
+                    "name": "Apple",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Cranberry Juice",
+                    "type": "JUICE",
+                    "oz": 2.0
+                },
+                "3": {
+                    "name": "Lime Juice",
+                    "type": "JUICE",
+                    "oz": 0.25
+                }
             }
-        }
-    },
-    "Cîroc Apple Mimosa": {
-        "description": "Try our Apple Mimosa recipe combining CÎROC™ Apple & Elderflower Liqueur. Top with a splash of champagne and enjoy!",
-        "vodka": "Apple",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Elderflower Liqueur": {
-                "type": "alcohol",
-                "oz": 0.25
-            },
-            "Champagne": {
-                "type": "alcohol",
-                "oz": 0.25
+        },
+        "15": {
+            "name": "Cîroc Apple Mimosa",
+            "description": "Try our Apple Mimosa recipe combining CÎROC™ Apple & Elderflower Liqueur. Top with a splash of champagne and enjoy!",
+            "ingredients": {
+                "1": {
+                    "name": "Apple",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Elderflower Liqueur",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "oz": 0.25
+                },
+                "3": {
+                    "name": "Champagne",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "oz": 0.25
+                }
             }
-        }
-    },
-    "Cîroc-Star Martini": {
-        "description": "Enjoy a Cîroc Star Martini, this refreshing vodka drink is made with CÎROC™ French Vanilla Flavored Vodka and champagne.",
-        "vodka": "French Vanilla",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.25
-            },
-            "Passionfruit Syrup": {
-                "type": "syrup",
-                "oz": 0.5
-            },
-            "Rhubarb Aperitif": {
-                "type": "alcohol",
-                "oz": 0.25
-            },
-            "White Peach Puree": {
-                "type": "add",
-                "oz": 1
-            },
-            "Lemon Juice": {
-                "type": "juice",
-                "oz": 0.15
-            },
-            "Champagne": {
-                "type": "alcohol",
-                "oz": 1.5,
-                "note": "on the side"
+        },
+        "16": {
+            "name": "Cîroc-Star Martini",
+            "description": "Enjoy a Cîroc Star Martini, this refreshing vodka drink is made with CÎROC™ French Vanilla Flavored Vodka and champagne.",
+            "ingredients": {
+                "1": {
+                    "name": "French Vanilla",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.25
+                },
+                "2": {
+                    "name": "Passionfruit Syrup",
+                    "type": "SYRUP",
+                    "oz": 0.5
+                },
+                "3": {
+                    "name": "Rhubarb Aperitif",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "oz": 0.25
+                },
+                "4": {
+                    "name": "White Peach Puree",
+                    "type": "ADD IN",
+                    "oz": 1
+                },
+                "5": {
+                    "name": "Lemon Juice",
+                    "type": "JUICE",
+                    "oz": 0.15
+                },
+                "6": {
+                    "name": "Champagne",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "oz": 1.5,
+                    "note": "on the side"
+                }
             }
-        }
-    },
-    "Cîroc Crisp": {
-        "description": "Try our Cîroc Crisp recipe combining CÎROC™ Apple, Strawberries & Ginger Beer. Shake and enjoy your vodka cocktail!",
-        "vodka": "Apple",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Strawberries": {
-                "type": "garnish",
-                "pieces": 4
-            },
-            "Ginger Beer": {
-                "type": "alcohol",
-                "amount": "1 Splash of "
+        },
+        "17": {
+            "name": "Cîroc Crisp",
+            "description": "Try our Cîroc Crisp recipe combining CÎROC™ Apple, Strawberries & Ginger Beer. Shake and enjoy your vodka cocktail!",
+            "ingredients": {
+                "1": {
+                    "name": "Apple",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Strawberrie",
+                    "type": "GARNISH",
+                    "pieces": 4
+                },
+                "3": {
+                    "name": "Ginger Beer",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "amount": "1 Splash of "
+                }
             }
-        }
-    },
-    "Ruby Apple": {
-        "description": "Try our Ruby Apple recipe combining CÎROC™ Apple, Wine & Grapefruit. Shake and enjoy your vodka cocktail!",
-        "vodka": "Apple",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.0
-            },
-            "Apertif White Wine": {
-                "type": "alcohol",
-                "oz": 1.0
-            },
-            "Fresh Pink Grapefruit Juice": {
-                "type": "juice",
-                "oz": 0.25
+        },
+        "18": {
+            "name": "Ruby Apple",
+            "description": "Try our Ruby Apple recipe combining CÎROC™ Apple, Wine & Grapefruit. Shake and enjoy your vodka cocktail!",
+            "ingredients": {
+                "1": {
+                    "name": "Apple",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.0
+                },
+                "2": {
+                    "name": "Apertif White Wine",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "oz": 1.0
+                },
+                "3": {
+                    "name": "Fresh Pink Grapefruit Juice",
+                    "type": "JUICE",
+                    "oz": 0.25
+                }
             }
-        }
-    },
-    "Cîroc Apple Sangria": {
-        "description": "Try our Apple Sangria recipe combining CÎROC™ Apple, Wine, Ginger Ale & Fresh Fruit. Stir and enjoy your vodka cocktail!",
-        "vodka": "Apple",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1
-            },
-            "Dry Rose Wine": {
-                "type": "alcohol",
-                "oz": 1.5
-            },
-            "Ginger Ale": {
-                "type": "juice",
-                "oz": 1.5
-            },
-            "Apple": {
-                "type": "garnish",
-                "pieces": 6
-            },
-            "Mixed Berries": {
-                "type": "garnish",
-                "pieces": 6
+        },
+        "19": {
+            "name": "Cîroc Apple Sangria",
+            "description": "Try our Apple Sangria recipe combining CÎROC™ Apple, Wine, Ginger Ale & Fresh Fruit. Stir and enjoy your vodka cocktail!",
+            "ingredients": {
+                "1": {
+                    "name": "Apple",
+                    "type": "CÎROC VODKA",
+                    "oz": 1
+                },
+                "2": {
+                    "name": "Dry Rose Wine",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "oz": 1.5
+                },
+                "3": {
+                    "name": "Ginger Ale",
+                    "type": "JUICE",
+                    "oz": 1.5
+                },
+                "4": {
+                    "name": "Apple",
+                    "type": "GARNISH",
+                    "pieces": 6
+                },
+                "5": {
+                    "name": "Mixed Berries",
+                    "type": "GARNISH",
+                    "pieces": 6
+                }
             }
-        }
-    },
-    "Cîroc Bramble": {
-        "description": "Try our Bramble Recipe combining CÎROC Black Raspberry, lime juice and simple syrup. Shake and combine on a rocks glass with muddled blackberries and enjoy your vodka cocktail!",
-        "vodka": "Black Raspberry",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Lime Juice": {
-                "type": "juice",
-                "oz": 0.5
-            },
-            "Simple Syrup": {
-                "type": "syrup",
-                "oz": 0.5
-            },
-            "Blackberries": {
-                "type": "garnish",
-                "pieces": 3
+        },
+        "20": {
+            "name": "Cîroc Bramble",
+            "description": "Try our Bramble Recipe combining CÎROC Black Raspberry, lime juice and simple syrup. Shake and combine on a rocks glass with muddled blackberries and enjoy your vodka cocktail!",
+            "ingredients": {
+                "1": {
+                    "name": "Black Raspberry",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Lime Juice",
+                    "type": "JUICE",
+                    "oz": 0.5
+                },
+                "3": {
+                    "name": "Simple Syrup",
+                    "type": "SYRUP",
+                    "oz": 0.5
+                },
+                "4": {
+                    "name": "Blackberries",
+                    "type": "GARNISH",
+                    "pieces": 3
+                }
             }
-        }
-    },
-    "Black Raspberry Royale": {
-        "description": "Try our Black Raspberry Royale recipe, combining CÎROC Black Raspberry, lemon juice, simple syrup and raspberry liqueur. Top with a splash of champagne and enjoy!",
-        "vodka": "Black Raspberry",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Lemon Juice": {
-                "type": "juice",
-                "oz": 0.5
-            },
-            "Simple Syrup": {
-                "type": "syrup",
-                "oz": 0.5
-            },
-            "Raspberry Liqueur": {
-                "type": "alcohol",
-                "oz": 0.5
-            },
-            "Champagne": {
-                "type": "alcohol",
-                "amount": "Top off with "
+        },
+        "21": {
+            "name": "Black Raspberry Royale",
+            "description": "Try our Black Raspberry Royale recipe, combining CÎROC Black Raspberry, lemon juice, simple syrup and raspberry liqueur. Top with a splash of champagne and enjoy!",
+            "ingredients": {
+                "1": {
+                    "name": "Black Raspberry",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Lemon Juice",
+                    "type": "JUICE",
+                    "oz": 0.5
+                },
+                "3": {
+                    "name": "Simple Syrup",
+                    "type": "SYRUP",
+                    "oz": 0.5
+                },
+                "4": {
+                    "name": "Raspberry Liqueur",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "oz": 0.5
+                },
+                "5": {
+                    "name": "Champagne",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "amount": "Top off with "
+                }
             }
-        }
-    },
-    "Cîroc Black Smash": {
-        "description": "Try our Black Smash cocktail that combines CÎROC Black Raspberry, lemon juice, simple syrup, mint leaves and blackberries. Shake and enjoy!",
-        "vodka": "Black Raspberry",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Lemon Juice": {
-                "type": "juice",
-                "oz": 0.5
-            },
-            "Simple Syrup": {
-                "type": "syrup",
-                "oz": 0.5
-            },
-            "Mint Leaves": {
-                "type": "garnish",
-                "pieces": 4
-            },
-            "Blackberries": {
-                "type": "garnish",
-                "pieces": 5
+        },
+        "22": {
+            "name": "Cîroc Black Smash",
+            "description": "Try our Black Smash cocktail that combines CÎROC Black Raspberry, lemon juice, simple syrup, mint leaves and blackberries. Shake and enjoy!",
+            "ingredients": {
+                "1": {
+                    "name": "Black Raspberry",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Lemon Juice",
+                    "type": "JUICE",
+                    "oz": 0.5
+                },
+                "3": {
+                    "name": "Simple Syrup",
+                    "type": "SYRUP",
+                    "oz": 0.5
+                },
+                "4": {
+                    "name": "Mint Leaves",
+                    "type": "GARNISH",
+                    "pieces": 4
+                },
+                "5": {
+                    "name": "Blackberries",
+                    "type": "GARNISH",
+                    "pieces": 5
+                }
             }
-        }
-    },
-    "Cîroc Preparada": {
-        "description": "Try our fun new cocktail Preparada, combining CÎROC Black Raspberry, lime juice, grenadine and chamoy. Add amber beer with rimmed chili/salt glass and enjoy!",
-        "vodka": "Black Raspberry",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Chamoy": {
-                "type": "add",
-                "oz": 0.5
-            },
-            "Lime Juice": {
-                "type": "juice",
-                "oz": 0.5
-            },
-            "Grenadine": {
-                "type": "syrup",
-                "oz": 0.5
-            },
-            "Amber Beer": {
-                "type": "alcohol",
-                "oz": 2.0
+        },
+        "23": {
+            "name": "Cîroc Preparada",
+            "description": "Try our fun new cocktail Preparada, combining CÎROC Black Raspberry, lime juice, grenadine and chamoy. Add amber beer with rimmed chili/salt glass and enjoy!",
+            "ingredients": {
+                "1": {
+                    "name": "Black Raspberry",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Chamoy",
+                    "type": "ADD IN",
+                    "oz": 0.5
+                },
+                "3": {
+                    "name": "Lime Juice",
+                    "type": "JUICE",
+                    "oz": 0.5
+                },
+                "4": {
+                    "name": "Grenadine",
+                    "type": "SYRUP",
+                    "oz": 0.5
+                },
+                "5": {
+                    "name": "Amber Beer",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "oz": 2.0
+                }
             }
-        }
-    },
-    "Cîroc White Grape 75": {
-        "description": "Try our sweet and celebratory White Grape 75 recipe created with champagne and Cîroc White Grape Vodka. Combine and enjoy your vodka cocktail!",
-        "vodka": "White Grape Vodka",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Champagne": {
-                "type": "alcohol",
-                "oz": 4
-            },
-            "Sugar Cube": {
-                "type": "add",
-                "amount": "A "
-            },
-            "Peychaud or Angostura bitters": {
-                "type": "add",
-                "amount": "2 Dashes of "
+        },
+        "24": {
+            "name": "Cîroc White Grape 75",
+            "description": "Try our sweet and celebratory White Grape 75 recipe created with champagne and Cîroc White Grape Vodka. Combine and enjoy your vodka cocktail!",
+            "ingredients": {
+                "1": {
+                    "name": "White Grape Vodka",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Champagne",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "oz": 4
+                },
+                "3": {
+                    "name": "Sugar Cube",
+                    "type": "ADD IN",
+                    "amount": "A "
+                },
+                "4": {
+                    "name": "Peychaud or Angostura bitters",
+                    "type": "ADD IN",
+                    "amount": "2 Dashes of "
+                }
             }
-        }
-    },
-    "French Grape Martini": {
-        "description": "Try our French Grape Martini recipe. Shake and enjoy your vodka cocktail!",
-        "vodka": "White Grape Vodka",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 1.5
-            },
-            "Blanc Vermouth": {
-                "type": "alcohol",
-                "oz": 0.75
-            },
-            "Dry Vermouth": {
-                "type": "alcohol",
-                "oz": 0.75
-            },
-            "Lemon Twist": {
-                "type": "garnish",
-                "amount": "A "
-            },
-            "Frozen Grape": {
-                "type": "garnish",
-                "amount": "A "
+        },
+        "25": {
+            "name": "French Grape Martini",
+            "description": "Try our French Grape Martini recipe. Shake and enjoy your vodka cocktail!",
+            "ingredients": {
+                "1": {
+                    "name": "White Grape Vodka",
+                    "type": "CÎROC VODKA",
+                    "oz": 1.5
+                },
+                "2": {
+                    "name": "Blanc Vermouth",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "oz": 0.75
+                },
+                "3": {
+                    "name": "Dry Vermouth",
+                    "type": "ADDITIONAL ALCOHOL",
+                    "oz": 0.75
+                },
+                "4": {
+                    "name": "Lemon Twist",
+                    "type": "GARNISH",
+                    "amount": "A "
+                },
+                "5": {
+                    "name": "Frozen Grape",
+                    "type": "GARNISH",
+                    "amount": "A "
+                }
             }
-        }
-    },
-    "Cîroc French Plunge": {
-        "description": "Try our show stopping CÎROC White Grape sharing cocktail recipe created with CÎROC White Grape and served with lime and pineapple. Stir and enjoy your vodka cocktail with a group of friends!",
-        "vodka": "White Grape Vodka",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 6.0
-            },
-            "Pineapple Juice": {
-                "type": "juice",
-                "oz": 12.0
-            },
-            "Cranberry Juice": {
-                "type": "juice",
-                "oz": 6.0
-            },
-            "Lemon Juice": {
-                "type": "juice",
-                "oz": 0.1
-            },
-            "Lime Wedge": {
-                "type": "garnish",
-                "amount": "A "
-            },
-            "Pineapple Triangle": {
-                "type": "garnish",
-                "amount": "A "
+        },
+        "26": {
+            "name": "Cîroc French Plunge",
+            "description": "Try our show stopping CÎROC White Grape sharing cocktail recipe created with CÎROC White Grape and served with lime and pineapple. Stir and enjoy your vodka cocktail with a group of friends!",
+            "ingredients": {
+                "1": {
+                    "name": "White Grape Vodka",
+                    "type": "CÎROC VODKA",
+                    "oz": 6.0
+                },
+                "2": {
+                    "name": "Pineapple Juice",
+                    "type": "JUICE",
+                    "oz": 12.0
+                },
+                "3": {
+                    "name": "Cranberry Juice",
+                    "type": "JUICE",
+                    "oz": 6.0
+                },
+                "4": {
+                    "name": "Lemon Juice",
+                    "type": "JUICE",
+                    "oz": 0.1
+                },
+                "5": {
+                    "name": "Lime Wedge",
+                    "type": "GARNISH",
+                    "amount": "A "
+                },
+                "6": {
+                    "name": "Pineapple Triangle",
+                    "type": "GARNISH",
+                    "amount": "A "
+                }
             }
-        }
-    },
-    "Cîroc Mediterranean Side": {
-        "description": "Try our exclusive CÎROC Mediterranean Side cocktail recipe that combines CÎROC White Grape Vodka with lemonade and club soda. Build over ice and enjoy your vodka cocktail!",
-        "vodka": "White Grape Vodka",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 2.0
-            },
-            "Lemonade": {
-                "type": "juice",
-                "oz": 2.0
-            },
-            "Club Soda": {
-                "type": "pop",
-                "oz": 4.0
-            },
-            "Rosemary Sprig or Lemon wedge": {
-                "type": "garnish",
-                "amount": "A "
+        },
+        "27": {
+            "name": "Cîroc Mediterranean Side",
+            "description": "Try our exclusive CÎROC Mediterranean Side cocktail recipe that combines CÎROC White Grape Vodka with lemonade and club soda. Build over ice and enjoy your vodka cocktail!",
+            "ingredients": {
+                "1": {
+                    "name": "White Grape Vodka",
+                    "type": "CÎROC VODKA",
+                    "oz": 2.0
+                },
+                "2": {
+                    "name": "Lemonade",
+                    "type": "JUICE",
+                    "oz": 2.0
+                },
+                "3": {
+                    "name": "Club Soda",
+                    "type": "POP",
+                    "oz": 4.0
+                },
+                "4": {
+                    "name": "Rosemary Sprig or Lemon wedge",
+                    "type": "GARNISH",
+                    "amount": "A "
+                }
             }
-        }
-    },
-    "Cîroc White Grape Cosmo": {
-        "description": "Try our smooth White Grape Cosmo cocktail recipe. Add the ingredients together, garnish with a lemon twist and enjoy your vodka cocktail!",
-        "vodka": "White Grape Vodka",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 2.0
-            },
-            "White Cranberry Juice": {
-                "type": "juice",
-                "oz": 1.0
-            },
-            "Lemon Juice": {
-                "type": "juice",
-                "oz": 0.5
-            },
-            "Simple Syrup": {
-                "type": "syrup",
-                "oz": 0.5
-            },
-            "Lemon Twist": {
-                "type": "garnish",
-                "amount": "A "
+        },
+        "28": {
+            "name": "Cîroc White Grape Cosmo",
+            "description": "Try our smooth White Grape Cosmo cocktail recipe. Add the ingredients together, garnish with a lemon twist and enjoy your vodka cocktail!",
+            "ingredients": {
+                "1": {
+                    "name": "White Grape Vodka",
+                    "type": "CÎROC VODKA",
+                    "oz": 2.0
+                },
+                "2": {
+                    "name": "White Cranberry Juice",
+                    "type": "JUICE",
+                    "oz": 1.0
+                },
+                "3": {
+                    "name": "Lemon Juice",
+                    "type": "JUICE",
+                    "oz": 0.5
+                },
+                "4": {
+                    "name": "Simple Syrup",
+                    "type": "SYRUP",
+                    "oz": 0.5
+                },
+                "5": {
+                    "name": "Lemon Twist",
+                    "type": "GARNISH",
+                    "amount": "A "
+                }
             }
-        }
-    },
-    "Cîroc French Codder": {
-        "description": "Try our winter CÎROC French Codder cocktail recipe created with CÎROC White Grape and cranberry juice. Stir and enjoy your white grape vodka cocktail!",
-        "vodka": "White Grape Vodka",
-        "ingredients": {
-            "Vodka": {
-                "type": "main",
-                "oz": 2.0
-            },
-            "Cranberry Juice": {
-                "type": "juice",
-                "oz": 2.0
-            },
-            "Club Soda": {
-                "type": "pop",
-                "oz": 4.0
-            },
-            "Lime Wedge": {
-                "type": "garnish",
-                "amount": "A "
+        },
+        "29": {
+            "name": "Cîroc French Codder",
+            "description": "Try our winter CÎROC French Codder cocktail recipe created with CÎROC White Grape and cranberry juice. Stir and enjoy your white grape vodka cocktail!",
+            "ingredients": {
+                "1": {
+                    "name": "White Grape Vodka",
+                    "type": "CÎROC VODKA",
+                    "oz": 2.0
+                },
+                "2": {
+                    "name": "Cranberry Juice",
+                    "type": "JUICE",
+                    "oz": 2.0
+                },
+                "3": {
+                    "name": "Club Soda",
+                    "type": "POP",
+                    "oz": 4.0
+                },
+                "4": {
+                    "name": "Lime Wedge",
+                    "type": "GARNISH",
+                    "amount": "A "
+                }
             }
         }
     }

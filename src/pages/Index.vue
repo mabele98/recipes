@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-left">
-    <q-header reveal>
+    <q-header reveal v-if="!size.sm">
       <q-scroll-area
       horizontal
       style="height: 50px; width: 100vw;"
@@ -10,122 +10,63 @@
         <q-toolbar>
           <q-btn color="green-8" text-color="black" icon="shuffle" @click="randomize()" />
           <q-toolbar-title> <div class="text-weight-bold"> Cîroc Recipes </div> </q-toolbar-title>
-          <q-btn-dropdown auto-close stretch flat label="Cîroc Vodka">
-            <div class="q-pa-md">
-              <q-option-group
-                :options="vodka"
-                label="Vodka"
-                type="checkbox"
-                v-model="checkVodka"
-                @input="updateDrinks()"
-              />
-            </div>
-          </q-btn-dropdown>
-          <q-btn-dropdown auto-close stretch flat label="Additional Alcohol">
-            <div class="q-pa-md">
-              <q-option-group
-                :options="alcohol"
-                label="Alcohol"
-                type="checkbox"
-                v-model="checkAlcohol"
-                @input="updateDrinks()"
-              />
-            </div>
-          </q-btn-dropdown>
-          <q-btn-dropdown auto-close stretch flat label="Juice and Pop">
-            <div class="q-pa-md">
-              <q-option-group
-                :options="juice"
-                label="Juice"
-                type="checkbox"
-                v-model="checkJuice"
-                @input="updateDrinks()"
-              />
-            </div>
-          </q-btn-dropdown>
-          <q-btn-dropdown auto-close stretch flat label="Add Ins">
-            <div class="q-pa-md">
-              <q-option-group
-                :options="add"
-                label="Add"
-                type="checkbox"
-                v-model="checkAdd"
-                @input="updateDrinks()"
-              />
-            </div>
-          </q-btn-dropdown>
-          <q-btn-dropdown auto-close stretch flat label="Garnishes">
-            <div class="q-pa-md">
-              <q-option-group
-                :options="garnish"
-                label="Garnish"
-                type="checkbox"
-                v-model="checkGarnish"
-                @input="updateDrinks()"
-              />
-            </div>
-          </q-btn-dropdown>
+          <q-btn color="green-8" text-color="black" label="Choose Ingredients" @click="loadSelect()" />
         </q-toolbar>
       </div>
       </q-scroll-area>
     </q-header>
     <div class="full column justify-start items-start content-start">
-      <div class="q-pa-md row justify-evenly items-start q-gutter-md">
-        <q-card  
+      <div v-if="loaded" class="q-pa-md row wrap justify-evenly items-start q-gutter-md">
+          <q-card  
+          v-for="key in index" v-bind:key="key"
+          v-show="recipes[key].available"
           v-bind:style="!size.lg ? size.sm ? 'width:92vw' : 'width:47vw' : 'width:31vw'"
           elevated
-          v-for="drink in drinks" v-bind:key="drink"
-          v-bind:class="selectedDrink == drink ? 'my-card text-white bg-orange' : 'my-card text-black bg-white'"
+          v-bind:class="selectedDrink == key ? 'my-card text-white bg-orange' : 'my-card text-black bg-white'"
           >
-          <div 
-            v-bind:class="size.sm ? 'text-h5' : 'text-h4'"
-            class="q-pt-lg text-center text-weight-bold text-no-wrap"
-          >
-            <div v-bind:style="selectedDrink == drink ? 'color: white' : color[recipes[drink].vodka]"> 
-              {{ drink }}
+            <div 
+              v-bind:class="size.sm ? 'text-h5' : 'text-h4'"
+              class="q-pt-lg text-center text-weight-bold text-no-wrap"
+            >
+              <div v-bind:style="selectedDrink == key ? 'color: white' : recipes[key].color"> 
+                {{ recipes[key].name }}
+              </div>
             </div>
-          </div>
-          <div 
-            v-bind:class="size.sm ? 'text-subtitle2' : 'text-subtitle1'"
-            class="text-center text-italic"
-          >
-            <div v-bind:style="selectedDrink == drink ? 'color: white' : color[recipes[drink].vodka]"> 
-              Cîroc {{ recipes[drink].vodka }} 
-            </div>
-          </div>
-          <q-card-section horizontal>
-            <img 
-              v-if="size.sm ? selectedDrink == drink ? false : true : true"
-              style="height:30vh;width:auto"
-              class="q-pt-lg q-pl-md"
-              v-bind:src="'statics/img/'+images[drink]+'.png'"
-            />
-            <q-card-section vertical>
-              <q-card-section v-if="selectedDrink == drink">
-                <ul class="text-body1 text-weight-bold" v-for="(val,key) in recipes[drink].ingredients" v-bind:key="key">
-                  <li v-if="key == 'Vodka'"> {{val.oz}} oz. of Cîroc {{ recipes[drink].vodka }} </li>
-                  <li v-else-if="val.amount"> {{val.amount}} {{key}} </li>
-                  <li v-else-if="val.pieces"> {{val.pieces}} pieces of {{key}} </li>
-                  <li v-else> {{val.oz}} oz. of {{ key}} </li>
-                </ul>
-              </q-card-section>
-              <q-card-section v-else>
-                <div 
-                  class="text-body2 text-grey-9 text-weight-bold" 
-                  style="line-height:2.00rem; letter-spacing: 0.02786em"
-                  v-for="(val,key) in recipes[drink].ingredients" v-bind:key="key" 
-                  >
-                    <div style="inline" v-if="key != 'Vodka'"> {{key}} </div>
-                </div>
+            <q-card-section horizontal>
+              <img 
+                v-if="selectedDrink != key"
+                style="height:30vh;width:auto"
+                class="q-pt-lg q-pl-md"
+                v-bind:src="'statics/img/'+recipes[key].image+'.png'"
+              />
+              <q-card-section vertical>
+                <q-card-section v-if="selectedDrink == key">
+                  <ul class="text-body1 text-weight-bold" v-for="(val,i) in recipes[key].ingredients" v-bind:key="i">
+                    <li v-if="val.type == 'CÎROC VODKA'"> {{val.oz}} oz. of Cîroc {{ val.name }} </li>
+                    <li v-else-if="val.amount"> {{val.amount}} {{val.name}} </li>
+                    <li v-else-if="val.pieces"> {{val.pieces}} pieces of {{val.name}} </li>
+                    <li v-else> {{val.oz}} oz. of {{val.name}} </li>
+                  </ul>
+                </q-card-section>
+                <q-card-section v-else>
+                  <div 
+                    class="text-body2 text-grey-9 text-weight-bold" 
+                    style="line-height:2.00rem; letter-spacing: 0.02786em"
+                    v-for="(val,i) in recipes[key].ingredients" v-bind:key="i" 
+                    >
+                      <div v-if="val.type == 'CÎROC VODKA'"> Cîroc {{val.name}} </div>
+                      <div v-else> {{val.name}} </div>
+
+                  </div>
+                </q-card-section>
               </q-card-section>
             </q-card-section>
-          </q-card-section>
 
-          <q-card-actions align="center">
-            <q-btn v-if="selectedDrink == drink" flat @click="selectedDrink = ''">Unselect</q-btn>
-            <q-btn v-else flat @click="selectedDrink = drink">Recipe</q-btn>
-          </q-card-actions>
-        </q-card>
+            <q-card-actions align="center">
+              <q-btn v-if="selectedDrink == key" flat icon="clear" @click="selectedDrink = ''"/>
+              <q-btn v-else flat @click="selectedDrink = key">Recipe</q-btn>
+            </q-card-actions>
+          </q-card>
       </div>
     </div>
   </q-page>
@@ -136,31 +77,13 @@ export default {
   name: 'PageIndex',
   data () {
     return {
+      loaded: false,
       size: this.$q.screen,
 
       selectedDrink: '',
-
       recipes: {},
-
-      vodka: [],
-      checkVodka: [],
-      color: {},
-
-      juice: [],
-      checkJuice: [],
-
-      add: [],
-      checkAdd: [],
-
-      garnish: [],
-      checkGarnish: [],
-
-      alcohol: [],
-      checkAlcohol: [],
-
-      drinks: [],
       
-      images: {},
+      index: [],
     }
   },
   methods: {
@@ -168,148 +91,64 @@ export default {
       let drinks = [];
       this.$axios.get("statics/recipes/ciroc.json")
       .then(response => {
-        this.loadIngredients(response);
 
-        this.recipes = response.data;
+        this.recipes = response.data["Ciroc Recipes"];
+        
+        for(let i in this.recipes){
+          let image = this.recipes[i].name
+          if(image.includes("î")) image = image.replace("î","i");
+          if(image.includes("ñ")) image = image.replace("ñ","n")
+          this.recipes[i]["image"] = image;
 
-        for(let i in response.data){
-          this.drinks.push(i);
-          this.loadImages(i);
-          let vodka = response.data[i].vodka
-          if(drinks.includes(vodka) == false){
-            this.vodkaColor(vodka);
-            drinks.push(vodka)
-          }
+          let vodka = this.recipes[i].ingredients["1"].name;
+          if(vodka == "Vodka") this.recipes[i]["color"] = 'color:#243090'
+          else if(vodka == "Pineapple") this.recipes[i]["color"] = 'color:#FAC300'
+          else if(vodka == "Amaretto") this.recipes[i]["color"] = 'color:#6B0F05'
+          else if(vodka == "French Vanilla") this.recipes[i]["color"] = 'color:#EA9F42'
+          else if(vodka == "Coconut") this.recipes[i]["color"] = 'color:#5B5957'
+          else if(vodka == "Peach") this.recipes[i]["color"] = 'color:#F28500'
+          else if(vodka == "Red Berry") this.recipes[i]["color"] = 'color:#A60000'
+          else if(vodka == "Apple") this.recipes[i]["color"] = "color:#00B939"
+          else if(vodka == "White Grape Vodka") this.recipes[i]["color"] = 'color:#E0CFAF'
+          else this.recipes[i]["color"] = 'color:black'
         }
-        console.log(this.color)
-        this.drinks = this.drinks.sort();
-        drinks = drinks.sort();
 
-        for(let i in drinks) {
-          this.vodka.push(
-            { label: drinks[i], value: drinks[i], color: 'green'}
-          )
-        }
+        this.availableItems();
+
+        console.log(this.recipes)
+
+        console.log(this.index)
+
+        this.loaded = true;
       })
     },
 
-    loadIngredients(response){
-      let juices = [];
-      let adds = [];
-      let garnishes = [];
-      let alcohols = [];
+    availableItems(){
+      if(this.$q.localStorage.has("Available Items")){
+        let list = this.$q.localStorage.getItem("Available Items");
 
-      for(let i in response.data){
-        for(let j in response.data[i].ingredients){
-          let item = response.data[i].ingredients[j];
-          if(item.type === "juice" || item.type === "pop"){
-            if(juices.includes(j) == false) juices.push(j);
-          }
-          else if(item.type === "add" || item.type === "syrup") {
-            if(adds.includes(j) == false) adds.push(j);
-          }
-          else if(item.type === "garnish") {
-            if(garnishes.includes(j) == false)  garnishes.push(j);
-          }
-          else if(item.type === "alcohol"){
-            if(alcohols.includes(j) == false) alcohols.push(j);
-          }
-        }
-      }
-      juices = juices.sort();
-      adds = adds.sort();
-      garnishes = garnishes.sort();
-      alcohols = alcohols.sort();
-
-      for(let i in juices) {
-        this.juice.push(
-          { label: juices[i], value: juices[i], color: 'orange'}
-        )
-      }
-      for(let i in adds) {
-        this.add.push(
-          { label: adds[i], value: adds[i], color: 'red'},
-        )
-      }
-      for(let i in garnishes) {
-        this.garnish.push(
-          { label: garnishes[i], value: garnishes[i], color: 'purple'},
-        )
-      }
-      for(let i in alcohols) {
-        this.alcohol.push(
-          { label: alcohols[i], value: alcohols[i], color: 'yellow'},
-        )
-      }
-    },
-
-    loadImages(drink) {
-      let img = drink;
-      if(drink.includes("î")) img = img.replace("î","i");
-      if(drink.includes("ñ")) img = img.replace("ñ","n")
-      this.images[drink] = img;
-    },
-
-    updateDrinks(){
-      let drinks = {};
-
-      let _alc = [];
-      let _juice = [];
-      let _add = [];
-      let _garnish = [];
-
-      for(let i in this.recipes){
-        drinks[i] = true;
-        _alc.push(i);
-        _juice.push(i);
-        _add.push(i);
-        _garnish.push(i);
-        if(this.checkVodka.length!=0){
-          let vodka = this.recipes[i].vodka
-          if(this.checkVodka.includes(vodka) == false) {
-            drinks[i] = false
-          }
-        }
-      }
-  
-      if(this.checkAlcohol.length!=0) _alc=this.checkIngredients("alcohol", "", this.checkAlcohol);
-      if(this.checkJuice.length!=0) _juice=this.checkIngredients("juice", "pop", this.checkJuice);
-      if(this.checkAdd.length!=0) _add=this.checkIngredients("add", "syrup", this.checkAdd);
-      if(this.checkGarnish.length!=0) _garnish=this.checkIngredients("garnish","", this.checkGarnish);
-      
-      for(let i in drinks){
-        if(_alc.includes(i) == false) drinks[i] = false;
-        if(_juice.includes(i) == false) drinks[i] = false;
-        if(_add.includes(i) == false) drinks[i] = false;
-        if(_garnish.includes(i) == false) drinks[i] = false;
-      }
-
-      this.drinks = [];
-      for(let i in drinks){
-        if(drinks[i]) this.drinks.push(i)
-      }
-      this.drinks = this.drinks.sort()
-    },
-
-    checkIngredients(type1, type2, array){
-      let options = [];
-      for(let i in this.recipes){
-        for(let j in this.recipes[i].ingredients){
-          let item = this.recipes[i].ingredients[j];
-          if(item.type == type1 || item.type == type2){
-            if(array.includes(j)){
-              options.push(i);
-              break;
+        for(let i in this.recipes){
+          this.index.push(i);
+          this.recipes[i]["available"] = true;
+          for(let j in this.recipes[i].ingredients){
+            let item = this.recipes[i].ingredients[j]
+            if(list[item.type]["include"]){
+              if(!list[item.type][item.name]) this.recipes[i]["available"] = false
             }
           }
         }
       }
-      return options;
+      else{
+        for(let i in this.recipe) {
+          this.index.push(i);
+          this.recipes[i]["available"] = true;
+        }
+      }
     },
 
     randomize(){
-      let temp = this.drinks;
-      this.drinks = [];
+      let temp = this.index;
+      this.index = [];
       var j, x, i;
       for (i = temp.length - 1; i > 0; i--) {
         j = Math.floor(Math.random() * (i + 1));
@@ -317,26 +156,16 @@ export default {
         temp[i] = temp[j];
         temp[j] = x;
       }
-      this.drinks = temp;
+      this.index = temp;
     },
 
-    vodkaColor(vodka){
-      if(vodka == "Vodka") this.color[vodka] = 'color:#243090'
-      else if(vodka == "Pineapple") this.color[vodka] = 'color:#FAC300'
-      else if(vodka == "Amaretto") this.color[vodka] = 'color:#6B0F05'
-      else if(vodka == "French Vanilla") this.color[vodka] = 'color:#EA9F42'
-      else if(vodka == "Coconut") this.color[vodka] = 'color:#5B5957'
-      else if(vodka == "Peach") this.color[vodka] = 'color:#F28500'
-      else if(vodka == "Red Berry") this.color[vodka] = 'color:#A60000'
-      else if(vodka == "Apple") this.color[vodka] = "color:#00B939"
-      else if(vodka == "White Grape Vodka") this.color[vodka] = 'color:#E0CFAF'
-      else this.color[vodka] = 'color:black'
+    loadSelect(){
+      this.$router.push({ path: `/select` })
     }
   },
   mounted() {
     this.loadDrinks();
     this.$q.screen.setSizes({sm: 300, md: 500, lg: 1000, xl: 2000 })
-    console.log(this.$q.screen)
   }
 }
 </script>
