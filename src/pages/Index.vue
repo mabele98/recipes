@@ -83,7 +83,7 @@
     <q-btn 
       v-if="size.sm"
       push
-      class="fixed-bottom-left q-mr-md q-mb-md"
+      class="fixed-bottom-right q-mr-md q-mb-md"
       color="green-8"
       text-color="black" 
       icon="shuffle" 

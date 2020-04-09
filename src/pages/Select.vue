@@ -140,17 +140,6 @@ export default {
         },
 
         loadRecipes() {
-            let items= {};
-            for(let type in this.options){
-                items[type] = {"include": false};
-                for(let i in this.options[type]){
-                    items[type][this.options[type][i].name] = this.options[type][i].check;
-                    if(this.options[type][i].check) items[type]["include"] = true;
-                }
-            }
-
-            this.$database.ref('Ciroc Ingredients').set(items)
-
             this.$router.push('/')
         }
     },
