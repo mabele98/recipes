@@ -24,7 +24,7 @@
             >
                 <div class="row justify-center content-center text-h4 text-center text-green-10 text-weight-bold"> 
                     <div> {{type}} </div>
-                    <div v-if="selected[type] != 0" class="q-ml-sm"> ({{selected[type]}}) </div>         
+                    <div v-if="selected[type] != 0" class="q-ml-sm q-mt-xs text-h5"> ({{selected[type]}}) </div>         
                 </div> 
                 <q-scroll-area
                     style="width:275px;height:300px"
