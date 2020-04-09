@@ -82,8 +82,8 @@
     </div>
     <q-btn 
       v-if="size.sm"
-      dense push
-      class="fixed-bottom-right q-mr-xs q-mb-xs"
+      push
+      class="fixed-bottom-right q-mr-md q-mb-md"
       color="green-8"
       text-color="black" 
       icon="shuffle" 

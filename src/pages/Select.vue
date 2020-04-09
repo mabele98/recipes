@@ -84,6 +84,8 @@ export default {
 
                 this.addLabels();
 
+                console.log(this.options)
+
                 this.loaded=true
             });
 
@@ -92,12 +94,14 @@ export default {
         addLabels() {
             let ref = this.$database.ref("Ciroc Ingredients")
             ref.orderByKey().on("value", data => {
-                let list = data.val();
+                let list = null;
+                if(data.exists()) list = data.val();
                 for(let i in this.options){
                     for(let j in this.options[i]){
                         let name = this.options[i][j]
                         let data = this.formatLabel(name)
-                        let check = list[i][name];
+                        let check = false;
+                        if(list != null) check = list[i][name];
                         if(check) this.check.push(name)
                         this.options[i][j] = {
                             'name': name,
