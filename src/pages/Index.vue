@@ -97,7 +97,7 @@ export default {
     loadDrinks(){
       let drinks = [];
       let ref = this.$database.ref("Ciroc Recipes")
-      ref.orderByKey().on("value", data => {
+      ref.orderByKey().on('value', data => {
         this.recipes = data.val();
         
         for(let i in this.recipes){
