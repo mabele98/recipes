@@ -1,20 +1,28 @@
 <template>
   <q-page class="flex flex-left">
     <q-header reveal>
-      <q-scroll-area
-      horizontal
-      style="height: 50px; width: 100vw;"
-      class="rounded-borders"
-      >
-      <div class="q-gutter-y-md">
+      <div class=" row no-wrap shadow-1">
         <q-toolbar>
           
-          <q-toolbar-title> <div class="text-weight-bold q-px-md"> Cîroc Recipes </div> </q-toolbar-title>
-          <q-btn class="q-mx-md" color="green-8" text-color="black" label="Choose Ingredients" @click="loadSelect()" />
-          <q-btn color="green-8" text-color="black" icon="shuffle" @click="randomize()" />
+          <q-toolbar-title class="text-weight-bold q-px-md">  Cîroc Recipes </q-toolbar-title>
+
+          <q-btn 
+            dense
+            class="q-mx-md"
+            color="green-8" 
+            text-color="black" 
+            label="Choose Ingredients" 
+            @click="loadSelect()" />
+          <q-btn 
+            dense
+            class="q-mx-md"
+            color="green-8" 
+            text-color="black" 
+            icon="shuffle" 
+            @click="randomize()" />
+          
         </q-toolbar>
       </div>
-      </q-scroll-area>
     </q-header>
     <div class="full column justify-start items-start content-start">
       <div v-if="loaded" class="q-pa-md row wrap justify-evenly items-start q-gutter-md">
@@ -132,6 +140,8 @@ export default {
         for(let i in list) {
           if(list[i].include) filter.push(i)
         }
+
+        this.index = [];
         
         for(let i in this.recipes){
           this.index.push(i);

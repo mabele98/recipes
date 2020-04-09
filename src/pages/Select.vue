@@ -4,18 +4,12 @@
             LOADING PAGE...
         </div>
             <q-header reveal>
-                <q-scroll-area
-                horizontal
-                style="height: 50px; width: 100vw;"
-                class="rounded-borders"
-                >
                 <div class="q-gutter-y-md">
                     <q-toolbar>
                     <q-toolbar-title> <div class="text-weight-bold"> Choose Ingredients </div> </q-toolbar-title>
                     <q-btn color="green-8" text-color="black" label="Load Recipes" @click="loadRecipes()" />
                     </q-toolbar>
                 </div>
-                </q-scroll-area>
             </q-header>
         <div v-if="loaded" class="fit row wrap justify-center items-start content-center">
             <q-card
