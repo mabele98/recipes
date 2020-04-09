@@ -135,6 +135,7 @@ export default {
         }
 
         this.availableItems();
+        this.randomize();
         this.loaded = true;
       })
     },

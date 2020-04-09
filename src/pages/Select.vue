@@ -22,7 +22,10 @@
                 v-for="(value,type) in options"
                 v-bind:key="type"
             >
-                <div class="text-h4 text-center text-green-10 text-weight-bold"> {{type}} </div> 
+                <div class="row justify-center content-center text-h4 text-center text-green-10 text-weight-bold"> 
+                    <div> {{type}} </div>
+                    <div v-if="selected[type] != 0" class="q-ml-sm"> ({{selected[type]}}) </div>         
+                </div> 
                 <q-scroll-area
                     style="width:275px;height:300px"
                     class="rounded-borders q-mt-sm"
@@ -34,9 +37,9 @@
                     >
                         <q-checkbox 
                             v-model="check" 
-                            v-bind:val="info.name" 
+                            v-bind:val="info.id" 
                             v-bind:label="info.name" 
-                            @input="info.check = !info.check"
+                            @input="updateDatabase(type,i)"
                         />
                     </div>
                 </q-scroll-area>
@@ -53,6 +56,7 @@ export default {
         return {
             loaded: false,
             size: this.$q.screen,
+            selected: {},
             check: [],
             options: {},
         }
@@ -63,7 +67,6 @@ export default {
             let ref = this.$database.ref("Ciroc Recipes")
             ref.orderByKey().on("value", data => {
                 let recipes = data.val();
-
                 for(let drink in recipes){
                     for(let i in recipes[drink].ingredients){
                         let name = recipes[drink].ingredients[i].name
@@ -74,6 +77,7 @@ export default {
                         }
                         else{
                             this.options[type] = [name]
+                            this.selected[type] = 0;
                         }
                     }
                 }
@@ -83,9 +87,6 @@ export default {
                 }
 
                 this.addLabels();
-
-                console.log(this.options)
-
                 this.loaded=true
             });
 
@@ -93,21 +94,27 @@ export default {
 
         addLabels() {
             let ref = this.$database.ref("Ciroc Ingredients")
-            ref.orderByKey().on("value", data => {
+            ref.orderByKey().once("value", data => {
                 let list = null;
                 if(data.exists()) list = data.val();
+                let id = 0;
                 for(let i in this.options){
                     for(let j in this.options[i]){
                         let name = this.options[i][j]
                         let data = this.formatLabel(name)
                         let check = false;
                         if(list != null) check = list[i][name];
-                        if(check) this.check.push(name)
+                        if(check) {
+                            this.check.push(id)
+                            this.selected[i] += 1;
+                        }
                         this.options[i][j] = {
+                            'id': id,
                             'name': name,
                             'data': data,
                             "check": check
                         }
+                        id += 1;
                     }
                 }
             })
@@ -115,6 +122,21 @@ export default {
 
         formatLabel(item) {
             return { label: item, value: item, color: 'orange'}
+        },
+
+        updateDatabase(type, id) {
+            let check = !this.options[type][id].check
+            let name = this.options[type][id].name
+
+            this.options[type][id].check = check
+
+            if(check) this.selected[type] += 1
+            else this.selected[type] -= 1
+
+            if(this.selected[type] == 0) this.$database.ref("Ciroc Ingredients/" + type + "/include").set(false)
+            else if(this.selected[type] == 1) this.$database.ref("Ciroc Ingredients/" + type + "/include").set(true)
+
+            this.$database.ref("Ciroc Ingredients/" + type + "/" + name).set(check)
         },
 
         loadRecipes() {
