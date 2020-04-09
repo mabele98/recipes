@@ -3,25 +3,20 @@
         <div v-if="!loaded" class="text-h2">
             LOADING PAGE...
         </div>
-        <div v-if="check.length != 0">
-            <q-header>
-                <div class="row wrap">
-                    <div 
-                        class="col q-pr-sm text-white text-center"
-                        v-for="(value,type) in options"
-                        v-bind:key="type"
-                    >   
-                        <div class="text-weight-bold"> {{type}} </div>
-                        <div
-                            v-for="(info,i) in value"
-                            v-bind:key="i"
-                        >
-                            <div v-if="info.check"> {{info.name}} </div>
-                        </div>
-                    </div>
+            <q-header reveal>
+                <q-scroll-area
+                horizontal
+                style="height: 50px; width: 100vw;"
+                class="rounded-borders"
+                >
+                <div class="q-gutter-y-md">
+                    <q-toolbar>
+                    <q-toolbar-title> <div class="text-weight-bold"> Choose Ingredients </div> </q-toolbar-title>
+                    <q-btn color="green-8" text-color="black" label="Load Recipes" @click="loadRecipes()" />
+                    </q-toolbar>
                 </div>
+                </q-scroll-area>
             </q-header>
-        </div>
         <div v-if="loaded" class="fit row wrap justify-center items-start content-center">
             <q-card
                 elevated
@@ -49,12 +44,8 @@
                         />
                     </div>
                 </q-scroll-area>
-            
             </q-card>
-
         </div>
-       
-        <q-btn class="fixed-bottom-left" color="grey" text-color="black" label="RECIPES" @click="loadRecipes" />
     </q-page>
 </template>
 
@@ -122,7 +113,7 @@ export default {
         },
 
         formatLabel(item) {
-            return { label: item, value: item, color: 'green'}
+            return { label: item, value: item, color: 'orange'}
         },
 
         loadRecipes() {

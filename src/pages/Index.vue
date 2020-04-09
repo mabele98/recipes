@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-left">
-    <q-header reveal v-if="!size.sm">
+    <q-header reveal>
       <q-scroll-area
       horizontal
       style="height: 50px; width: 100vw;"
@@ -8,9 +8,10 @@
       >
       <div class="q-gutter-y-md">
         <q-toolbar>
-          <q-btn color="green-8" text-color="black" icon="shuffle" @click="randomize()" />
+          
           <q-toolbar-title> <div class="text-weight-bold"> Cîroc Recipes </div> </q-toolbar-title>
-          <q-btn color="green-8" text-color="black" label="Choose Ingredients" @click="loadSelect()" />
+          <q-btn class="q-mx-md" color="green-8" text-color="black" label="Choose Ingredients" @click="loadSelect()" />
+          <q-btn color="green-8" text-color="black" icon="shuffle" @click="randomize()" />
         </q-toolbar>
       </div>
       </q-scroll-area>
@@ -139,7 +140,7 @@ export default {
         }
       }
       else{
-        for(let i in this.recipe) {
+        for(let i in this.recipes) {
           this.index.push(i);
           this.recipes[i]["available"] = true;
         }
