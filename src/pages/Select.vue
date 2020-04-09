@@ -6,8 +6,10 @@
             <q-header reveal>
                 <div class="q-gutter-y-md">
                     <q-toolbar>
-                    <q-toolbar-title> <div class="text-weight-bold"> Choose Ingredients </div> </q-toolbar-title>
-                    <q-btn color="green-8" text-color="black" label="Load Recipes" @click="loadRecipes()" />
+                    <div :class="size.sm ? 'text-h6' : 'text-h5'"
+                        class="text-weight-bold text-no-wrap q-mx-sm"> Choose Ingredients </div>
+                    <q-btn push color="green-8 q-mx-sm" text-color="black" 
+                        :label="size.sm ? 'Recipes' : 'Load Recipes'" @click="loadRecipes()" />
                     </q-toolbar>
                 </div>
             </q-header>
@@ -50,6 +52,7 @@ export default {
     data () {
         return {
             loaded: false,
+            size: this.$q.screen,
             check: [],
             options: {},
         }

@@ -1,26 +1,25 @@
 <template>
   <q-page class="flex flex-left">
     <q-header reveal>
-      <div class=" row no-wrap shadow-1">
-        <q-toolbar>
+      <div class="row no-wrap shadow-1">
+        <q-toolbar class="no-wrap">
           
-          <q-toolbar-title class="text-weight-bold q-px-md">  Cîroc Recipes </q-toolbar-title>
-
+          <div :class="size.sm ? 'text-h6' : 'text-h5'" class="text-weight-bold q-px-md text-no-wrap">  Cîroc Recipes </div>
           <q-btn 
-            dense
-            class="q-mx-md"
+            dense push
+            class="q-mx-md text-no-wrap"
             color="green-8" 
             text-color="black" 
-            label="Choose Ingredients" 
+            :label="size.sm ? 'Ingredients' : 'Choose Ingredients'" 
             @click="loadSelect()" />
           <q-btn 
-            dense
+            v-if="!size.sm"
+            dense push
             class="q-mx-md"
-            color="green-8" 
+            color="green-8"
             text-color="black" 
             icon="shuffle" 
             @click="randomize()" />
-          
         </q-toolbar>
       </div>
     </q-header>
@@ -81,6 +80,14 @@
           </q-card>
       </div>
     </div>
+    <q-btn 
+      v-if="size.sm"
+      dense push
+      class="fixed-bottom-right q-mr-xs q-mb-xs"
+      color="green-8"
+      text-color="black" 
+      icon="shuffle" 
+      @click="randomize()" />
     <div v-if="noResults" class="fixed-center text-h4 text-white"> No available recipes. </div>
   </q-page>
 </template>
