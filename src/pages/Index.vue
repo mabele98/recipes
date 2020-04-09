@@ -73,6 +73,7 @@
           </q-card>
       </div>
     </div>
+    <div v-if="noResults" class="fixed-center text-h4 text-white"> No available recipes. </div>
   </q-page>
 </template>
 
@@ -88,6 +89,8 @@ export default {
       recipes: {},
       
       index: [],
+
+      noResults: true
     }
   },
   methods: {
@@ -125,15 +128,28 @@ export default {
       let ref = this.$database.ref("Ciroc Ingredients")
       ref.orderByKey().on("value", data => {
         let list = data.val();
+        let filter = [];
+        for(let i in list) {
+          if(list[i].include) filter.push(i)
+        }
+        
         for(let i in this.recipes){
           this.index.push(i);
-          this.recipes[i]["available"] = true;
+          this.recipes[i].available = true;
+          let types = [];
+
           for(let j in this.recipes[i].ingredients){
-            let item = this.recipes[i].ingredients[j]
-            if(list[item.type]["include"]){
-              if(!list[item.type][item.name]) this.recipes[i]["available"] = false
+            let item = this.recipes[i].ingredients[j];
+            types.push(item.type)
+            if(list[item.type].include){
+              if(!list[item.type][item.name]) this.recipes[i].available = false;
             }
           }
+          for(let item in filter){
+            if(!types.includes(filter[item])) this.recipes[i].available = false;
+          }
+
+          if(this.recipes[i].available) this.noResults = false;
         }
       })
 

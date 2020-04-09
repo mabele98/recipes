@@ -126,8 +126,6 @@ export default {
                 }
             }
 
-            this.$q.localStorage.set("Available Items", items)
-
             this.$database.ref('Ciroc Ingredients').set(items)
 
             this.$router.push('/')
