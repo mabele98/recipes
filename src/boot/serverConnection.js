@@ -1,6 +1,6 @@
-import * as firebase from 'firebase'
+import firebase from 'firebase'
 
-export default async () => {
+export default async ({Vue}) => {
   // Set the configuration for your app
   // TODO: Replace with your project's config object
   var config = {
@@ -12,5 +12,7 @@ export default async () => {
   firebase.initializeApp(config);
 
   // Get a reference to the database service
-  var database = firebase.database();
+  //var database = firebase.database();
+
+  Vue.prototype.$database = firebase.database();
 }

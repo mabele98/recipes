@@ -9,7 +9,7 @@
       <div class="q-gutter-y-md">
         <q-toolbar>
           
-          <q-toolbar-title> <div class="text-weight-bold"> Cîroc Recipes </div> </q-toolbar-title>
+          <q-toolbar-title> <div class="text-weight-bold q-px-md"> Cîroc Recipes </div> </q-toolbar-title>
           <q-btn class="q-mx-md" color="green-8" text-color="black" label="Choose Ingredients" @click="loadSelect()" />
           <q-btn color="green-8" text-color="black" icon="shuffle" @click="randomize()" />
         </q-toolbar>
@@ -43,10 +43,12 @@
               <q-card-section vertical>
                 <q-card-section v-if="selectedDrink == key">
                   <ul class="text-body1 text-weight-bold" v-for="(val,i) in recipes[key].ingredients" v-bind:key="i">
+                    <div v-if="val != null">
                     <li v-if="val.type == 'CÎROC VODKA'"> {{val.oz}} oz. of Cîroc {{ val.name }} </li>
                     <li v-else-if="val.amount"> {{val.amount}} {{val.name}} </li>
                     <li v-else-if="val.pieces"> {{val.pieces}} pieces of {{val.name}} </li>
                     <li v-else> {{val.oz}} oz. of {{val.name}} </li>
+                    </div>
                   </ul>
                 </q-card-section>
                 <q-card-section v-else>
@@ -55,9 +57,10 @@
                     style="line-height:2.00rem; letter-spacing: 0.02786em"
                     v-for="(val,i) in recipes[key].ingredients" v-bind:key="i" 
                     >
+                    <div v-if="val != null">
                       <div v-if="val.type == 'CÎROC VODKA'"> Cîroc {{val.name}} </div>
                       <div v-else> {{val.name}} </div>
-
+                    </div>
                   </div>
                 </q-card-section>
               </q-card-section>
@@ -90,10 +93,9 @@ export default {
   methods: {
     loadDrinks(){
       let drinks = [];
-      this.$axios.get("statics/recipes/ciroc.json")
-      .then(response => {
-
-        this.recipes = response.data["Ciroc Recipes"];
+      let ref = this.$database.ref("Ciroc Recipes")
+      ref.orderByKey().on("value", data => {
+        this.recipes = data.val();
         
         for(let i in this.recipes){
           let image = this.recipes[i].name
@@ -115,19 +117,14 @@ export default {
         }
 
         this.availableItems();
-
-        console.log(this.recipes)
-
-        console.log(this.index)
-
         this.loaded = true;
       })
     },
 
     availableItems(){
-      if(this.$q.localStorage.has("Available Items")){
-        let list = this.$q.localStorage.getItem("Available Items");
-
+      let ref = this.$database.ref("Ciroc Ingredients")
+      ref.orderByKey().on("value", data => {
+        let list = data.val();
         for(let i in this.recipes){
           this.index.push(i);
           this.recipes[i]["available"] = true;
@@ -138,13 +135,8 @@ export default {
             }
           }
         }
-      }
-      else{
-        for(let i in this.recipes) {
-          this.index.push(i);
-          this.recipes[i]["available"] = true;
-        }
-      }
+      })
+
     },
 
     randomize(){

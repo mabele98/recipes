@@ -63,12 +63,15 @@ export default {
 
     methods: {
         loadIngredients() {
-            this.$axios.get("statics/recipes/ciroc.json")
-            .then(response => {
-                for(let drink in response.data["Ciroc Recipes"]){
-                    for(let i in response.data["Ciroc Recipes"][drink].ingredients){
-                        let name = response.data["Ciroc Recipes"][drink].ingredients[i].name
-                        let type = response.data["Ciroc Recipes"][drink].ingredients[i].type
+            let ref = this.$database.ref("Ciroc Recipes")
+            ref.orderByKey().on("value", data => {
+                let recipes = data.val();
+
+                for(let drink in recipes){
+                    for(let i in recipes[drink].ingredients){
+                        let name = recipes[drink].ingredients[i].name
+                        let type = recipes[drink].ingredients[i].type
+
                         if(type in this.options) {
                             if(!this.options[type].includes(name)) this.options[type].push(name)
                         }
@@ -90,26 +93,23 @@ export default {
         },
 
         addLabels() {
-            let include = false;
-            let list = null;
-            if(this.$q.localStorage.has("Available Items")){
-                list = this.$q.localStorage.getItem("Available Items");
-            }
-            for(let i in this.options){
-                for(let j in this.options[i]){
-                    let name = this.options[i][j]
-                    let data = this.formatLabel(name)
-                    if(list != null) {
-                        include = list[i][name];
-                        if(include) this.check.push(name)
-                    }
-                    this.options[i][j] = {
-                        'name': name,
-                        'data': data,
-                        'check': include,
+            let ref = this.$database.ref("Ciroc Ingredients")
+            ref.orderByKey().on("value", data => {
+                let list = data.val();
+                for(let i in this.options){
+                    for(let j in this.options[i]){
+                        let name = this.options[i][j]
+                        let data = this.formatLabel(name)
+                        let check = list[i][name];
+                        if(check) this.check.push(name)
+                        this.options[i][j] = {
+                            'name': name,
+                            'data': data,
+                            "check": check
+                        }
                     }
                 }
-            }
+            })
         },
 
         formatLabel(item) {
@@ -127,6 +127,8 @@ export default {
             }
 
             this.$q.localStorage.set("Available Items", items)
+
+            this.$database.ref('Ciroc Ingredients').set(items)
 
             this.$router.push('/')
         }
