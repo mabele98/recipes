@@ -55,6 +55,10 @@ export default {
             .catch(error => {
                 console.log(error.code)
                 console.log(error.message)
+                if(error.code = "auth/email-already-in-use"){
+                    this.$auth.signInWithEmailAndPassword(email, 'maye-okeefe');
+                    this.$router.push('/')
+                }
                 this.error = true;
             })
         }
