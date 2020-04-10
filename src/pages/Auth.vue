@@ -50,7 +50,16 @@ export default {
             let email = this.data['First Name'] + '_' + this.data['Last Name'] + '@pub.com'
             this.$auth.createUserWithEmailAndPassword(email, 'maye-okeefe')
             .then( () => {
-                this.$router.push('/')
+                let user = this.$auth.currentUser;
+                user.updateProfile({
+                    displayName: this.data['First Name'] + ' ' + this.data['Last Name'],
+                }).then(function() {
+                    this.$router.push('/')
+                }).catch(error => {
+                    console.log(error.code)
+                    console.log(error.message)
+                    this.error = true;
+                });
             })
             .catch(error => {
                 console.log(error.code)
