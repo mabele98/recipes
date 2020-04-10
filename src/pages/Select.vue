@@ -140,7 +140,7 @@ export default {
         },
 
         loadRecipes() {
-            this.$router.push('/')
+            this.$router.push('/CirocRecipes')
         }
     },
 

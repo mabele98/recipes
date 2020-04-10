@@ -11,7 +11,7 @@
             color="green-8" 
             text-color="black" 
             :label="size.sm ? 'Ingredients' : 'Choose Ingredients'" 
-            @click="loadSelect()" />
+            @click="loadPage('/CirocRecipes/select')" />
           <q-btn 
             v-if="!size.sm"
             dense push
@@ -20,6 +20,13 @@
             text-color="black" 
             icon="shuffle" 
             @click="randomize()" />
+          <q-btn
+            dense push
+            class="q-mx-md"
+            color="green-8"
+            text-color="black"
+            :label="size.sm ? 'Return' : 'Return to Home'"
+            @click="loadPage('/')" />
         </q-toolbar>
       </div>
     </q-header>
@@ -186,8 +193,8 @@ export default {
       this.index = temp;
     },
 
-    loadSelect(){
-      this.$router.push({ path: `/select` })
+    loadPage(link){
+      this.$router.push(link)
     }
   },
   mounted() {
