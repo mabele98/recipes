@@ -60,11 +60,12 @@
     <div class="full column justify-start items-start content-start">
       <div class="q-pa-md row wrap justify-evenly items-start q-gutter-md">
           <q-card  
+          elevated
           v-for="key in index" v-bind:key="key"
           v-show="showAvailable ? recipes[key].show.available && recipes[key].show.filter : recipes[key].show.filter"
           v-bind:style="!size.lg ? size.sm ? 'width:92vw' : 'width:47vw' : 'width:31vw'"
-          elevated
-          v-bind:class="selectedDrink == key ? 'my-card text-white bg-orange' : 'my-card text-black bg-white'"
+          class="my-card text-black"
+          v-bind:class="selectedDrink != key ? recipes[key].show.available ? 'bg-white' : 'bg-grey-4' : 'bg-orange'"
           >
             <div 
               v-bind:class="size.sm ? 'text-h5' : 'text-h4'"
@@ -121,13 +122,15 @@
             <q-card-actions align="center">
               <q-btn flat 
               v-show="liked"
+              :ripple="false"
               :color="recipes[key]['opinion'].like ? 'green' : 'black'"
               :label="recipes[key]['Total Opinions'].like"
-              icon="thumb_up" @click="like(key)" />
+              icon-right="thumb_up" @click="like(key)" />
               <q-btn v-if="selectedDrink == key" flat icon="clear" @click="selectedDrink = ''"/>
               <q-btn v-else flat @click="selectedDrink = key">Recipe</q-btn>
               <q-btn flat 
               v-show="liked"
+              :ripple="false"
               :color="recipes[key]['opinion'].dislike ? 'red' : 'black'"
               :label="recipes[key]['Total Opinions'].dislike"
               icon="thumb_down" @click="dislike(key)"/>
