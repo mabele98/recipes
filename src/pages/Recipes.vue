@@ -155,7 +155,7 @@ export default {
     loadDrinks(){
       let drinks = [];
       let ref = this.$database.ref("Ciroc Recipes")
-      ref.orderByKey().on('value', data => {
+      ref.orderByKey().once('value', data => {
         this.recipes = data.val();
         this.index = [];
         
@@ -183,11 +183,13 @@ export default {
           else if(vodka == "White Grape Vodka") this.recipes[i]["color"] = 'color:#E0CFAF'
           else this.recipes[i]["color"] = 'color:black'
         }
-        this.randomize();
+        //this.randomize();
 
         let ref = this.$database.ref("Ciroc Ingredients")
-        ref.orderByKey().on("value", data => {
+        ref.on("value", data => {
+          console.log('recieved')
           this.filterItems("available", data.val());
+          console.log('complete', this.recipes)
         });
 
         ref = this.$database.ref("Users/" + this.user + "/Filter Ingredients")
@@ -198,6 +200,9 @@ export default {
     },
 
     filterItems(type, list){
+      if(type == "filter")this.loadedFilter = false;
+      else this.loadedAvailable = false;
+
       let filter = [];
       for(let i in list) {
         if(list[i].include) filter.push(i)
@@ -206,10 +211,11 @@ export default {
       
       for(let i in this.recipes){
         let types = [];
-
+        this.recipes[i].show[type] = true
         for(let j in this.recipes[i].ingredients){
           let item = this.recipes[i].ingredients[j];
           types.push(item.type)
+          
           if(type=="filter"){
             if(!(i in this.filter)) this.filter[i] = {}
             this.filter[i][item.name] = false
@@ -255,7 +261,7 @@ export default {
   },
   mounted() {
     this.$auth.onAuthStateChanged(user => {
-      if (user == null) this.$router.push('/auth');
+      if (user == null) this.loadPage('/auth');
       this.user = user.uid
       let ref = this.$database.ref("Users/" + user.uid + "/admin")
       ref.on("value", data => {

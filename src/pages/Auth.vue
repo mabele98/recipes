@@ -80,7 +80,7 @@ export default {
         }
     },
     mounted() {
-        console.log("user", this.$auth.currentUser)
+       
     }
 }
 </script>
