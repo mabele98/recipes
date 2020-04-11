@@ -49,6 +49,9 @@
         </div>
         </q-scroll-area>
       </q-toolbar>
+      <div class="q-ml-lg text-caption text-italic">
+          Bolded ingredients are your filter choices.
+      </div>
     </q-header>
     <div class="full column justify-start items-start content-start">
       <div class="q-pa-md row wrap justify-evenly items-start q-gutter-md">
@@ -61,7 +64,7 @@
           >
             <div 
               v-bind:class="size.sm ? 'text-h5' : 'text-h4'"
-              class="q-pt-lg text-center text-weight-bold text-no-wrap"
+              class="q-pt-lg text-center text-weight-bolder text-no-wrap"
             >
               <div v-bind:style="selectedDrink == key ? 'color: white' : recipes[key].color"> 
                 {{ recipes[key].name }}
@@ -92,7 +95,9 @@
                     v-for="(val,i) in recipes[key].ingredients" v-bind:key="i" 
                     >
                     <div v-if="val != null">
-                      <div :class="filter[key][val.name] ? 'text-color-orange' : 'text-color-black'">
+                      <div :class="filter[key][val.name] ? 'text-weight-bold' : 'text-weight-regular'"
+                        class="text-black"
+                      >
                         <div v-if="val.type == 'CÎROC VODKA'"> Cîroc {{val.name}}</div>
                         <div v-else> {{val.name}} </div>
                       </div>
@@ -178,6 +183,7 @@ export default {
           else if(vodka == "White Grape Vodka") this.recipes[i]["color"] = 'color:#E0CFAF'
           else this.recipes[i]["color"] = 'color:black'
         }
+        this.randomize();
 
         let ref = this.$database.ref("Ciroc Ingredients")
         ref.orderByKey().on("value", data => {
@@ -186,10 +192,8 @@ export default {
 
         ref = this.$database.ref("Users/" + this.user + "/Filter Ingredients")
         ref.orderByKey().on("value", data => {
-          this.filterItems("filter", this.filter);
+          this.filterItems("filter", data.val());
         });
-        
-        this.randomize();
       })
     },
 
