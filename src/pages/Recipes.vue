@@ -17,20 +17,24 @@
             text-color="green-8" 
             :label="size.sm ? 'Filter Available' : 'Filter Available Ingredients'" 
             @click="loadPage('/CirocRecipes/selectAvailable')" />
+          
+          <q-btn-toggle
+            dense push rounded
+            v-model="showAvailable"
+            toggle-color="orange"
+            color="green-8"
+            text-color="black"
+            :options="[
+              {label: 'All', value: false},
+              {label: 'Available', value: true}
+            ]" />
           <q-btn 
             dense push
             class="q-mx-md text-no-wrap"
             color="green-8" 
             text-color="black" 
             :label="size.sm ? 'Ingredients' : 'Filter Ingredients'" 
-            @click="loadPage('/CirocRecipes/select')" />
-          <q-btn 
-            dense push
-            class="q-mx-md text-no-wrap"
-            color="green-8"
-            text-color="black" 
-            :label="showAvailable ? 'All Recipes' : 'Show Available'" 
-            @click="showAvailable = !showAvailable" />
+            @click="loadPage('/CirocRecipes/select')" />  
           <q-btn
             dense push
             class="q-mx-md text-no-wrap"
