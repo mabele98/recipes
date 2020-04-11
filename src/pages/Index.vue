@@ -17,6 +17,12 @@
                 @click="loadRecipes()"
             />
         </div>
+        <q-btn
+            class="fixed-top-right q-ma-sm"
+            text-color="white"
+            :label="'Not '+user+'?'"
+            @click="logOut()"
+        />
     </q-page>
 </template>
 
@@ -29,20 +35,22 @@ export default {
         }
     },
     methods: {
+        logOut(signOut) {
+            if(signOut) {
+                this.$auth.signOut()
+            }
+            this.$router.push('/auth');
+        },
         loadRecipes(){
             this.$router.push('/CirocRecipes')
         }
     },
     mounted() {
         this.$auth.onAuthStateChanged(user => {
-            if (user) {
-                this.user = user.displayName;
-            } else {
-                this.$router.push('/auth');
-            }
+            if (user == null) this.logOut
+            let ref = this.$database.ref('Users/' + user.uid + '/name');
+            ref.on("value", data => {this.user = data.val()})
          });
-        
-
     }
 }
 </script>

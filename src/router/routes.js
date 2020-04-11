@@ -6,7 +6,9 @@ const routes = [
       { path: '', component: () => import('pages/Index.vue') },
       { path: '/auth', component: () => import('pages/Auth.vue') },
       { path: '/CirocRecipes', component: () => import('pages/Recipes.vue') },
-      { path: '/CirocRecipes/select', component: () => import('pages/Select.vue') }
+      { path: '/test', component: () => import('pages/Select.vue') },
+      { path: '/CirocRecipes/select', component: () => import('pages/Select/Personal.vue') },
+      { path: '/CirocRecipes/selectAvailable', component: () => import('pages/Select/Available.vue') }
     ]
   },
 ]

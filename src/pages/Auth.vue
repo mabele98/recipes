@@ -51,8 +51,13 @@ export default {
             this.$auth.createUserWithEmailAndPassword(email, 'maye-okeefe')
             .then( () => {
                 let user = this.$auth.currentUser;
+                let name = this.data['First Name'] + ' ' + this.data['Last Name'];
+                this.$database.ref('Users/' + user.uid).set({
+                    'admin': false,
+                    'name': name
+                })
                 user.updateProfile({
-                    displayName: this.data['First Name'] + ' ' + this.data['Last Name'],
+                    displayName: name,
                 }).then(() => {
                     this.$router.push('/')
                 }).catch(error => {

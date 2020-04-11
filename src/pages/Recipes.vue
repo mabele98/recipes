@@ -1,17 +1,43 @@
 <template>
-  <q-page class="flex flex-left">
+  <q-page v-if="loadedAvailable && loadedFilter" class="flex flex-left">
     <q-header reveal>
-      <div class="row no-wrap shadow-1">
-        <q-toolbar class="no-wrap">
-          
+      <q-toolbar>
+        <q-scroll-area
+          horizontal
+          style="height:40px;width:100vw;"
+          class="rounded-borders"
+        >
+        <div class="q-mt-xs row inline no-wrap">
           <div :class="size.sm ? 'text-h6' : 'text-h5'" class="text-weight-bold q-px-md text-no-wrap">  Cîroc Recipes </div>
+          <q-btn 
+            v-show="admin"
+            dense push
+            class="q-mx-md text-no-wrap"
+            color="white" 
+            text-color="green-8" 
+            :label="size.sm ? 'Filter Available' : 'Filter Available Ingredients'" 
+            @click="loadPage('/CirocRecipes/selectAvailable')" />
           <q-btn 
             dense push
             class="q-mx-md text-no-wrap"
             color="green-8" 
             text-color="black" 
-            :label="size.sm ? 'Ingredients' : 'Choose Ingredients'" 
+            :label="size.sm ? 'Ingredients' : 'Filter Ingredients'" 
             @click="loadPage('/CirocRecipes/select')" />
+          <q-btn 
+            dense push
+            class="q-mx-md text-no-wrap"
+            color="green-8"
+            text-color="black" 
+            :label="showAvailable ? 'All Recipes' : 'Show Available'" 
+            @click="showAvailable = !showAvailable" />
+          <q-btn
+            dense push
+            class="q-mx-md text-no-wrap"
+            color="green-8"
+            text-color="black"
+            :label="size.sm ? 'Return' : 'Return to Home'"
+            @click="loadPage('/')" />
           <q-btn 
             v-if="!size.sm"
             dense push
@@ -20,21 +46,15 @@
             text-color="black" 
             icon="shuffle" 
             @click="randomize()" />
-          <q-btn
-            dense push
-            class="q-mx-md"
-            color="green-8"
-            text-color="black"
-            :label="size.sm ? 'Return' : 'Return to Home'"
-            @click="loadPage('/')" />
-        </q-toolbar>
-      </div>
+        </div>
+        </q-scroll-area>
+      </q-toolbar>
     </q-header>
     <div class="full column justify-start items-start content-start">
-      <div v-if="loaded" class="q-pa-md row wrap justify-evenly items-start q-gutter-md">
+      <div class="q-pa-md row wrap justify-evenly items-start q-gutter-md">
           <q-card  
           v-for="key in index" v-bind:key="key"
-          v-show="recipes[key].available"
+          v-show="showAvailable ? recipes[key].show.available && recipes[key].show.filter : recipes[key].show.filter"
           v-bind:style="!size.lg ? size.sm ? 'width:92vw' : 'width:47vw' : 'width:31vw'"
           elevated
           v-bind:class="selectedDrink == key ? 'my-card text-white bg-orange' : 'my-card text-black bg-white'"
@@ -72,8 +92,10 @@
                     v-for="(val,i) in recipes[key].ingredients" v-bind:key="i" 
                     >
                     <div v-if="val != null">
-                      <div v-if="val.type == 'CÎROC VODKA'"> Cîroc {{val.name}} </div>
-                      <div v-else> {{val.name}} </div>
+                      <div :class="filter[key][val.name] ? 'text-color-orange' : 'text-color-black'">
+                        <div v-if="val.type == 'CÎROC VODKA'"> Cîroc {{val.name}}</div>
+                        <div v-else> {{val.name}} </div>
+                      </div>
                     </div>
                   </div>
                 </q-card-section>
@@ -104,8 +126,17 @@ export default {
   name: 'PageRecipes',
   data () {
     return {
-      loaded: false,
+      user: null,
+      admin: false,
+      
+      loadedAvailable: false,
+      loadedFilter: false,
+      
+      filter: {},
+
       size: this.$q.screen,
+
+      showAvailable: false,
 
       selectedDrink: '',
       recipes: {},
@@ -121,8 +152,15 @@ export default {
       let ref = this.$database.ref("Ciroc Recipes")
       ref.orderByKey().on('value', data => {
         this.recipes = data.val();
+        this.index = [];
         
         for(let i in this.recipes){
+          this.index.push(i);
+          this.recipes[i].show = {
+            'available': true,
+            'filter': true
+          }
+
           let image = this.recipes[i].name
           if(image.includes("î")) image = image.replace("î","i");
           if(image.includes("ñ")) image = image.replace("ñ","n")
@@ -141,43 +179,57 @@ export default {
           else this.recipes[i]["color"] = 'color:black'
         }
 
-        this.availableItems();
+        let ref = this.$database.ref("Ciroc Ingredients")
+        ref.orderByKey().on("value", data => {
+          this.filterItems("available", data.val());
+        });
+
+        ref = this.$database.ref("Users/" + this.user + "/Filter Ingredients")
+        ref.orderByKey().on("value", data => {
+          this.filterItems("filter", this.filter);
+        });
+        
         this.randomize();
-        this.loaded = true;
       })
     },
 
-    availableItems(){
-      let ref = this.$database.ref("Ciroc Ingredients")
-      ref.orderByKey().on("value", data => {
-        let list = data.val();
-        let filter = [];
-        for(let i in list) {
-          if(list[i].include) filter.push(i)
-        }
+    filterItems(type, list){
+      let filter = [];
+      for(let i in list) {
+        if(list[i].include) filter.push(i)
+      }
 
-        this.index = [];
-        
-        for(let i in this.recipes){
-          this.index.push(i);
-          this.recipes[i].available = true;
-          let types = [];
+      
+      for(let i in this.recipes){
+        let types = [];
 
-          for(let j in this.recipes[i].ingredients){
-            let item = this.recipes[i].ingredients[j];
-            types.push(item.type)
+        for(let j in this.recipes[i].ingredients){
+          let item = this.recipes[i].ingredients[j];
+          types.push(item.type)
+          if(type=="filter"){
+            if(!(i in this.filter)) this.filter[i] = {}
+            this.filter[i][item.name] = false
+          }
+          if(list != null && item.type in list){
             if(list[item.type].include){
-              if(!list[item.type][item.name]) this.recipes[i].available = false;
+              if(item.name in list[item.type]){
+                if(!list[item.type][item.name]) this.recipes[i].show[type] = false;
+                else{
+                  if(type=="filter") this.filter[i][item.name] = true;
+                }
+              }
+              else this.recipes[i].show[type] = false;
             }
           }
-          for(let item in filter){
-            if(!types.includes(filter[item])) this.recipes[i].available = false;
-          }
-
-          if(this.recipes[i].available) this.noResults = false;
         }
-      })
+        for(let item in filter){
+          if(!types.includes(filter[item])) this.recipes[i].show[type] = false;
+        }
 
+        if(this.recipes[i].show[type]) this.noResults = false;
+      }
+      if(type == "filter") this.loadedFilter = true;
+      else this.loadedAvailable = true;
     },
 
     randomize(){
@@ -198,7 +250,15 @@ export default {
     }
   },
   mounted() {
-    this.loadDrinks();
+    this.$auth.onAuthStateChanged(user => {
+      if (user == null) this.$router.push('/auth');
+      this.user = user.uid
+      let ref = this.$database.ref("Users/" + user.uid + "/admin")
+      ref.on("value", data => {
+        this.admin = data.val();
+      })
+      this.loadDrinks();
+    });
     this.$q.screen.setSizes({sm: 300, md: 500, lg: 1000, xl: 2000 })
   }
 }
