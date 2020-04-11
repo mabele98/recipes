@@ -269,6 +269,13 @@ export default {
 
     opinion(list) {
       for(let drink in this.recipes){
+        let ref = this.$database.ref("Ciroc Recipes/" + drink + '/Total Opinions')
+        ref.on("value", data => {
+          this.liked = false;
+          this.recipes[drink]["Total Opinions"] = data.val();
+          this.liked = true;
+        })
+
         this.recipes[drink]["opinion"] = {
           "like": false,
           "dislike": false
@@ -305,7 +312,6 @@ export default {
           }
           
           complete.set(total);
-          this.recipes[key]["Total Opinions"] = total;
           this.recipes[key].opinion = val;
           this.liked = true;
         })
@@ -337,7 +343,6 @@ export default {
           }
           
           complete.set(total);
-          this.recipes[key]["Total Opinions"] = total;
           this.recipes[key].opinion = val;
           this.liked = true;
         })
