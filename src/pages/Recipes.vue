@@ -119,8 +119,16 @@
             </q-card-section>
 
             <q-card-actions align="center">
+              <q-btn flat 
+              v-show="liked"
+              :color="recipes[key]['opinion'].like ? 'green' : 'black'"
+              icon="thumb_up" @click="like(key)" />
               <q-btn v-if="selectedDrink == key" flat icon="clear" @click="selectedDrink = ''"/>
               <q-btn v-else flat @click="selectedDrink = key">Recipe</q-btn>
+              <q-btn flat 
+              v-show="liked"
+              :color="recipes[key]['opinion'].dislike ? 'red' : 'black'"
+              icon="thumb_down" @click="dislike(key)"/>
             </q-card-actions>
           </q-card>
       </div>
@@ -147,6 +155,7 @@ export default {
       
       loadedAvailable: false,
       loadedFilter: false,
+      liked: false,
       
       filter: {},
 
@@ -198,15 +207,18 @@ export default {
 
         let ref = this.$database.ref("Ciroc Ingredients")
         ref.on("value", data => {
-          console.log('recieved')
           this.filterItems("available", data.val());
-          console.log('complete', this.recipes)
         });
 
         ref = this.$database.ref("Users/" + this.user + "/Filter Ingredients")
         ref.orderByKey().on("value", data => {
           this.filterItems("filter", data.val());
         });
+
+        ref = this.$database.ref("Users/" + this.user + "/Opinion")
+        ref.on("value", data => {
+          this.opinion(data.val());
+        })
       })
     },
 
@@ -251,6 +263,47 @@ export default {
       }
       if(type == "filter") this.loadedFilter = true;
       else this.loadedAvailable = true;
+    },
+
+    opinion(list) {
+      for(let drink in this.recipes){
+        this.recipes[drink]["opinion"] = {
+          "like": false,
+          "dislike": false
+        }
+        if(list != null){
+          if(drink in list) this.recipes[drink]["opinion"] = list[drink]
+        }
+      }
+      this.liked = true;
+    },
+
+    like(key) {
+      this.liked = false;
+      let ref = this.$database.ref("Users/" + this.user + "/Opinion/" + key)
+      ref.once("value", data => {
+        let val = {"like": false, "dislike": false};
+        if(data.val() == null || data.val()['like'] == false){ 
+          val["like"] = true;
+        }
+        ref.set(val);
+        this.recipes[key].opinion = val;
+        this.liked = true;
+      })
+    },
+
+    dislike(key) {
+      this.liked = false;
+      let ref = this.$database.ref("Users/" + this.user + "/Opinion/" + key)
+      ref.once("value", data => {
+        let val = {"like": false, "dislike": false};
+        if(data.val() == null || data.val()['dislike'] == false){
+          val["dislike"] = true;
+        }
+        ref.set(val)
+        this.recipes[key].opinion = val;
+        this.liked = true;
+      })
     },
 
     randomize(){
