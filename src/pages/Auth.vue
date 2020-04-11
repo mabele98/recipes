@@ -53,7 +53,7 @@ export default {
                 let user = this.$auth.currentUser;
                 user.updateProfile({
                     displayName: this.data['First Name'] + ' ' + this.data['Last Name'],
-                }).then(function() {
+                }).then(() => {
                     this.$router.push('/')
                 }).catch(error => {
                     console.log(error.code)
@@ -66,9 +66,11 @@ export default {
                 console.log(error.message)
                 if(error.code = "auth/email-already-in-use"){
                     this.$auth.signInWithEmailAndPassword(email, 'maye-okeefe')
-                    .then(this.$router.push('/'))
+                    .then(() => {
+                        this.$router.push('/')
+                    })
                 }
-                this.error = true;
+                else this.error = true;
             })
         }
     },
