@@ -70,6 +70,13 @@
                 {{ recipes[key].name }}
               </div>
             </div>
+            <div 
+              class="text-caption text-center text-no-wrap text-italic">
+              <div v-if="recipes[key].show.available"> Available </div>
+              <div v-else> Not Available </div>
+            </div>
+              
+
             <q-card-section horizontal>
               <img 
                 v-if="selectedDrink != key"
