@@ -122,12 +122,14 @@
               <q-btn flat 
               v-show="liked"
               :color="recipes[key]['opinion'].like ? 'green' : 'black'"
+              :label="recipes[key]['Total Opinions'].like"
               icon="thumb_up" @click="like(key)" />
               <q-btn v-if="selectedDrink == key" flat icon="clear" @click="selectedDrink = ''"/>
               <q-btn v-else flat @click="selectedDrink = key">Recipe</q-btn>
               <q-btn flat 
               v-show="liked"
               :color="recipes[key]['opinion'].dislike ? 'red' : 'black'"
+              :label="recipes[key]['Total Opinions'].dislike"
               icon="thumb_down" @click="dislike(key)"/>
             </q-card-actions>
           </q-card>
@@ -280,6 +282,7 @@ export default {
 
     like(key) {
       this.liked = false;
+      let prev = this.recipes[key].opinion.dislike
       let ref = this.$database.ref("Users/" + this.user + "/Opinion/" + key)
       ref.once("value", data => {
         let val = {"like": false, "dislike": false};
@@ -287,22 +290,57 @@ export default {
           val["like"] = true;
         }
         ref.set(val);
-        this.recipes[key].opinion = val;
-        this.liked = true;
+        
+        let complete = this.$database.ref("Ciroc Recipes/" + key + '/Total Opinions')
+        complete.once("value", info => {
+          let total = {"like": 0, "dislike": 0};
+          if(val["like"]) total["like"] = 1;
+
+          if(info.exists()){
+            if(prev) total["dislike"] = info.val()["dislike"] - 1;
+            else total["dislike"] = info.val()["dislike"];
+
+            if(val["like"]) total["like"] = info.val()["like"] + 1;
+            else total["like"] = info.val()["like"] - 1;
+          }
+          
+          complete.set(total);
+          this.recipes[key]["Total Opinions"] = total;
+          this.recipes[key].opinion = val;
+          this.liked = true;
+        })
       })
     },
 
     dislike(key) {
       this.liked = false;
+      let prev = this.recipes[key].opinion["like"]
       let ref = this.$database.ref("Users/" + this.user + "/Opinion/" + key)
       ref.once("value", data => {
         let val = {"like": false, "dislike": false};
-        if(data.val() == null || data.val()['dislike'] == false){
+        if(!data.exists() || data.val()['dislike'] == false){
           val["dislike"] = true;
         }
         ref.set(val)
-        this.recipes[key].opinion = val;
-        this.liked = true;
+
+        let complete = this.$database.ref("Ciroc Recipes/" + key + '/Total Opinions')
+        complete.once("value", info => {
+          let total = {"like": 0, "dislike": 0};
+          if(val["dislike"]) total["dislike"] = 1;
+
+          if(info.exists()){
+            if(prev) total["like"] = info.val()["like"] - 1;
+            else total["like"] = info.val()["like"];
+
+            if(val["dislike"]) total["dislike"] = info.val()["dislike"] + 1;
+            else total["dislike"] = info.val()["dislike"] - 1;
+          }
+          
+          complete.set(total);
+          this.recipes[key]["Total Opinions"] = total;
+          this.recipes[key].opinion = val;
+          this.liked = true;
+        })
       })
     },
 
