@@ -93,10 +93,9 @@
                 <q-card-section v-if="selectedDrink == key">
                   <ul class="text-body1 text-weight-bold" v-for="(val,i) in recipes[key].ingredients" v-bind:key="i">
                     <div v-if="val != null">
-                    <li v-if="val.type == 'CÎROC VODKA'"> {{val.oz}} oz. of Cîroc {{ val.name }} </li>
-                    <li v-else-if="val.amount"> {{val.amount}} {{val.name}} </li>
-                    <li v-else-if="val.pieces"> {{val.pieces}} pieces of {{val.name}} </li>
-                    <li v-else> {{val.oz}} oz. of {{val.name}} </li>
+                    <li v-if="val.type == 'CÎROC VODKA'"> {{val.amount}} {{val.measurement}} of Cîroc {{ val.name }} </li>
+                    <li v-else-if="val.measurement == null"> {{val.amount}} {{val.name}} </li>
+                    <li v-else> {{val.amount}} {{val.measurement}} of {{val.name}} </li>
                     </div>
                   </ul>
                 </q-card-section>
@@ -123,7 +122,7 @@
               <div 
                 class="text-caption" 
                 :class="likeChange.id == key ? likeChange.change ? 'text-green' : 'text-black' : 'text-black'"> 
-                {{recipes[key]['Total Opinions'].like}}
+                {{recipes[key]['totalOpinions'].like}}
               </div>
               <q-btn flat 
               v-show="liked"
@@ -139,7 +138,7 @@
               icon="thumb_down" @click="dislike(key)"/>
               <div 
                 class="text-caption" :class="dislikeChange.id == key ? dislikeChange.change ? 'text-red' : 'text-black' : 'text-black'">
-                {{recipes[key]['Total Opinions'].dislike}}
+                {{recipes[key]['totalOpinions'].dislike}}
               </div>
             </q-card-actions>
           </q-card>
@@ -241,17 +240,11 @@ export default {
       if(type == "filter")this.loadedFilter = false;
       else this.loadedAvailable = false;
 
-      let filter = [];
-      for(let i in list) {
-        if(list[i].include) filter.push(i)
-      }
-      
       for(let i in this.recipes){
         let types = [];
         this.recipes[i].show[type] = true
         for(let j in this.recipes[i].ingredients){
           let item = this.recipes[i].ingredients[j];
-          types.push(item.type)
           
           if(type=="filter"){
             if(!(i in this.filter)) this.filter[i] = {}
@@ -269,9 +262,6 @@ export default {
             }
           }
         }
-        for(let item in filter){
-          if(!types.includes(filter[item])) this.recipes[i].show[type] = false;
-        }
 
         if(this.recipes[i].show[type]) this.noResults = false;
       }
@@ -281,38 +271,38 @@ export default {
 
     opinion(list) {
       for(let drink in this.recipes){
-        let ref = this.$database.ref("Ciroc Recipes/" + drink + '/Total Opinions')
+        let ref = this.$database.ref("Ciroc Recipes/" + drink + '/totalOpinions')
         ref.on("value", data => {
           this.liked = false;
-          if(data.val().like > this.recipes[drink]["Total Opinions"].like){
+          if(data.val().like > this.recipes[drink]["totalOpinions"].like){
             this.likeChange = {
               id: drink,
               change: true,
               add: true
             }
           } 
-          else if(data.val().like < this.recipes[drink]["Total Opinions"].like) {
+          else if(data.val().like < this.recipes[drink]["totalOpinions"].like) {
             this.likeChange = {
               id: drink,
               change: true,
               add: false
             }
           }
-          if(data.val().dislike > this.recipes[drink]["Total Opinions"].dislike){
+          if(data.val().dislike > this.recipes[drink]["totalOpinions"].dislike){
             this.dislikeChange = {
               id: drink,
               change: true,
               data: true
             }
           }
-          else if (data.val().dislike < this.recipes[drink]["Total Opinions"].dislike){
+          else if (data.val().dislike < this.recipes[drink]["totalOpinions"].dislike){
             this.dislikeChange = {
               id: drink,
               change: true,
               add: false
             }
           }
-          this.recipes[drink]["Total Opinions"] = data.val();
+          this.recipes[drink]["totalOpinions"] = data.val();
           this.liked = true;
           
           setTimeout(() => {
@@ -343,7 +333,7 @@ export default {
         }
         ref.set(val);
         
-        let complete = this.$database.ref("Ciroc Recipes/" + key + '/Total Opinions')
+        let complete = this.$database.ref("Ciroc Recipes/" + key + '/totalOpinions')
         complete.once("value", info => {
           let total = {"like": 0, "dislike": 0};
           if(val["like"]) total["like"] = 1;
@@ -355,7 +345,6 @@ export default {
             if(val["like"]) total["like"] = info.val()["like"] + 1;
             else total["like"] = info.val()["like"] - 1;
           }
-          
           complete.set(total);
           this.recipes[key].opinion = val;
           this.liked = true;
@@ -374,7 +363,7 @@ export default {
         }
         ref.set(val)
 
-        let complete = this.$database.ref("Ciroc Recipes/" + key + '/Total Opinions')
+        let complete = this.$database.ref("Ciroc Recipes/" + key + '/totalOpinions')
         complete.once("value", info => {
           let total = {"like": 0, "dislike": 0};
           if(val["dislike"]) total["dislike"] = 1;
