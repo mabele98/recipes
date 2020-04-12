@@ -4,16 +4,24 @@
             LOADING PAGE...
         </div>
             <q-header reveal>
-                <div class="q-gutter-y-md">
+                <div class="q-gutter-y-md r">
                     <q-toolbar>
+                    <q-scroll-area
+                    horizontal
+                    style="height:40px;width:100vw;"
+                    class="rounded-borders"
+                    >
+                    <div class="q-mt-xs row inline no-wrap">
                     <div :class="size.sm ? 'text-h6' : 'text-h5'"
                         class="text-weight-bold text-no-wrap q-mx-sm"> Choose Ingredients </div>
-                    <q-btn push color="green-8 q-mx-sm" text-color="black"
-                        label="Select All" @click="select(true)" />
-                    <q-btn push color="green-8 q-mx-sm" text-color="black"
-                        label="Select None" @click="select(false)" />
-                    <q-btn push color="green-8 q-mx-sm" text-color="black" 
-                        :label="size.sm ? 'Recipes' : 'Load Recipes'" @click="loadRecipes()" />
+                    <q-btn dense push color="green-8 q-mx-sm" text-color="black"
+                        class="text-no-wrap" label="Select All" @click="select(true)" />
+                    <q-btn dense push color="green-8 q-mx-sm" text-color="black"
+                        class="text-no-wrap" label="Select None" @click="select(false)" />
+                    <q-btn dense push color="green-8 q-mx-sm" text-color="black" 
+                        class="text-no-wrap" :label="size.sm ? 'Recipes' : 'Load Recipes'" @click="loadRecipes()" />
+                    </div>
+                    </q-scroll-area>
                     </q-toolbar>
                 </div>
             </q-header>

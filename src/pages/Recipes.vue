@@ -120,11 +120,15 @@
             </q-card-section>
 
             <q-card-actions align="center">
+              <div 
+                class="text-caption" 
+                :class="likeChange.change ? 'text-green' : 'text-black'"> 
+                {{recipes[key]['Total Opinions'].like}}
+              </div>
               <q-btn flat 
               v-show="liked"
               :ripple="false"
               :color="recipes[key]['opinion'].like ? 'green' : 'black'"
-              :label="recipes[key]['Total Opinions'].like"
               icon-right="thumb_up" @click="like(key)" />
               <q-btn v-if="selectedDrink == key" flat icon="clear" @click="selectedDrink = ''"/>
               <q-btn v-else flat @click="selectedDrink = key">Recipe</q-btn>
@@ -132,8 +136,11 @@
               v-show="liked"
               :ripple="false"
               :color="recipes[key]['opinion'].dislike ? 'red' : 'black'"
-              :label="recipes[key]['Total Opinions'].dislike"
               icon="thumb_down" @click="dislike(key)"/>
+              <div 
+                class="text-caption" :class="dislikeChange.change ? 'text-red' : 'text-black'">
+                {{recipes[key]['Total Opinions'].dislike}}
+              </div>
             </q-card-actions>
           </q-card>
       </div>
@@ -161,6 +168,9 @@ export default {
       loadedAvailable: false,
       loadedFilter: false,
       liked: false,
+
+      likeChange: {change: false, add: true},
+      dislikeChange: {change: false, add: '+'},
       
       filter: {},
 
@@ -274,8 +284,37 @@ export default {
         let ref = this.$database.ref("Ciroc Recipes/" + drink + '/Total Opinions')
         ref.on("value", data => {
           this.liked = false;
+          if(data.val().like > this.recipes[drink]["Total Opinions"].like){
+            this.likeChange = {
+              change: true,
+              add: true
+            }
+          } 
+          else if(data.val().like < this.recipes[drink]["Total Opinions"].like) {
+            this.likeChange = {
+              change: true,
+              add: false
+            }
+          }
+          if(data.val().dislike > this.recipes[drink]["Total Opinions"].dislike){
+            this.dislikeChange = {
+              change: true,
+              data: true
+            }
+          }
+          else if (data.val().dislike < this.recipes[drink]["Total Opinions"].dislike){
+            this.dislikeChange = {
+              change: true,
+              add: false
+            }
+          }
           this.recipes[drink]["Total Opinions"] = data.val();
           this.liked = true;
+          
+          setTimeout(() => {
+            if(this.likeChange) this.likeChange.change = false;
+            if(this.dislikeChange) this.dislikeChange.change = false;
+          }, 1000)
         })
 
         this.recipes[drink]["opinion"] = {
