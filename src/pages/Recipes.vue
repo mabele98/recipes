@@ -89,16 +89,25 @@
                 class="q-pt-lg q-pl-md"
                 v-bind:src="'statics/img/'+recipes[key].image+'.png'"
               />
-              <q-card-section vertical>
-                <q-card-section v-if="selectedDrink == key">
+              <q-card-section horizontal v-if="selectedDrink == key">
+                <q-card-section vertical>
+                  <q-btn dense class="q-my-xs text-black" label="1x"
+                  :color="mult==1 ? 'white':'orange'" @click="mult=1"/><br>
+                  <q-btn dense class="q-my-xs text-black" label="2x"
+                  :color="mult==2 ? 'white':'orange'" @click="mult=2"/><br>
+                  <q-btn dense class="q-my-xs text-black" label="3x"
+                  :color="mult==3 ? 'white':'orange'" @click="mult=3"/>
+                </q-card-section>
+                <q-card-section vertical>
                   <ul class="text-body1 text-weight-bold" v-for="(val,i) in recipes[key].ingredients" v-bind:key="i">
                     <div v-if="val != null">
-                    <li v-if="val.type == 'CÎROC VODKA'"> {{val.amount}} {{val.measurement}} of Cîroc {{ val.name }} </li>
-                    <li v-else-if="val.measurement == null"> {{val.amount}} {{val.name}} </li>
-                    <li v-else> {{val.amount}} {{val.measurement}} of {{val.name}} </li>
+                    <li v-if="val.type == 'CÎROC VODKA'"> {{val.amount * mult}} {{val.measurement}} of Cîroc {{ val.name }} </li>
+                    <li v-else-if="val.measurement == null"> {{val.amount * mult}} {{val.name}} </li>
+                    <li v-else> {{val.amount * mult}} {{val.measurement}} of {{val.name}} </li>
                     </div>
                   </ul>
                 </q-card-section>
+              </q-card-section>
                 <q-card-section v-else>
                   <div 
                     class="text-body2 text-grey-9 text-weight-bold" 
@@ -178,6 +187,7 @@ export default {
       showAvailable: false,
 
       selectedDrink: '',
+      mult: 1,
       recipes: {},
       
       index: [],
