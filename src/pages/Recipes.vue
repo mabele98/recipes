@@ -235,7 +235,6 @@ export default {
       for(let i in list) {
         if(list[i].include) filter.push(i)
       }
-
       
       for(let i in this.recipes){
         let types = [];

@@ -8,6 +8,10 @@
                     <q-toolbar>
                     <div :class="size.sm ? 'text-h6' : 'text-h5'"
                         class="text-weight-bold text-no-wrap q-mx-sm"> Choose Available Ingredients </div>
+                    <q-btn push color="deep-orange-8 q-mx-sm" text-color="black"
+                        label="Select All" @click="select(true)" />
+                    <q-btn push color="deep-orange-8 q-mx-sm" text-color="black"
+                        label="Select None" @click="select(false)" />
                     <q-btn push color="deep-orange-8 q-mx-sm" text-color="black" 
                         :label="size.sm ? 'Recipes' : 'Load Recipes'" @click="loadRecipes()" />
                     </q-toolbar>
@@ -22,10 +26,10 @@
                 v-for="(value,type) in options"
                 v-bind:key="type"
             >
-                <div class="row justify-center content-center text-h4 text-center text-deep-orange text-weight-bold"> 
-                    <div> {{type}} </div>
-                    <div v-if="selected[type] != 0" class="q-ml-sm q-mt-xs text-h5"> ({{selected[type]}}) </div>         
-                </div> 
+                <q-card-section horizontal class="row text-deep-orange-9 no-wrap">
+                    <div class="text-h4 text-weight-bold"> {{type}} </div>
+                    <div v-if="selected[type] != 0" corner="top-right" class="q-ml-sm q-mt-xs text-h5"> ({{selected[type]}}) </div>         
+                </q-card-section> 
                 <q-scroll-area
                     style="width:275px;height:300px"
                     class="rounded-borders q-mt-sm"
@@ -119,6 +123,27 @@ export default {
                 }
             }
             this.loaded=true;
+        },
+
+        select(all){
+            this.check = [];
+            let value = {};
+            let id = 0;
+            for(let type in this.options){
+                value[type] = {"include": all}
+                let total = 0;
+                for(let item in this.options[type]){
+                    value[type][this.options[type][item].name] = all
+                    if(all) this.check.push(id)
+                    id += 1;
+                    total += 1;
+                }
+                if(all) this.selected[type] = total;
+                else this.selected[type] = 0;
+            }
+
+            let ref = this.$database.ref("Ciroc Ingredients")
+            ref.set(value);
         },
 
         formatLabel(item) {

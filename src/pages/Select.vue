@@ -1,151 +1,111 @@
 <template>
-    <q-page class="flex flex-center">
-        <div v-if="!loaded" class="text-h2">
-            LOADING PAGE...
+    <q-page>
+        <div class="q-pa-md">
+            <div class="q-gutter-md">
+            <q-date
+                v-model="date"
+                :options="options"
+            />
+
+            <q-date
+                v-model="date"
+                :options="optionsFn"
+            />
+
+            <q-date
+                v-model="date"
+                :options="optionsFn2"
+            />
+            </div>
         </div>
-            <q-header reveal>
-                <div class="q-gutter-y-md">
-                    <q-toolbar>
-                    <div :class="size.sm ? 'text-h6' : 'text-h5'"
-                        class="text-weight-bold text-no-wrap q-mx-sm"> Choose Ingredients </div>
-                    <q-btn push color="green-8 q-mx-sm" text-color="black" 
-                        :label="size.sm ? 'Recipes' : 'Load Recipes'" @click="loadRecipes()" />
-                    </q-toolbar>
+
+        <div class="q-pa-md row q-col-gutter-sm">
+            <q-tree class="col-12 col-sm-6"
+            :nodes="simple"
+            node-key="label"
+            tick-strategy="leaf"
+            :selected.sync="selected"
+            :ticked.sync="ticked"
+            :expanded.sync="expanded"
+            />
+            <div class="col-12 col-sm-6 q-gutter-sm">
+            <div class="text-h6">Selected</div>
+            <div>{{ selected }}</div>
+
+            <q-separator spaced />
+
+            <div class="text-h6">Ticked</div>
+            <div>
+                <div v-for="tick in ticked" :key="`ticked-${tick}`">
+                {{ tick }}
                 </div>
-            </q-header>
-        <div v-if="loaded" class="fit row wrap justify-center items-start content-center">
-            <q-card
-                elevated
-                square
-                class="q-pa-sm q-ma-xs my-card"
-                style="width:300px;height:400px"
-                v-for="(value,type) in options"
-                v-bind:key="type"
-            >
-                <div class="row justify-center content-center text-h4 text-center text-green-10 text-weight-bold"> 
-                    <div> {{type}} </div>
-                    <div v-if="selected[type] != 0" class="q-ml-sm q-mt-xs text-h5"> ({{selected[type]}}) </div>         
-                </div> 
-                <q-scroll-area
-                    style="width:275px;height:300px"
-                    class="rounded-borders q-mt-sm"
-                >
-                    <div
-                        class="q-pa-sm text-subtitle1"
-                        v-for="(info,i) in options[type]" 
-                        v-bind:key="i"
-                    >
-                        <q-checkbox 
-                            v-model="check" 
-                            v-bind:val="info.id" 
-                            v-bind:label="info.name" 
-                            @input="updateDatabase(type,i)"
-                        />
-                    </div>
-                </q-scroll-area>
-            </q-card>
+            </div>
+
+            <q-separator spaced />
+
+            <div class="text-h6">Expanded</div>
+            <div>
+                <div v-for="expand in expanded" :key="`expanded-${expand}`">
+                {{ expand }}
+                </div>
+            </div>
+            </div>
         </div>
     </q-page>
 </template>
 
 <script>
 export default {
-    name: 'PageSelect',
-    
-    data () {
-        return {
-            loaded: false,
-            size: this.$q.screen,
-            selected: {},
-            check: [],
-            options: {},
+  data () {
+    return {
+      date: '2019/02/01',
+      options: [ '2019/02/01', '2019/02/05', '2019/02/06', '2019/02/09', '2019/02/23' ],
+
+      simple: [
+        {
+          label: 'Satisfied customers',
+          children: [
+            {
+              label: 'Good food',
+              children: [
+                { label: 'Quality ingredients' },
+                { label: 'Good recipe' }
+              ]
+            },
+            {
+              label: 'Good service (disabled node)',
+              disabled: true,
+              children: [
+                { label: 'Prompt attention' },
+                { label: 'Professional waiter' }
+              ]
+            },
+            {
+              label: 'Pleasant surroundings',
+              children: [
+                { label: 'Happy atmosphere' },
+                { label: 'Good table presentation' },
+                { label: 'Pleasing decor' }
+              ]
+            }
+          ]
         }
-    },
-
-    methods: {
-        loadIngredients() {
-            let ref = this.$database.ref("Ciroc Recipes")
-            ref.orderByKey().on("value", data => {
-                let recipes = data.val();
-                for(let drink in recipes){
-                    for(let i in recipes[drink].ingredients){
-                        let name = recipes[drink].ingredients[i].name
-                        let type = recipes[drink].ingredients[i].type
-
-                        if(type in this.options) {
-                            if(!this.options[type].includes(name)) this.options[type].push(name)
-                        }
-                        else{
-                            this.options[type] = [name]
-                            this.selected[type] = 0;
-                        }
-                    }
-                }
-
-                for(let type in this.options){
-                    this.options[type].sort()
-                }
-
-                this.addLabels();
-                this.loaded=true
-            });
-
-        },
-
-        addLabels() {
-            let ref = this.$database.ref("Ciroc Ingredients")
-            ref.orderByKey().once("value", data => {
-                let list = null;
-                if(data.exists()) list = data.val();
-                let id = 0;
-                for(let i in this.options){
-                    for(let j in this.options[i]){
-                        let name = this.options[i][j]
-                        let data = this.formatLabel(name)
-                        let check = false;
-                        if(list != null) check = list[i][name];
-                        if(check) {
-                            this.check.push(id)
-                            this.selected[i] += 1;
-                        }
-                        this.options[i][j] = {
-                            'id': id,
-                            'name': name,
-                            'data': data,
-                            "check": check
-                        }
-                        id += 1;
-                    }
-                }
-            })
-        },
-
-        formatLabel(item) {
-            return { label: item, value: item, color: 'orange'}
-        },
-
-        updateDatabase(type, id) {
-            let check = !this.options[type][id].check
-            let name = this.options[type][id].name
-
-            this.options[type][id].check = check
-
-            if(check) this.selected[type] += 1
-            else this.selected[type] -= 1
-
-            if(this.selected[type] == 0) this.$database.ref("Ciroc Ingredients/" + type + "/include").set(false)
-            else if(this.selected[type] == 1) this.$database.ref("Ciroc Ingredients/" + type + "/include").set(true)
-
-            this.$database.ref("Ciroc Ingredients/" + type + "/" + name).set(check)
-        },
-
-        loadRecipes() {
-            this.$router.push('/CirocRecipes')
-        }
-    },
-
-    mounted() {
-        this.loadIngredients();
+      ],
+      selected: 'Pleasant surroundings',
+      ticked: [ 'Quality ingredients', 'Good table presentation' ],
+      expanded: [ 'Satisfied customers', 'Good service (disabled node)', 'Pleasant surroundings' ]
     }
+  },
+
+  methods: {
+    optionsFn (date) {
+      return date >= '2019/02/03' && date <= '2019/02/15'
+    },
+
+    optionsFn2 (date) {
+      const parts = date.split('/')
+      return parts[2] % 2 === 0
+    }
+  }
 }
 </script>
