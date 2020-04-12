@@ -122,7 +122,7 @@
             <q-card-actions align="center">
               <div 
                 class="text-caption" 
-                :class="likeChange.change ? 'text-green' : 'text-black'"> 
+                :class="likeChange.id == key ? likeChange.change ? 'text-green' : 'text-black' : 'text-black'"> 
                 {{recipes[key]['Total Opinions'].like}}
               </div>
               <q-btn flat 
@@ -138,7 +138,7 @@
               :color="recipes[key]['opinion'].dislike ? 'red' : 'black'"
               icon="thumb_down" @click="dislike(key)"/>
               <div 
-                class="text-caption" :class="dislikeChange.change ? 'text-red' : 'text-black'">
+                class="text-caption" :class="dislikeChange.id == key ? dislikeChange.change ? 'text-red' : 'text-black' : 'text-black'">
                 {{recipes[key]['Total Opinions'].dislike}}
               </div>
             </q-card-actions>
@@ -169,8 +169,8 @@ export default {
       loadedFilter: false,
       liked: false,
 
-      likeChange: {change: false, add: true},
-      dislikeChange: {change: false, add: '+'},
+      likeChange: {id: '', change: false, add: true},
+      dislikeChange: {id: '', change: false, add: '+'},
       
       filter: {},
 
@@ -286,24 +286,28 @@ export default {
           this.liked = false;
           if(data.val().like > this.recipes[drink]["Total Opinions"].like){
             this.likeChange = {
+              id: drink,
               change: true,
               add: true
             }
           } 
           else if(data.val().like < this.recipes[drink]["Total Opinions"].like) {
             this.likeChange = {
+              id: drink,
               change: true,
               add: false
             }
           }
           if(data.val().dislike > this.recipes[drink]["Total Opinions"].dislike){
             this.dislikeChange = {
+              id: drink,
               change: true,
               data: true
             }
           }
           else if (data.val().dislike < this.recipes[drink]["Total Opinions"].dislike){
             this.dislikeChange = {
+              id: drink,
               change: true,
               add: false
             }
