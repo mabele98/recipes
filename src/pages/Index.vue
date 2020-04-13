@@ -50,6 +50,8 @@ export default {
             if (user == null) this.logOut
             this.user = user.displayName
         });
+
+        
     }
 }
 </script>

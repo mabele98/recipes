@@ -138,10 +138,12 @@ export default {
             let value = {};
             let id = 0;
             for(let type in this.options){
+                this.$database.ref("available/cîroc/" + type + "/include").set(all);
                 value[type] = {"include": all}
                 let total = 0;
                 for(let item in this.options[type]){
-                    value[type][this.options[type][item].name] = all
+                    let name = this.options[type][item].name
+                    this.$database.ref("available/cîroc/" + type + "/" + name).set(all);
                     if(all) this.check.push(id)
                     id += 1;
                     total += 1;
@@ -149,9 +151,6 @@ export default {
                 if(all) this.selected[type] = total;
                 else this.selected[type] = 0;
             }
-
-            let ref = this.$database.ref("available/cîroc")
-            ref.set(value);
         },
 
         formatLabel(item) {

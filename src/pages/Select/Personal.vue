@@ -141,7 +141,7 @@ export default {
             let value = {};
             let id = 0;
             for(let type in this.options){
-                value[type] = {"include": all}
+                value[type] = {}
                 let total = 0;
                 for(let item in this.options[type]){
                     value[type][this.options[type][item].name] = all
@@ -170,9 +170,9 @@ export default {
             if(check) this.selected[type] += 1
             else this.selected[type] -= 1
 
-            let ref = this.$database.ref("users/" + this.user + "/filter/cîroc/" + type + "/include")
+            /*let ref = this.$database.ref("users/" + this.user + "/filter/cîroc/" + type + "/include")
             if(this.selected[type] == 0) ref.set(false)
-            else if(this.selected[type] == 1) ref.set(true)
+            else if(this.selected[type] == 1) ref.set(true)*/
 
             this.$database.ref("users/" + this.user + "/filter/cîroc/" + type + "/" + name).set(check)
         },

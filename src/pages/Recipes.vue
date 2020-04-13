@@ -214,26 +214,26 @@ export default {
           this.recipes[i]["image"] = image;
 
           let vodka = this.recipes[i].ingredients["1"].name;
-          if(vodka == "Vodka") this.recipes[i]["color"] = 'color:#243090'
-          else if(vodka == "Pineapple") this.recipes[i]["color"] = 'color:#FAC300'
-          else if(vodka == "Amaretto") this.recipes[i]["color"] = 'color:#6B0F05'
-          else if(vodka == "French Vanilla") this.recipes[i]["color"] = 'color:#EA9F42'
-          else if(vodka == "Coconut") this.recipes[i]["color"] = 'color:#5B5957'
-          else if(vodka == "Peach") this.recipes[i]["color"] = 'color:#F28500'
-          else if(vodka == "Red Berry") this.recipes[i]["color"] = 'color:#A60000'
-          else if(vodka == "Apple") this.recipes[i]["color"] = "color:#00B939"
-          else if(vodka == "White Grape Vodka") this.recipes[i]["color"] = 'color:#E0CFAF'
+          if(vodka == "Cîroc Vodka") this.recipes[i]["color"] = 'color:#243090'
+          else if(vodka == "Cîroc Pineapple") this.recipes[i]["color"] = 'color:#FAC300'
+          else if(vodka == "Cîroc Amaretto") this.recipes[i]["color"] = 'color:#6B0F05'
+          else if(vodka == "Cîroc French Vanilla") this.recipes[i]["color"] = 'color:#EA9F42'
+          else if(vodka == "Cîroc Coconut") this.recipes[i]["color"] = 'color:#5B5957'
+          else if(vodka == "Cîroc Peach") this.recipes[i]["color"] = 'color:#F28500'
+          else if(vodka == "Cîroc Red Berry") this.recipes[i]["color"] = 'color:#A60000'
+          else if(vodka == "Cîroc Apple") this.recipes[i]["color"] = "color:#00B939"
+          else if(vodka == "Cîroc White Grape Vodka") this.recipes[i]["color"] = 'color:#E0CFAF'
           else this.recipes[i]["color"] = 'color:black'
         }
 
         let ref = this.$database.ref("/available/cîroc")
         ref.on("value", data => {
-          this.filterItems("available", data.val());
+          this.availableItems(data.val());
         });
 
         ref = this.$database.ref("users/" + this.user + "/filter/cîroc")
         ref.orderByKey().on("value", data => {
-          this.filterItems("filter", data.val());
+          this.filterItems(data.val());
         });
 
         ref = this.$database.ref("users/" + this.user + "/recipes/cîroc")
@@ -245,38 +245,60 @@ export default {
       })
     },
 
-    filterItems(type, list){
-      if(type == "filter")this.loadedFilter = false;
-      else this.loadedAvailable = false;
+    filterItems(list) {
+      this.loadedFilter = false;
+      let none = true;
+      for(let i in this.recipes){
+        this.recipes[i].show.filter = false
+
+        for(let j in this.recipes[i].ingredients){
+          let item = this.recipes[i].ingredients[j];
+
+          if(!(i in this.filter)) this.filter[i] = {}
+          this.filter[i][item.name] = false;
+
+          if(list != null){
+            if(item.type in list && item.name in list[item.type]){
+              if(list[item.type][item.name]){ 
+                this.recipes[i].show.filter = true;
+                this.filter[i][item.name] = true;
+                none = false;
+              }
+            }
+            else this.recipes[i].show.filter = true
+          }
+          else this.recipes[i].show.filter = true
+        }
+      }
+      
+      if(none){
+        for(let i in this.recipes) this.recipes[i].show.filter = true;
+      }
+
+      this.loadedFilter = true;
+    },
+
+    availableItems(list){
+      this.loadedAvailable = false;
 
       for(let i in this.recipes){
         let types = [];
-        this.recipes[i].show[type] = true
+        this.recipes[i].show.available = true
         for(let j in this.recipes[i].ingredients){
           let item = this.recipes[i].ingredients[j];
-          
-          if(type=="filter"){
-            if(!(i in this.filter)) this.filter[i] = {}
-            this.filter[i][item.name] = false
-          }
 
           if(list != null && item.type in list){
             if(list[item.type].include){
               if(item.name in list[item.type]){
-                if(!list[item.type][item.name]) this.recipes[i].show[type] = false;
-                else{
-                  if(type=="filter") this.filter[i][item.name] = true;
-                }
+                if(!list[item.type][item.name]) this.recipes[i].show.available = false;
               }
-              else this.recipes[i].show[type] = false;
+              else this.recipes[i].show.available = false;
             }
           }
         }
-
-        if(this.recipes[i].show[type]) this.noResults = false;
+        if(this.recipes[i].show.available) this.noResults = false;
       }
-      if(type == "filter") this.loadedFilter = true;
-      else this.loadedAvailable = true;
+      this.loadedAvailable = true;
     },
 
     opinion(list) {
@@ -340,12 +362,6 @@ export default {
         });
       }
       this.liked = true;
-    },
-
-    temp() {
-      for(let drink in this.recipes){
-
-      }
     },
 
     like(key) {
