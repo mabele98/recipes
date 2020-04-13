@@ -48,9 +48,8 @@ export default {
     mounted() {
         this.$auth.onAuthStateChanged(user => {
             if (user == null) this.logOut
-            let ref = this.$database.ref('Users/' + user.uid + '/name');
-            ref.on("value", data => {this.user = data.val()})
-         });
+            this.user = user.displayName
+        });
     }
 }
 </script>

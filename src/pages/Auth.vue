@@ -48,16 +48,12 @@ export default {
     methods: {
         authenticate() {
             let email = this.data['First Name'] + '_' + this.data['Last Name'] + '@pub.com'
+            let name = this.data['First Name'] + ' ' + this.data['Last Name'];
             this.$auth.createUserWithEmailAndPassword(email, 'maye-okeefe')
             .then( () => {
                 let user = this.$auth.currentUser;
-                let name = this.data['First Name'] + ' ' + this.data['Last Name'];
-                this.$database.ref('Users/' + user.uid).set({
-                    'admin': false,
-                    'name': name
-                })
                 user.updateProfile({
-                    displayName: name,
+                    displayName: name
                 }).then(() => {
                     this.$router.push('/')
                 }).catch(error => {
@@ -72,7 +68,16 @@ export default {
                 if(error.code = "auth/email-already-in-use"){
                     this.$auth.signInWithEmailAndPassword(email, 'maye-okeefe')
                     .then(() => {
-                        this.$router.push('/')
+                        let user = this.$auth.currentUser;
+                        user.updateProfile({
+                            displayName: name
+                        }).then(() => {
+                            this.$router.push('/')
+                        }).catch(error => {
+                            console.log(error.code)
+                            console.log(error.message)
+                            this.error = true;
+                        })
                     })
                 }
                 else this.error = true;

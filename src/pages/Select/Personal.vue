@@ -14,12 +14,12 @@
                     <div class="q-mt-xs row inline no-wrap">
                     <div :class="size.sm ? 'text-h6' : 'text-h5'"
                         class="text-weight-bold text-no-wrap q-mx-sm"> Choose Ingredients </div>
+                    <q-btn dense push color="green-8 q-mx-sm" text-color="black" 
+                        class="text-no-wrap" :label="size.sm ? 'Recipes' : 'Load Recipes'" @click="loadRecipes()" />
                     <q-btn dense push color="green-8 q-mx-sm" text-color="black"
                         class="text-no-wrap" label="Select All" @click="select(true)" />
                     <q-btn dense push color="green-8 q-mx-sm" text-color="black"
                         class="text-no-wrap" label="Select None" @click="select(false)" />
-                    <q-btn dense push color="green-8 q-mx-sm" text-color="black" 
-                        class="text-no-wrap" :label="size.sm ? 'Recipes' : 'Load Recipes'" @click="loadRecipes()" />
                     </div>
                     </q-scroll-area>
                     </q-toolbar>
@@ -77,7 +77,7 @@ export default {
 
     methods: {
         loadIngredients() {
-            let ref = this.$database.ref("Ciroc Recipes")
+            let ref = this.$database.ref("recipes/cîroc")
             ref.orderByKey().on("value", data => {
                 let recipes = data.val();
                 for(let drink in recipes){
@@ -99,7 +99,7 @@ export default {
                     this.options[type].sort()
                 }
 
-                let ref = this.$database.ref("Users/" + this.user + "/Filter Ingredients")
+                let ref = this.$database.ref("users/" + this.user + "/filter/cîroc")
                 ref.orderByKey().once("value", data => {
                     if(data.exists()){
                         this.addLabels(data.val())
@@ -153,7 +153,7 @@ export default {
                 else this.selected[type] = 0;
             }
 
-            let ref = this.$database.ref("Users/" + this.user + '/Filter Ingredients')
+            let ref = this.$database.ref("users/" + this.user + "/filter/cîroc")
             ref.set(value);
         },
 
@@ -170,11 +170,11 @@ export default {
             if(check) this.selected[type] += 1
             else this.selected[type] -= 1
 
-            let ref = this.$database.ref("Users/" + this.user + '/Filter Ingredients/' + type + "/include")
+            let ref = this.$database.ref("users/" + this.user + "/filter/cîroc/" + type + "/include")
             if(this.selected[type] == 0) ref.set(false)
             else if(this.selected[type] == 1) ref.set(true)
 
-            this.$database.ref("Users/" + this.user + '/Filter Ingredients/' + type + "/" + name).set(check)
+            this.$database.ref("users/" + this.user + "/filter/cîroc/" + type + "/" + name).set(check)
         },
 
         loadRecipes() {
