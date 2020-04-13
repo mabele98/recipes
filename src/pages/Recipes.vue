@@ -126,7 +126,7 @@
       </div>
     </div>
 
-    <q-footer reveal class="transparent">
+    <q-footer class="transparent">
       <q-toolbar>
         <q-scroll-area
           horizontal
