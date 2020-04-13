@@ -17,39 +17,13 @@
             text-color="green-8" 
             :label="size.sm ? 'Filter Available' : 'Filter Available Ingredients'" 
             @click="loadPage('/CirocRecipes/selectAvailable')" />
-          
-          <q-btn-toggle
-            dense push rounded
-            v-model="showAvailable"
-            toggle-color="orange"
-            color="green-8"
-            text-color="black"
-            :options="[
-              {label: 'All', value: false},
-              {label: 'Available', value: true}
-            ]" />
           <q-btn 
             dense push
-            class="q-mx-md text-no-wrap"
+            class="q-mx-xs text-no-wrap"
             color="green-8" 
             text-color="black" 
             :label="size.sm ? 'Ingredients' : 'Filter Ingredients'" 
-            @click="loadPage('/CirocRecipes/select')" />  
-          <q-btn
-            dense push
-            class="q-mx-md text-no-wrap"
-            color="green-8"
-            text-color="black"
-            :label="size.sm ? 'Return' : 'Return to Home'"
-            @click="loadPage('/')" />
-          <q-btn 
-            v-if="!size.sm"
-            dense push
-            class="q-mx-md"
-            color="green-8"
-            text-color="black" 
-            icon="shuffle" 
-            @click="randomize()" />
+            @click="loadPage('/CirocRecipes/select')" />
         </div>
         </q-scroll-area>
       </q-toolbar>
@@ -62,7 +36,7 @@
           <q-card  
           elevated
           v-for="key in index" v-bind:key="key"
-          v-show="showAvailable ? recipes[key].show.available && recipes[key].show.filter : recipes[key].show.filter"
+          v-show="display(key)"
           v-bind:style="!size.lg ? size.sm ? 'width:92vw' : 'width:47vw' : 'width:31vw'"
           class="my-card text-black"
           v-bind:class="selectedDrink != key ? recipes[key].show.available ? 'bg-white' : 'bg-grey-4' : 'bg-orange'"
@@ -151,14 +125,46 @@
           </q-card>
       </div>
     </div>
-    <q-btn 
-      v-if="size.sm"
-      push
-      class="fixed-bottom-right q-mr-md q-mb-md"
-      color="green-8"
-      text-color="black" 
-      icon="shuffle" 
-      @click="randomize()" />
+
+    <q-footer reveal class="transparent">
+      <q-toolbar>
+        <q-scroll-area
+          horizontal
+          style="height:37px;width:100vw;"
+          class="rounded-borders"
+        >
+        <q-btn-toggle
+            dense push rounded
+            v-model="showAvailable"
+            class="q-mx-xs"
+            toggle-color="orange"
+            color="green-8"
+            text-color="black"
+            :options="[
+              {label: 'All', value: false},
+              {label: 'Available', value: true}
+            ]" />
+          <q-btn-toggle
+            dense push rounded
+            class="q-mx-xs"
+            v-model="filterLiked"
+            toggle-color="orange"
+            color="green-8"
+            text-color="black"
+            :options="[
+              {label: 'All', value: false},
+              {label: 'Liked', value: true}
+            ]" />
+          <q-btn 
+            dense push
+            class="q-mx-xs"
+            color="green-8"
+            text-color="black" 
+            icon="shuffle" 
+            @click="randomize()" />
+        </q-scroll-area>
+      </q-toolbar>
+    </q-footer>
     <div v-if="noResults" class="fixed-center text-h4 text-white"> No available recipes. </div>
   </q-page>
 </template>
@@ -179,6 +185,8 @@ export default {
       dislikeChange: {id: '', change: false, add: '+'},
       
       filter: {},
+
+      filterLiked: false,
 
       size: this.$q.screen,
 
@@ -270,7 +278,7 @@ export default {
           else this.recipes[i].show.filter = true
         }
       }
-      
+
       if(none){
         for(let i in this.recipes) this.recipes[i].show.filter = true;
       }
@@ -439,6 +447,20 @@ export default {
           this.liked = true;
         })
       })
+    },
+
+    display(key) {
+      let available = true;
+      let liked = true;
+      let filter = this.recipes[key].show.filter;
+      if(this.showAvailable) {
+        available = this.recipes[key].show.available;
+      }
+      if(this.filterLiked) {
+        liked = this.recipes[key].like
+      }
+
+      return (available && liked && filter);
     },
 
     randomize(){
