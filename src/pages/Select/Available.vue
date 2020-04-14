@@ -86,6 +86,7 @@ export default {
                         let name = recipes[drink].ingredients[i].name
                         let type = recipes[drink].ingredients[i].type
 
+
                         if(type in this.options) {
                             if(!this.options[type].includes(name)) this.options[type].push(name)
                         }
@@ -162,6 +163,7 @@ export default {
         updateDatabase(type, id) {
             let check = !this.options[type][id].check
             let name = this.options[type][id].name
+            console.log(id)
 
             this.options[type][id].check = check
 

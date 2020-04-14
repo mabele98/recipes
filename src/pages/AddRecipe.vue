@@ -94,10 +94,14 @@ export default {
             if(done) {
                 this.confirm = false;
                 let ref = this.$database.ref('recipes/' + this.type)
-                let key = ref.push().getKey()
-                ref.push(data)
+                let newRef = ref.push(data)
+                let key = newRef.key;
 
-                
+
+                ref = this.$database.ref('recipes/' + this.type + '/' + key + '/ingredients')
+                for(let item in this.ingredients) {
+                    ref.push(this.ingredients[item]);
+                }
             }
             else this.confirm = true;
 
@@ -113,9 +117,7 @@ export default {
     },
 
     mounted () {
-        for(let item in this.ingredients){
-            console.log(item)
-        }
+
     }
 }
 </script>
