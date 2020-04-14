@@ -99,7 +99,7 @@
 
             </q-card-section>
             <q-card-section v-if="!check && submit">
-                <QFirebaseUploader :path="path"/>
+                <QFirebaseUploader :path="path" auto-upload/>
                 <q-btn color="green" label="Next graphic!" @click="restart()"/>
             </q-card-section>
         </q-card>
@@ -218,6 +218,10 @@ export default {
 
             this.path = 'graphics/'
         },
+
+        test() {
+            console.log("test")
+        }
 
     }
 }
