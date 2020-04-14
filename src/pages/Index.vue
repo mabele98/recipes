@@ -47,8 +47,8 @@ export default {
     },
     mounted() {
         this.$auth.onAuthStateChanged(user => {
-            if (user == null) this.logOut
-            this.user = user.displayName
+            if (user) this.user = user.displayName
+            else this.logOut(true)
         });
 
         
