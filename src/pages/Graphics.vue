@@ -201,13 +201,13 @@ export default {
 
             this.path += this.glass_ + '/' + this.color_ + '/' + this.fill_ + '/' + this.garnish_ + '/';
             if(this.garnish_ == 'whippedcream'){
-                this.path += this.whippedCream_
+                this.path += this.whippedCream_ + '/'
             }
             else if(this.ice_){
-                this.path += 'ice'
+                this.path += 'ice/'
             }
             else if(this.foam_){
-                this.path += 'foam'
+                this.path += 'foam/'
             }
 
             console.log(this.path);
@@ -217,13 +217,6 @@ export default {
             this.submit = false
 
             this.path = 'graphics/'
-            this.glass_ = 'Glass Style'
-            this.color_ = 'Color'
-            this.garnish_ = 'Garnish'
-            this.fill_ = 'Fill In'
-            this.whippedCream_ = 'Whipped Cream'
-            this.ice_ = false
-            this.foam_ = false
         },
 
     }

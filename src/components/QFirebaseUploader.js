@@ -58,7 +58,8 @@ export default {
 
       this.files.forEach(file => {
         const datetime = new Date().toISOString().split(".")[0];
-        const newRef = this.path + file.name;
+        //const file.name
+        const newRef = this.path + 'graphic.png';
         const uploadTask = this.$storage.ref(newRef).put(file);
 
         this.uploadTasks.push(uploadTask);
@@ -71,7 +72,7 @@ export default {
             uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
               this.$emit("upload", {
                 url: downloadURL,
-                name: file.name,
+                name: 'graphic.png',
                 uploadedDate: datetime
               });
               this.removeFile(file);
