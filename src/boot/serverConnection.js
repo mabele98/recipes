@@ -17,4 +17,7 @@ export default async ({Vue}) => {
 
   Vue.prototype.$database = firebase.database();
   Vue.prototype.$auth = firebase.auth();
+
+  Vue.prototype.$storage = firebase.storage();
 }
+

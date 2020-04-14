@@ -45,7 +45,7 @@
               v-bind:class="size.sm ? 'text-h5' : 'text-h4'"
               class="q-pt-lg text-center text-weight-bolder text-no-wrap"
             >
-              <div v-bind:style="selectedDrink == key ? 'color: white' : recipes[key].color"> 
+              <div v-bind:style="selectedDrink == key ? 'color: white' : 'color: ' + recipes[key].color"> 
                 {{ recipes[key].name }}
               </div>
             </div>
@@ -61,7 +61,7 @@
                 v-if="selectedDrink != key"
                 style="height:30vh;width:auto"
                 class="q-pt-lg q-pl-md"
-                v-bind:src="'statics/img/'+recipes[key].image+'.png'"
+                v-bind:src="recipes[key].image"
               />
               <q-card-section horizontal v-if="selectedDrink == key">
                 <q-card-section vertical>
@@ -219,19 +219,12 @@ export default {
           let image = data.val()[i].name
           if(image.includes("î")) image = image.replace("î","i");
           if(image.includes("ñ")) image = image.replace("ñ","n")
-          this.recipes[i]["image"] = image;
 
-          let vodka = this.recipes[i].ingredients["1"].name;
-          if(vodka == "Cîroc Vodka") this.recipes[i]["color"] = 'color:#243090'
-          else if(vodka == "Cîroc Pineapple") this.recipes[i]["color"] = 'color:#FAC300'
-          else if(vodka == "Cîroc Amaretto") this.recipes[i]["color"] = 'color:#6B0F05'
-          else if(vodka == "Cîroc French Vanilla") this.recipes[i]["color"] = 'color:#EA9F42'
-          else if(vodka == "Cîroc Coconut") this.recipes[i]["color"] = 'color:#5B5957'
-          else if(vodka == "Cîroc Peach") this.recipes[i]["color"] = 'color:#F28500'
-          else if(vodka == "Cîroc Red Berry") this.recipes[i]["color"] = 'color:#A60000'
-          else if(vodka == "Cîroc Apple") this.recipes[i]["color"] = "color:#00B939"
-          else if(vodka == "Cîroc White Grape Vodka") this.recipes[i]["color"] = 'color:#E0CFAF'
-          else this.recipes[i]["color"] = 'color:black'
+          let imageRef = this.$storage.ref().child('cîroc/' + image + '.png')
+
+          imageRef.getDownloadURL().then(url => {
+            this.recipes[i]["image"] = url;
+          })
         }
 
         let ref = this.$database.ref("/available/cîroc")
