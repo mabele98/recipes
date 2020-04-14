@@ -5,10 +5,10 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/Index.vue') },
       { path: '/auth', component: () => import('pages/Auth.vue') },
-      { path: '/CirocRecipes', component: () => import('pages/Recipes.vue') },
-      { path: '/test', component: () => import('pages/Select.vue') },
-      { path: '/CirocRecipes/select', component: () => import('pages/Select/Personal.vue') },
-      { path: '/CirocRecipes/selectAvailable', component: () => import('pages/Select/Available.vue') }
+      { path: '/recipes/:id', component: () => import('pages/Recipes.vue')},
+      { path: '/select/:id', component: () => import('pages/Select/Personal.vue') },
+      { path: '/available/:id', component: () => import('pages/Select/Available.vue') },
+      { path: '/add', component: () => import('pages/AddRecipe.vue')}
     ]
   },
 ]

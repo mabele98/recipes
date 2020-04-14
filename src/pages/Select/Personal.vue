@@ -66,6 +66,8 @@ export default {
     
     data () {
         return {
+            id: this.$route.params.id,
+
             loaded: false,
             size: this.$q.screen,
             user: null,
@@ -77,7 +79,7 @@ export default {
 
     methods: {
         loadIngredients() {
-            let ref = this.$database.ref("recipes/cîroc")
+            let ref = this.$database.ref("recipes/" + this.id)
             ref.orderByKey().on("value", data => {
                 let recipes = data.val();
                 for(let drink in recipes){
@@ -99,7 +101,7 @@ export default {
                     this.options[type].sort()
                 }
 
-                let ref = this.$database.ref("users/" + this.user + "/filter/cîroc")
+                let ref = this.$database.ref("users/" + this.user + "/filter/" + this.id)
                 ref.orderByKey().once("value", data => {
                     if(data.exists()){
                         this.addLabels(data.val())
@@ -153,7 +155,7 @@ export default {
                 else this.selected[type] = 0;
             }
 
-            let ref = this.$database.ref("users/" + this.user + "/filter/cîroc")
+            let ref = this.$database.ref("users/" + this.user + "/filter/" + this.id)
             ref.set(value);
         },
 
@@ -170,15 +172,11 @@ export default {
             if(check) this.selected[type] += 1
             else this.selected[type] -= 1
 
-            /*let ref = this.$database.ref("users/" + this.user + "/filter/cîroc/" + type + "/include")
-            if(this.selected[type] == 0) ref.set(false)
-            else if(this.selected[type] == 1) ref.set(true)*/
-
-            this.$database.ref("users/" + this.user + "/filter/cîroc/" + type + "/" + name).set(check)
+            this.$database.ref("users/" + this.user + "/filter/" + this.id + "/" + type + "/" + name).set(check)
         },
 
         loadRecipes() {
-            this.$router.push('/CirocRecipes')
+            this.$router.push('/recipes/' + this.id)
         }
     },
 

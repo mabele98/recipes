@@ -16,14 +16,21 @@
             color="white" 
             text-color="green-8" 
             :label="size.sm ? 'Filter Available' : 'Filter Available Ingredients'" 
-            @click="loadPage('/CirocRecipes/selectAvailable')" />
+            @click="loadPage('/available/' + id)" />
           <q-btn 
             dense push
-            class="q-mx-xs text-no-wrap"
+            class="q-mx-sm text-no-wrap"
             color="green-8" 
             text-color="black" 
             :label="size.sm ? 'Ingredients' : 'Filter Ingredients'" 
-            @click="loadPage('/CirocRecipes/select')" />
+            @click="loadPage('/select/' + id)" />
+          <q-btn 
+            dense push
+            class="q-mx-sm text-no-wrap"
+            color="green-8" 
+            text-color="black" 
+            :label="size.sm ? 'Return' : 'Return Home'" 
+            @click="loadPage('/')" />
         </div>
         </q-scroll-area>
       </q-toolbar>
@@ -176,6 +183,7 @@ export default {
     return {
       user: null,
       admin: false,
+      id: this.$route.params.id,
       
       loadedAvailable: false,
       loadedFilter: false,
@@ -204,7 +212,7 @@ export default {
   methods: {
     loadDrinks(){
       let drinks = [];
-      let ref = this.$database.ref("recipes/cîroc")
+      let ref = this.$database.ref("recipes/" + this.id)
       ref.orderByKey().once('value', data => {
         this.recipes = data.val();
         this.index = [];
@@ -220,24 +228,24 @@ export default {
           if(image.includes("î")) image = image.replace("î","i");
           if(image.includes("ñ")) image = image.replace("ñ","n")
 
-          let imageRef = this.$storage.ref().child('cîroc/' + image + '.png')
+          let imageRef = this.$storage.ref().child(this.id + '/' + image + '.png')
 
           imageRef.getDownloadURL().then(url => {
             this.recipes[i]["image"] = url;
           })
         }
 
-        let ref = this.$database.ref("/available/cîroc")
+        let ref = this.$database.ref("/available/" + this.id)
         ref.on("value", data => {
           this.availableItems(data.val());
         });
 
-        ref = this.$database.ref("users/" + this.user + "/filter/cîroc")
+        ref = this.$database.ref("users/" + this.user + "/filter/" + this.id)
         ref.orderByKey().on("value", data => {
           this.filterItems(data.val());
         });
 
-        ref = this.$database.ref("users/" + this.user + "/recipes/cîroc")
+        ref = this.$database.ref("users/" + this.user + "/recipes/" + this.id)
         ref.on("value", data => {
           this.opinion(data.val());
         })
@@ -369,7 +377,7 @@ export default {
       this.liked = false;
       let prev = this.recipes[key].dislike
 
-      let ref = this.$database.ref("users/" + this.user + "/recipes/cîroc/" + key)
+      let ref = this.$database.ref("users/" + this.user + "/recipes/" + this.id + "/" + key)
       ref.once("value", data => {
         let like = false;
         let dislike = false;
@@ -380,7 +388,7 @@ export default {
 
         ref.set({"dislike": false, "like": like})
         
-        let complete = this.$database.ref("recipes/cîroc/" + key)
+        let complete = this.$database.ref("recipes/" + this.id + "/" + key)
         complete.once("value", info => {
           let _likes = 0;
           let _dislikes = 0;
@@ -408,7 +416,7 @@ export default {
       this.liked = false;
       let prev = this.recipes[key].like
 
-      let ref = this.$database.ref("users/" + this.user + "/recipes/cîroc/" + key)
+      let ref = this.$database.ref("users/" + this.user + "/recipes/" + this.id + "/" + key)
       ref.once("value", data => {
         let like = false;
         let dislike = false;
@@ -418,7 +426,7 @@ export default {
         }
         ref.set({"dislike": dislike, "like": false})
 
-        let complete = this.$database.ref("recipes/cîroc/" + key)
+        let complete = this.$database.ref("recipes/" + this.id + "/" + key)
         complete.once("value", info => {
           let _likes = info.val()["likes"];
           let _dislikes = info.val()["dislikes"];

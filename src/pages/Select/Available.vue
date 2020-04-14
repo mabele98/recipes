@@ -66,6 +66,8 @@ export default {
     
     data () {
         return {
+            id: this.$route.params.id,
+
             loaded: false,
             size: this.$q.screen,
             selected: {},
@@ -76,7 +78,7 @@ export default {
 
     methods: {
         loadIngredients() {
-            let ref = this.$database.ref("recipes/cîroc")
+            let ref = this.$database.ref("recipes/" + this.id)
             ref.orderByKey().on("value", data => {
                 let recipes = data.val();
                 for(let drink in recipes){
@@ -98,7 +100,7 @@ export default {
                     this.options[type].sort()
                 }
 
-                let ref = this.$database.ref("available/cîroc")
+                let ref = this.$database.ref("available/" + this.id)
                 ref.orderByKey().once("value", data => {
                     if(data.exists()){
                         this.addLabels(data.val())
@@ -138,12 +140,12 @@ export default {
             let value = {};
             let id = 0;
             for(let type in this.options){
-                this.$database.ref("available/cîroc/" + type + "/include").set(all);
+                this.$database.ref("available/" + this.id + "/" + type + "/include").set(all);
                 value[type] = {"include": all}
                 let total = 0;
                 for(let item in this.options[type]){
                     let name = this.options[type][item].name
-                    this.$database.ref("available/cîroc/" + type + "/" + name).set(all);
+                    this.$database.ref("available/" + this.id + "/" + type + "/" + name).set(all);
                     if(all) this.check.push(id)
                     id += 1;
                     total += 1;
@@ -166,14 +168,14 @@ export default {
             if(check) this.selected[type] += 1
             else this.selected[type] -= 1
 
-            if(this.selected[type] == 0) this.$database.ref("available/cîroc/" + type + "/include").set(false)
-            else if(this.selected[type] == 1) this.$database.ref("available/cîroc/" + type + "/include").set(true)
+            if(this.selected[type] == 0) this.$database.ref("available/" + this.id + "/" + type + "/include").set(false)
+            else if(this.selected[type] == 1) this.$database.ref("available/" + this.id + "/" + type + "/include").set(true)
 
-            this.$database.ref("available/cîroc/" + type + "/" + name).set(check)
+            this.$database.ref("available/" + this.id + "/" + type + "/" + name).set(check)
         },
 
         loadRecipes() {
-            this.$router.push('/CirocRecipes')
+            this.$router.push('/recipes/' + this.id)
         }
     },
 

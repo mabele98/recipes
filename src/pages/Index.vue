@@ -14,7 +14,14 @@
                 class="q-ma-lg text-white"
                 color="green"
                 label="Cîroc Drinks"
-                @click="loadRecipes()"
+                @click="loadRecipes('cîroc')"
+            />
+            <q-btn
+                push
+                class="q-ma-lg text-white"
+                color="green"
+                label="Baileys Drinks"
+                @click="loadRecipes('baileys')"
             />
         </div>
         <q-btn
@@ -41,8 +48,8 @@ export default {
             }
             this.$router.push('/auth');
         },
-        loadRecipes(){
-            this.$router.push('/CirocRecipes')
+        loadRecipes(id){
+            this.$router.push('/recipes/' + id)
         }
     },
     mounted() {
