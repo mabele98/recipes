@@ -104,6 +104,7 @@
             </q-card-section>
         </q-card>
 
+
     </q-page>
 </template>
 
@@ -173,6 +174,7 @@ export default {
                 'lime',
                 'leaves',
                 'pineapple',
+                'orange',
                 'strawberry',
                 'whippedcream',
                 'none'
@@ -220,7 +222,11 @@ export default {
         },
 
         test() {
-            console.log("test")
+            let imageRef = this.$storage.ref().child('graphics/shot/F7468A/none/none/graphic.png');
+
+          imageRef.getDownloadURL().then(url => {
+            this.link = url;
+          })
         }
 
     }

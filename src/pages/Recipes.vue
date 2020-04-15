@@ -67,8 +67,8 @@
               <img 
                 v-if="selectedDrink != key"
                 style="height:30vh;width:auto"
-                class="q-pt-lg q-pl-md"
-                v-bind:src="recipes[key].image"
+                class="q-ml-md"
+                v-bind:src="recipes[key].url"
               />
               <q-card-section horizontal v-if="selectedDrink == key">
                 <q-card-section vertical>
@@ -104,7 +104,6 @@
                   </div>
                 </q-card-section>
               </q-card-section>
-            </q-card-section>
 
             <q-card-actions align="center">
               <div 
@@ -224,15 +223,24 @@ export default {
             'filter': true
           }
 
-          let image = data.val()[i].name
-          if(image.includes("î")) image = image.replace("î","i");
-          if(image.includes("ñ")) image = image.replace("ñ","n")
+          if(this.id == "cîroc"){
+            let image = data.val()[i].name
+            if(image.includes("î")) image = image.replace("î","i");
+            if(image.includes("ñ")) image = image.replace("ñ","n")
 
-          let imageRef = this.$storage.ref().child(this.id + '/' + image + '.png')
+            let imageRef = this.$storage.ref().child(this.id + '/' + image + '.png')
 
-          imageRef.getDownloadURL().then(url => {
-            this.recipes[i]["image"] = url;
-          })
+            imageRef.getDownloadURL().then(url => {
+              this.recipes[i]["url"] = url;
+            })
+          }
+          else{
+            //console.log(this.recipes[i])
+            let imageRef = this.$storage.ref().child(this.recipes[i].image)
+            imageRef.getDownloadURL().then(url => {
+              this.recipes[i]["url"] = url
+            })
+          }
         }
 
         let ref = this.$database.ref("/available/" + this.id)
