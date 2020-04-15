@@ -44,14 +44,14 @@
                 >
                     <div
                         class="q-pa-sm text-subtitle1"
-                        v-for="(info,i) in options[type]" 
-                        v-bind:key="i"
+                        v-for="(data,name) in options[type]" 
+                        v-bind:key="name"
                     >
                         <q-checkbox 
                             v-model="check" 
-                            v-bind:val="info.id" 
-                            v-bind:label="info.name" 
-                            @input="updateDatabase(type,i)"
+                            v-bind:val="data.info.id" 
+                            v-bind:label="data.info.name" 
+                            @input="updateDatabase(type,name)"
                         />
                     </div>
                 </q-scroll-area>
@@ -80,59 +80,64 @@ export default {
         loadIngredients() {
             let ref = this.$database.ref("recipes/" + this.id)
             ref.orderByKey().on("value", data => {
-                let recipes = data.val();
-                for(let drink in recipes){
-                    for(let i in recipes[drink].ingredients){
-                        let name = recipes[drink].ingredients[i].name
-                        let type = recipes[drink].ingredients[i].type
+                for(let drink in data.val()){
+                    for(let id in data.val()[drink].ingredients){
+                        let name = data.val()[drink].ingredients[id].name;
+                        let type = data.val()[drink].ingredients[id].type;
 
-
-                        if(type in this.options) {
-                            if(!this.options[type].includes(name)) this.options[type].push(name)
+                        if (type in this.options) {
+                            if(name in this.options[type]) this.options[type][name].ingredients.push(id);
+                            else this.options[type][name] = { 'ingredients': [id] }
                         }
-                        else{
-                            this.options[type] = [name]
+                        else {
+                            this.options[type] = {}
+                            this.options[type][name] = { 'ingredients': [id] }
                             this.selected[type] = 0;
                         }
                     }
                 }
 
-                for(let type in this.options){
-                    this.options[type].sort()
+                for(let type in this.options) {
+                    const ordered = {}
+                    Object.keys(this.options[type]).sort().forEach(key => {
+                        ordered[key] = this.options[type][key]; 
+                    })
+                    this.options[type] = ordered;
                 }
 
-                let ref = this.$database.ref("available/" + this.id)
-                ref.orderByKey().once("value", data => {
-                    if(data.exists()){
-                        this.addLabels(data.val())
+                
+                let available = this.$database.ref("available/" + this.id)
+                available.orderByKey().once("value", info => {
+                    if(info.exists()){
+                        this.addLabels(info.val())
                     }
                     else this.addLabels(null)
                 });
-
-                console.log(this.options)
             });
 
         },
 
         addLabels(list) {
-            let id = 0;
-            for(let i in this.options){
-                for(let j in this.options[i]){
-                    let name = this.options[i][j]
+  
+            for(let type in this.options){
+                for(let name in this.options[type]){
                     let data = this.formatLabel(name)
-                    let check = false;
-                    if(list != null) check = list[i][name];
+                    let check = false
+                    let id = this.options[type][name].ingredients[0]
+
+                    if(list != null) check = list[id]
+
                     if(check) {
                         this.check.push(id)
-                        this.selected[i] += 1;
+                        this.selected[type] += 1
                     }
-                    this.options[i][j] = {
+
+                    this.options[type][name]['info'] = {
                         'id': id,
                         'name': name,
                         'data': data,
-                        "check": check
+                        'check': check
                     }
-                    id += 1;
                 }
             }
             this.loaded=true;
@@ -141,20 +146,20 @@ export default {
         select(all){
             this.check = [];
             let value = {};
-            let id = 0;
-            for(let type in this.options){
-                this.$database.ref("available/" + this.id + "/" + type + "/include").set(all);
-                value[type] = {"include": all}
-                let total = 0;
-                for(let item in this.options[type]){
-                    let name = this.options[type][item].name
-                    this.$database.ref("available/" + this.id + "/" + type + "/" + name).set(all);
-                    if(all) this.check.push(id)
-                    id += 1;
-                    total += 1;
+
+            for (let type in this.options) {
+                this.$database.ref("available/" + this.id + "/" + type).set(all);
+                let total = 0
+                for (let name in this.options[type]) {
+                    for (let i in this.options[type][name].ingredients) {
+                        let id = this.options[type][name].ingredients[i]
+                        this.$database.ref("available/" + this.id + "/" + id).set(all)
+                    }
+                    if(all) this.check.push(this.options[type][name].ingredients[0])
+                    total += 1
                 }
-                if(all) this.selected[type] = total;
-                else this.selected[type] = 0;
+                if(all) this.selected[type] = total
+                else this.selected[type] = 0
             }
         },
 
@@ -162,20 +167,20 @@ export default {
             return { label: item, value: item, color: "orange"}
         },
 
-        updateDatabase(type, id) {
-            let check = !this.options[type][id].check
-            let name = this.options[type][id].name
-            console.log(id)
-
-            this.options[type][id].check = check
+        updateDatabase(type, name) {
+            let check = !this.options[type][name].info.check
+            this.options[type][name].info.check = check
 
             if(check) this.selected[type] += 1
             else this.selected[type] -= 1
 
-            if(this.selected[type] == 0) this.$database.ref("available/" + this.id + "/" + type + "/include").set(false)
-            else if(this.selected[type] == 1) this.$database.ref("available/" + this.id + "/" + type + "/include").set(true)
-
-            this.$database.ref("available/" + this.id + "/" + type + "/" + name).set(check)
+            for (let i in this.options[type][name].ingredients) {
+                let id = this.options[type][name].ingredients[i]
+                this.$database.ref("available/" + this.id + "/" + id).set(check)
+            }
+            
+            if(this.selected[type] == 0) this.$database.ref("available/" + this.id + "/" + type).set(false)
+            else if(this.selected[type] == 1) this.$database.ref("available/" + this.id + "/" + type).set(true)
         },
 
         loadRecipes() {

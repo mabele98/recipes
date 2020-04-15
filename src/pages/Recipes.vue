@@ -95,7 +95,7 @@
                     v-for="(val,i) in recipes[key].ingredients" v-bind:key="i" 
                     >
                     <div v-if="val != null">
-                      <div :class="filter[key][val.name] ? 'text-weight-bold' : 'text-weight-regular'"
+                      <div :class="recipes[key].ingredients[i].filter ? 'text-weight-bold' : 'text-weight-regular'"
                         class="text-black"
                       >
                         {{val.name}}
@@ -235,7 +235,6 @@ export default {
             })
           }
           else{
-            //console.log(this.recipes[i])
             let imageRef = this.$storage.ref().child(this.recipes[i].image)
             imageRef.getDownloadURL().then(url => {
               this.recipes[i]["url"] = url
@@ -264,31 +263,22 @@ export default {
 
     filterItems(list) {
       this.loadedFilter = false;
-      let none = true;
-      for(let i in this.recipes){
-        this.recipes[i].show.filter = false
+      let noFilter = true
 
-        for(let j in this.recipes[i].ingredients){
-          let item = this.recipes[i].ingredients[j];
-
-          if(!(i in this.filter)) this.filter[i] = {}
-          this.filter[i][item.name] = false;
-
-          if(list != null){
-            if(item.type in list && item.name in list[item.type]){
-              if(list[item.type][item.name]){ 
-                this.recipes[i].show.filter = true;
-                this.filter[i][item.name] = true;
-                none = false;
-              }
+      for(let drink in this.recipes) {
+        this.recipes[drink].show.filter = false
+        for(let id in this.recipes[drink].ingredients) {
+          this.recipes[drink].ingredients[id].filter = false
+          if(list != null && id in list) {
+            this.recipes[drink].ingredients[id].filter = list[id]
+            if(list[id]) {
+              this.recipes[drink].show.filter = true
+              noFilter = false
             }
-            else this.recipes[i].show.filter = true
           }
-          else this.recipes[i].show.filter = true
         }
       }
-
-      if(none){
+      if(noFilter){
         for(let i in this.recipes) this.recipes[i].show.filter = true;
       }
 
@@ -298,23 +288,19 @@ export default {
     availableItems(list){
       this.loadedAvailable = false;
 
-      for(let i in this.recipes){
-        let types = [];
-        this.recipes[i].show.available = true
-        for(let j in this.recipes[i].ingredients){
-          let item = this.recipes[i].ingredients[j];
-
-          if(list != null && item.type in list){
-            if(list[item.type].include){
-              if(item.name in list[item.type]){
-                if(!list[item.type][item.name]) this.recipes[i].show.available = false;
-              }
-              else this.recipes[i].show.available = false;
+      for(let drink in this.recipes) {
+        this.recipes[drink].show.available = true
+        for(let id in this.recipes[drink].ingredients) {
+          let type = this.recipes[drink].ingredients[id].type
+          if(list != null) {
+            if(type in list && id in list) {
+              if(list[type] && !list[id]) this.recipes[drink].show.available = false
             }
           }
         }
-        if(this.recipes[i].show.available) this.noResults = false;
       }
+
+      this.noResults = false
       this.loadedAvailable = true;
     },
 
