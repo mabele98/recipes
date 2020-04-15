@@ -10,13 +10,13 @@
                 <q-input v-model="name" label="Drink Name"/>
                 <q-input v-model="type" label="Drink Type"/>
                 <q-input v-model="description" label="Description"/>
+                <q-input v-model="url" label="url"/>
 
                 <div class="text-h4 text-black q-mt-md"> Ingredients </div>
                 <div v-for="(value,key) in ingredients" :key="key">
-                    <div class="text-subtitle2 text-black q-mt-md"> {{key}} </div>
+                    <div class="text-subtitle2 text-black q-mt-md"> Ingredient #{{key + 1}} </div>
                     <q-input v-model="ingredients[key].name" label="Name"/>
                     <q-input v-model="ingredients[key].amount" label="Amount"/>
-                    <q-input v-model="ingredients[key].measurement" label="Measurement"/>
                     <q-card-section horizontal>
                     <q-btn-dropdown class="q-my-xs text-black" color="white" label="Measurement">
                         <q-list> <q-item 
@@ -26,13 +26,25 @@
                             @click="ingredients[key].measurement = item"
                             > <q-item-section>
                                 <q-item-label>{{item}}</q-item-label>
-                            </q-item-section> </q-item>
-                        </q-list>
+                            </q-item-section> </q-item></q-list>
                     </q-btn-dropdown> 
                     <div v-if="ingredients[key].measurement != ''" class="text-h5 q-ma-sm"> 
                         {{ingredients[key].measurement}} </div>
                     </q-card-section>
-                    <q-input v-model="ingredients[key].type" label="Type"/>
+                    <q-card-section horizontal>
+                    <q-btn-dropdown class="q-my-xs text-black" color="white" label="Type">
+                        <q-list> <q-item 
+                            clickable v-close-popup 
+                            v-for="item in type_" 
+                            :key="item"
+                            @click="ingredients[key].type = item"
+                            > <q-item-section>
+                                <q-item-label>{{item}}</q-item-label>
+                            </q-item-section> </q-item></q-list>
+                    </q-btn-dropdown> 
+                    <div v-if="ingredients[key].type != ''" class="text-h5 q-ma-sm"> 
+                        {{ingredients[key].type}} </div>
+                    </q-card-section>
                 </div>
             </q-card-section>
             <q-card-actions>
@@ -57,21 +69,21 @@
                     <q-list>
                         <q-item 
                         clickable v-close-popup 
-                        v-for="item in glass" 
-                        :key="item"
-                        @click="glass_ = item">
-                        <q-item-section><q-item-label>{{item}}</q-item-label>
+                        v-for="(value, key) in glass" 
+                        :key="key"
+                        @click="glass_ = value">
+                        <q-item-section><q-item-label>{{value}}</q-item-label>
                         </q-item-section></q-item>
                     </q-list></q-btn-dropdown> <br>
-                <q-btn-dropdown class="q-mt-lg q-mb-xs text-black" :style="'background-color:#' + color_" :label="color_">
+                <q-btn-dropdown class="q-mt-lg q-mb-xs text-black" :style="'background-color:' + color_" :label="color_">
                     <q-list><q-item 
                         clickable v-close-popup 
-                        v-for="item in color" 
-                        :key="item"
-                        @click="color_ = item"
+                        v-for="(value, key) in color" 
+                        :key="key"
+                        @click="color_ = value.hex"
                         >
-                        <q-item-section :style="'background-color:#'+item">
-                            <q-item-label :style="'background-color:white'">{{item}}</q-item-label>
+                        <q-item-section :style="'background-color:'+value.hex">
+                            <q-item-label :style="'background-color:white'">{{value.name}}</q-item-label>
                         </q-item-section>
                         </q-item></q-list>
                 </q-btn-dropdown><br>
@@ -79,30 +91,30 @@
                     <q-list>
                         <q-item 
                         clickable v-close-popup 
-                        v-for="item in fill" 
-                        :key="item"
-                        @click="fill_ = item">
-                        <q-item-section><q-item-label>{{item}}</q-item-label>
+                        v-for="(value, key) in fill" 
+                        :key="key"
+                        @click="fill_ = value">
+                        <q-item-section><q-item-label>{{value}}</q-item-label>
                         </q-item-section></q-item>
                     </q-list></q-btn-dropdown> <br>
                 <q-btn-dropdown class="q-mt-lg q-mb-xs text-black" color="white" :label="garnish_">
                     <q-list>
                         <q-item 
                         clickable v-close-popup 
-                        v-for="item in garnish" 
-                        :key="item"
-                        @click="garnish_ = item">
-                        <q-item-section><q-item-label>{{item}}</q-item-label>
+                        v-for="(value, key) in garnish" 
+                        :key="key"
+                        @click="garnish_ = value">
+                        <q-item-section><q-item-label>{{value}}</q-item-label>
                         </q-item-section></q-item>
                     </q-list></q-btn-dropdown> <br>
                 <q-btn-dropdown class="q-mt-lg q-mb-xs text-black" v-if="garnish_=='whippedcream'" color="white" :label="whippedCream_">
                     <q-list>
                         <q-item 
                         clickable v-close-popup 
-                        v-for="item in whippedCream" 
-                        :key="item"
-                        @click="whippedCream_ = item">
-                        <q-item-section><q-item-label>{{item}}</q-item-label>
+                        v-for="(value, key) in whippedcream" 
+                        :key="key"
+                        @click="whippedCream_ = value">
+                        <q-item-section><q-item-label>{{value}}</q-item-label>
                         </q-item-section></q-item>
                     </q-list></q-btn-dropdown> <br>
                 <q-checkbox v-if="garnish_ != 'whippedcream' && foam_ == false" v-model="ice_" label="Ice"/>
@@ -137,8 +149,8 @@ export default {
 
             name: '',
             type: '',
-            color: '',
             description: '',
+            url: '',
             ingredients: [
                 {
                     "amount": 0,
@@ -160,6 +172,16 @@ export default {
                 "splash(es)",
             ],
 
+            type_: [
+                "MAIN INGREDIENT",
+                "ADDITIONAL ALCOHOL",
+                "JUICE",
+                "POP",
+                "SYRUP",
+                "ADD IN",
+                "GARNISH",
+            ],
+
             
 
             glass_: 'Glass Style',
@@ -167,75 +189,26 @@ export default {
             garnish_: 'Garnish',
             top_: 'Top Fill',
             fill_: 'Fill In',
-            whippedCream_: 'Whipped Cream',
+            whippedCream_: 'Topping',
             ice_: false,
             foam_: false,
 
-            glass: [
-                "champagne",
-                "margarita",
-                "martini",
-                "shot",
-                "short",
-                "tall",
-                "wine"
-            ],
-            color: [
-                'FFA6C9',
-                'F7468A',
-                'C40850',
-                'FE6F5E',
-                'E81717',
-                '9E1030',
-                'E58E73',
-                'B33B24',
-                '77212E',
-                'D2A679',
-                'AC7339',
-                '734D26',
-                'FEAF4D',
-                'F28600',
-                'CB6601',
-                'FFE999',
-                'FFCD1A',
-                'E6B400',
-                '1E1E1E',
-                'FCEBD2'
-            ],
-            garnish: [
-                'apple',
-                'cherry',
-                'grapes',
-                'watermellon',
-                'lemon',
-                'lime',
-                'leaves',
-                'pineapple',
-                'orange',
-                'strawberry',
-                'whippedcream',
-                'none'
-            ],
-            whippedCream: [
-                'chocolate',
-                'cherry',
-                'sprinkes',
-                'plain',
-            ],
-            fill: [
-                'blackberries',
-                'blueberries',
-                'leaves',
-                'mixedBerries',
-                'raspberries',
-                'none'
-            ]
+            glass: null,
+            color: null,
+            garnish: null,
+            whippedcream: null,
+            fill: null,
 
         }
     },
 
+    computed: {
+
+    },
+
     methods: {
         add() {
+            console.log(this.color)
             this.ingredients.push({
                 "amount": 0,
                 "measurement": '',
@@ -249,7 +222,8 @@ export default {
             let data = {
                 'name': this.name,
                 'description': this.description,
-                'color': this.color_,
+                'url': this.url,
+                'color': '#' + this.color_,
                 'dislikes': 0,
                 'likes': 0,
                 'image': this.path
@@ -266,8 +240,29 @@ export default {
 
                 ref = this.$database.ref('recipes/' + this.type + '/' + key + '/ingredients')
                 for(let item in this.ingredients) {
+                    if(this.ingredients[item].type == "MAIN INGREDIENT") {
+                        this.ingredients[item].type = this.type.toUpperCase();
+                    }
+
                     ref.push(this.ingredients[item]);
                 }
+
+                this.name = ''
+                this.type = ''
+                this.color = ''
+                this.description = ''
+                this.url = ''
+                this.ingredients = [
+                    {
+                        "amount": 0,
+                        "measurement": '',
+                        "name": '',
+                        "type": ''
+                    }
+                ]
+
+                this.path = 'graphics/'
+                this.link = ''
             }
             else this.confirm = true;
 
@@ -278,7 +273,8 @@ export default {
 
         createPath() {
             this.path = 'graphics/'
-            this.path += this.glass_ + '/' + this.color_ + '/' + this.fill_ + '/' + this.garnish_ + '/';
+            let hex = this.color_.slice(1)
+            this.path += this.glass_ + '/' + hex + '/' + this.fill_ + '/' + this.garnish_ + '/';
             if(this.garnish_ == 'whippedcream'){
                 this.path += this.whippedCream_ + '/'
             }
@@ -304,6 +300,25 @@ export default {
 
     mounted () {
 
+        this.$database.ref('graphics/glass').once("value", data => {
+            this.glass = data.val();
+        })
+        
+        this.$database.ref('graphics/color').once("value", data => {
+            this.color = data.val();
+        })
+
+        this.$database.ref('graphics/garnish').once("value", data => {
+            this.garnish = data.val();
+        })
+
+        this.$database.ref('graphics/fill').once("value", data => {
+            this.fill = data.val();
+        })
+
+        this.$database.ref('graphics/whippedcream').once("value", data => {
+            this.whippedcream = data.val();
+        })
     }
 }
 </script>

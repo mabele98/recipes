@@ -108,6 +108,8 @@ export default {
                     }
                     else this.addLabels(null)
                 });
+
+                console.log(this.options)
             });
 
         },
