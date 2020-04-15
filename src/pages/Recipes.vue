@@ -65,10 +65,10 @@
 
             <q-card-section horizontal>
               <img 
+                :id="'img' + key"
                 v-if="selectedDrink != key"
                 style="height:30vh;width:auto"
                 class="q-ml-md"
-                v-bind:src="recipes[key].url"
               />
               <q-card-section horizontal v-if="selectedDrink == key">
                 <q-card-section vertical>
@@ -108,23 +108,23 @@
             <q-card-actions align="center">
               <div 
                 class="text-caption" 
-                :class="likeChange.id == key ? likeChange.change ? 'text-green' : 'text-black' : 'text-black'"> 
+                :class="change.likes.id == key ? change.likes.change ? 'text-green' : 'text-black' : 'text-black'"> 
                 {{recipes[key].likes}}
               </div>
               <q-btn flat 
-              v-show="liked"
-              :ripple="false"
-              :color="recipes[key].like ? 'green' : 'black'"
-              icon-right="thumb_up" @click="like(key)" />
+                v-show="loadedOpinion"
+                :ripple="false"
+                :color="recipes[key].like ? 'green' : 'black'"
+                icon-right="thumb_up" @click="like(key, true)" />
               <q-btn v-if="selectedDrink == key" flat icon="clear" @click="selectedDrink = ''"/>
               <q-btn v-else flat @click="selectedDrink = key">Recipe</q-btn>
               <q-btn flat 
-              v-show="liked"
-              :ripple="false"
-              :color="recipes[key].dislike ? 'red' : 'black'"
-              icon="thumb_down" @click="dislike(key)"/>
+                v-show="loadedOpinion"
+                :ripple="false"
+                :color="recipes[key].dislike ? 'red' : 'black'"
+                icon="thumb_down" @click="like(key, false)"/>
               <div 
-                class="text-caption" :class="dislikeChange.id == key ? dislikeChange.change ? 'text-red' : 'text-black' : 'text-black'">
+                class="text-caption" :class="change.dislikes.id == key ? change.dislikes.change ? 'text-red' : 'text-black' : 'text-black'">
                 {{recipes[key].dislikes}}
               </div>
             </q-card-actions>
@@ -186,12 +186,15 @@ export default {
       
       loadedAvailable: false,
       loadedFilter: false,
-      liked: false,
+      loadedOpinion: false,
+
+      change: {
+        'likes': {id: '', change: false, add: true},
+        'dislikes': {id: '', change: false, add: true}
+      },
 
       likeChange: {id: '', change: false, add: true},
-      dislikeChange: {id: '', change: false, add: '+'},
-      
-      filter: {},
+      dislikeChange: {id: '', change: false, add: true},
 
       filterLiked: false,
 
@@ -208,6 +211,7 @@ export default {
       noResults: true
     }
   },
+
   methods: {
     loadDrinks(){
       let drinks = [];
@@ -223,23 +227,12 @@ export default {
             'filter': true
           }
 
-          if(this.id == "cîroc"){
-            let image = data.val()[i].name
-            if(image.includes("î")) image = image.replace("î","i");
-            if(image.includes("ñ")) image = image.replace("ñ","n")
-
-            let imageRef = this.$storage.ref().child(this.id + '/' + image + '.png')
-
-            imageRef.getDownloadURL().then(url => {
-              this.recipes[i]["url"] = url;
-            })
-          }
-          else{
-            let imageRef = this.$storage.ref().child(this.recipes[i].image)
-            imageRef.getDownloadURL().then(url => {
-              this.recipes[i]["url"] = url
-            })
-          }
+          this.selectedDrink = null
+          let imageRef = this.$storage.ref().child(this.recipes[i].image)
+          imageRef.getDownloadURL().then(url => {
+            let img = document.getElementById('img' + i);
+            img.src = url; 
+          })
         }
 
         let ref = this.$database.ref("/available/" + this.id)
@@ -256,6 +249,12 @@ export default {
         ref.on("value", data => {
           this.opinion(data.val());
         })
+
+        ref = this.$database.ref("recipes/cîroc/" + drink + '/likes')
+        ref.on("value", data => { this.opinionChange(drink, data, 'likes') })
+
+        ref = this.$database.ref("recipes/cîroc/" + drink + '/dislikes')
+        ref.on("value", data => { this.opinionChange(drink, data, 'dislikes') })
 
         console.log(this.recipes)
       })
@@ -318,7 +317,7 @@ export default {
           }
         }
 
-        let ref = this.$database.ref("recipes/cîroc/" + drink + '/likes')
+        /*let ref = this.$database.ref("recipes/cîroc/" + drink + '/likes')
         ref.on("value", data => {
           if(data.val() > this.recipes[drink].likes){
             this.likeChange = {
@@ -327,7 +326,7 @@ export default {
               add: true
             }
           } 
-          else if(data.val()< this.recipes[drink].likes) {
+          else if(data.val() < this.recipes[drink].likes) {
             this.likeChange = {
               id: drink,
               change: true,
@@ -362,84 +361,86 @@ export default {
           setTimeout(() => {
             this.dislikeChange.change = false;
           }, 1000)
-        });
+        });*/
       }
-      this.liked = true;
+      this.loadedOpinion = true;
     },
 
-    like(key) {
-      this.liked = false;
-      let prev = this.recipes[key].dislike
+    opinionChange(key, data, like) {
+      if(data > this.recipes[key][like]) {
+        this.change[like] = {
+          id: key,
+          change: true,
+          add: true
+        }
+      }
+      else if(data < this.recipes[key][like]) {
+        this.change[like] = {
+          id: key,
+          change: true,
+          add: false
+        }
+      }
+      this.recipes[drink][like] = data.val();
+          
+      setTimeout(() => {
+        this.change[like].change = false;
+      }, 1000)
+    },
+
+    like(key, like) {
+      this.loadedOpinion = false;
+      let prev = null
+
+      if(like) {
+        this.liked = false;
+        prev = this.recipes[key].dislike
+      }
+      else {
+        this.dislike = false;
+        prev = this.recipes[key].like
+      }
 
       let ref = this.$database.ref("users/" + this.user + "/recipes/" + this.id + "/" + key)
       ref.once("value", data => {
-        let like = false;
-        let dislike = false;
+        let _like = false;
+        let _dislike = false;
 
-        if(data.val() == null || data.val()['like'] == false){ 
-          like = true;
+        if(like) {
+          if(!data.exists() || data.val()['like'] == false) _like = true;
+        }
+        else {
+          if(!data.exists() || data.val()['dislike'] == false) _dislike = true;
         }
 
-        ref.set({"dislike": false, "like": like})
+        ref.set({"dislike": _dislike, "like": _like})
         
-        let complete = this.$database.ref("recipes/" + this.id + "/" + key)
-        complete.once("value", info => {
-          let _likes = 0;
-          let _dislikes = 0;
-
-          if(prev) _dislikes = info.val()["dislikes"] - 1;
-          else _dislikes = info.val()["dislikes"];
-
-          if(like) _likes = info.val()["likes"] + 1;
-          else _likes = info.val()["likes"] - 1;
-
-          complete.update({
-            "dislikes": _dislikes,
-            "likes": _likes
-          });
-
-          this.recipes[key].like = like;
-          this.recipes[key].dislike = false;
-
-          this.liked = true;
-        })
-      })
-    },
-
-    dislike(key) {
-      this.liked = false;
-      let prev = this.recipes[key].like
-
-      let ref = this.$database.ref("users/" + this.user + "/recipes/" + this.id + "/" + key)
-      ref.once("value", data => {
-        let like = false;
-        let dislike = false;
-        let val = {"like": false, "dislike": false};
-        if(!data.exists() || data.val()['dislike'] == false){
-          dislike = true;
-        }
-        ref.set({"dislike": dislike, "like": false})
-
-        let complete = this.$database.ref("recipes/" + this.id + "/" + key)
-        complete.once("value", info => {
+        let recipe = this.$database.ref("recipes/" + this.id + "/" + key)
+        recipe.once("value", info => {
           let _likes = info.val()["likes"];
           let _dislikes = info.val()["dislikes"];
 
+          if(like) {
+            if(prev) _dislikes -= 1;
 
-          if(prev) _likes -= 1;
+            if(_like) _likes += 1;
+            else _likes -= 1;
+          }
+          else {
+            if(prev) _likes -= 1;
 
-          if(dislike) _dislikes += 1;
-          else _dislikes -= 1;
-  
-          
-          complete.update({
+            if(_dislike) _dislikes += 1;
+            else _dislikes -= 1;
+          }
+
+          recipe.update({
             "dislikes": _dislikes,
             "likes": _likes
           });
 
-          this.recipes[key].like = like;
-          this.recipes[key].dislike = dislike;
-          this.liked = true;
+          this.recipes[key].like = _like;
+          this.recipes[key].dislike = _dislike;
+          this.loadedOpinion = true;
         })
       })
     },
