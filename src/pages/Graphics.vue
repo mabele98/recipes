@@ -195,7 +195,6 @@ export default {
             this.data['foam'] = []
 
             this.loaded = true
-            console.log(this.data)
         })
     }
 }
