@@ -141,7 +141,7 @@
         >
         <q-btn-toggle
             dense push rounded
-            v-model="showAvailable"
+            v-model="filterAvailable"
             class="q-mx-xs"
             toggle-color="orange"
             color="green-8"
@@ -171,7 +171,6 @@
         </q-scroll-area>
       </q-toolbar>
     </q-footer>
-    <div v-if="noResults" class="fixed-center text-h4 text-white"> No available recipes. </div>
   </q-page>
 </template>
 
@@ -182,6 +181,7 @@ export default {
     return {
       user: null,
       admin: false,
+      size: this.$q.screen,
       id: this.$route.params.id,
       
       loadedAvailable: false,
@@ -193,46 +193,43 @@ export default {
         'dislikes': {id: '', change: false, add: true}
       },
 
-      likeChange: {id: '', change: false, add: true},
-      dislikeChange: {id: '', change: false, add: true},
-
       filterLiked: false,
-
-      size: this.$q.screen,
-
-      showAvailable: false,
+      filterAvailable: false,
 
       selectedDrink: '',
       mult: 1,
-      recipes: {},
       
+      recipes: {},
       index: [],
-
-      noResults: true
     }
   },
 
   methods: {
     loadDrinks(){
-      let drinks = [];
       let ref = this.$database.ref("recipes/" + this.id)
       ref.orderByKey().once('value', data => {
         this.recipes = data.val();
         this.index = [];
         
-        for(let i in this.recipes){
-          this.index.push(i);
-          this.recipes[i].show = {
+        for(let drink in this.recipes){
+          this.index.push(drink);
+          this.recipes[drink].show = {
             'available': true,
             'filter': true
           }
 
           this.selectedDrink = null
-          let imageRef = this.$storage.ref().child(this.recipes[i].image)
+          let imageRef = this.$storage.ref().child(this.recipes[drink].image)
           imageRef.getDownloadURL().then(url => {
-            let img = document.getElementById('img' + i);
+            let img = document.getElementById('img' + drink);
             img.src = url; 
           })
+
+          ref = this.$database.ref("recipes/" + this.id + "/" + drink + '/likes')
+          ref.on("value", data => { this.opinionChange(drink, data.val(), 'likes') })
+
+          ref = this.$database.ref("recipes/" + this.id + "/" + drink + '/dislikes')
+          ref.on("value", data => { this.opinionChange(drink, data.val(), 'dislikes') })
         }
 
         let ref = this.$database.ref("/available/" + this.id)
@@ -249,12 +246,6 @@ export default {
         ref.on("value", data => {
           this.opinion(data.val());
         })
-
-        ref = this.$database.ref("recipes/cîroc/" + drink + '/likes')
-        ref.on("value", data => { this.opinionChange(drink, data, 'likes') })
-
-        ref = this.$database.ref("recipes/cîroc/" + drink + '/dislikes')
-        ref.on("value", data => { this.opinionChange(drink, data, 'dislikes') })
 
         console.log(this.recipes)
       })
@@ -299,7 +290,6 @@ export default {
         }
       }
 
-      this.noResults = false
       this.loadedAvailable = true;
     },
 
@@ -316,52 +306,6 @@ export default {
             this.recipes[drink]["dislike"] = list[drink].dislike
           }
         }
-
-        /*let ref = this.$database.ref("recipes/cîroc/" + drink + '/likes')
-        ref.on("value", data => {
-          if(data.val() > this.recipes[drink].likes){
-            this.likeChange = {
-              id: drink,
-              change: true,
-              add: true
-            }
-          } 
-          else if(data.val() < this.recipes[drink].likes) {
-            this.likeChange = {
-              id: drink,
-              change: true,
-              add: false
-            }
-          }
-          this.recipes[drink].likes = data.val();
-
-          setTimeout(() => {
-            this.likeChange.change = false;
-          }, 1000)
-        });
-
-        ref = this.$database.ref("recipes/cîroc/" + drink + '/dislikes')
-        ref.on("value", data => {
-          if(data.val() > this.recipes[drink].dislikes){
-            this.dislikeChange = {
-              id: drink,
-              change: true,
-              add: true
-            }
-          }
-          else if (data.val() < this.recipes[drink].dislikes){
-            this.dislikeChange = {
-              id: drink,
-              change: true,
-              add: false
-            }
-          }
-          this.recipes[drink].dislikes = data.val();
-          
-          setTimeout(() => {
-            this.dislikeChange.change = false;
-          }, 1000)
-        });*/
       }
       this.loadedOpinion = true;
     },
@@ -381,7 +325,8 @@ export default {
           add: false
         }
       }
-      this.recipes[drink][like] = data.val();
+
+      this.recipes[key][like] = data;
           
       setTimeout(() => {
         this.change[like].change = false;
@@ -449,7 +394,7 @@ export default {
       let available = true;
       let liked = true;
       let filter = this.recipes[key].show.filter;
-      if(this.showAvailable) {
+      if(this.filterAvailable) {
         available = this.recipes[key].show.available;
       }
       if(this.filterLiked) {
