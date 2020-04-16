@@ -9,20 +9,16 @@
             <div class="q-ma-lg row text-white text-h4 justify-center content-center text-center">
                 What recipes would you like to look at?
             </div>
-            <q-btn
-                push
-                class="q-ma-lg text-white"
-                color="green"
-                label="Cîroc Drinks"
-                @click="loadRecipes('cîroc')"
-            />
-            <q-btn
-                push
-                class="q-ma-lg text-white"
-                color="green"
-                label="Baileys Drinks"
-                @click="loadRecipes('baileys')"
-            />
+            <div class="row justify-center content-center" v-for="drink in recipes" :key="drink">
+                <q-btn
+                    push
+                    class="q-ma-sm text-white"
+                    style="width:200px"
+                    color="green"
+                    :label="drink + ' Drinks'"
+                    @click="loadRecipes(drink)"
+                />
+            </div>
         </div>
         <q-btn
             class="fixed-top-right q-ma-sm"
@@ -30,6 +26,13 @@
             :label="'Not '+user+'?'"
             @click="logOut()"
         />
+
+        <q-footer class="transparent">
+            <q-toolbar>
+                <q-btn push class="q-ma-sm" color="orange" label="Add Graphics" @click="loadGraphics"/>
+                <q-btn push class="q-ma-sm" color="orange" label="Add Recipe" @click="loadAdd"/>
+            </q-toolbar>
+        </q-footer>
     </q-page>
 </template>
 
@@ -39,6 +42,7 @@ export default {
     data () {
         return {
             user: '',
+            recipes: [],
         }
     },
     methods: {
@@ -50,6 +54,12 @@ export default {
         },
         loadRecipes(id){
             this.$router.push('/recipes/' + id)
+        },
+        loadGraphics(){
+            this.$router.push('/graphics')
+        },
+        loadAdd(){
+            this.$router.push('/add')
         }
     },
     mounted() {
@@ -58,7 +68,12 @@ export default {
             else this.logOut(true)
         });
 
-        
+        let ref = this.$database.ref('recipes')
+        ref.once("value", data => {
+            for(let drink in data.val()) {
+                this.recipes.push(drink)
+            }
+        })
     }
 }
 </script>

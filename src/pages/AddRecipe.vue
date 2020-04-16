@@ -1,7 +1,11 @@
 <template>
     <q-page class="flex flex-center">
 
-        <q-card v-if="!confirm" style="width: 500px">
+        <q-card v-if="!confirm" style="width:500px;">
+            <q-scroll-area
+                style="height:90vh;width:500px;"
+                class="rounded-borders"
+            >
             <q-card-section vertical>
                 <div class="text-black text-h3"> Add recipe! </div>
 
@@ -51,7 +55,7 @@
                 <q-btn label="+" class="text-black" @click="add()" />
 
             </q-card-actions>
-
+            </q-scroll-area>
         </q-card>
 
         <q-card v-if="confirm" style="min-width:300px">
@@ -131,6 +135,11 @@
             <q-btn label="Load Graphic" class="q-mx-lg text-white" color="blue" @click="createPath"/>
         </q-card>
 
+        <q-footer class="transparent">
+            <q-toolbar>
+                <q-btn push class="q-ma-sm" color="orange" label="Return Home" @click="returnHome"/>
+            </q-toolbar>
+        </q-footer>
     </q-page>
 </template>
 
@@ -295,6 +304,10 @@ export default {
 
         cancel() {
             this.confirm = false;
+        },
+
+        returnHome() {
+            this.$router.push('/')
         }
     },
 

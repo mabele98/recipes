@@ -104,7 +104,11 @@
             </q-card-section>
         </q-card>
 
-
+        <q-footer class="transparent">
+            <q-toolbar>
+                <q-btn push class="q-ma-sm" color="orange" label="Return Home" @click="returnHome"/>
+            </q-toolbar>
+        </q-footer>
     </q-page>
 </template>
 
@@ -221,12 +225,8 @@ export default {
             this.path = 'graphics/'
         },
 
-        test() {
-            let imageRef = this.$storage.ref().child('graphics/shot/F7468A/none/none/graphic.png');
-
-          imageRef.getDownloadURL().then(url => {
-            this.link = url;
-          })
+        returnHome() {
+            this.$router.push('/')
         }
 
     },
