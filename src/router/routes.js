@@ -9,6 +9,7 @@ const routes = [
       { path: '/select/:id', component: () => import('pages/Select/Personal.vue') },
       { path: '/available/:id', component: () => import('pages/Select/Available.vue') },
       { path: '/add', component: () => import('pages/AddRecipe.vue')},
+      { path: '/test', component: () => import('pages/test.vue')},
       { path: '/graphics', component: () => import('pages/Graphics.vue')}
     ]
   },

@@ -1,107 +1,99 @@
 <template>
     <q-page class="flex flex-center">
-        <q-card style="width: 500px">
+        <q-card v-if="loaded" style="width:750px; height: 85vh">
             <q-card-section vertical v-if="!check && !submit">
                 <div class="text-h4"> Upload a Graphic! </div>
-                <q-btn-dropdown class="q-mt-lg q-mb-xs text-black" color="white" :label="glass_">
-                    <q-list>
-                        <q-item 
-                        clickable v-close-popup 
-                        v-for="item in glass" 
-                        :key="item"
-                        @click="glass_ = item"
-                        >
-                        <q-item-section>
-                            <q-item-label>{{item}}</q-item-label>
-                        </q-item-section>
-                        </q-item>
-                    </q-list>
-                </q-btn-dropdown> <br>
+                <div class="q-mt-lg text-h6"> Choose a glass </div>
+                <q-btn-toggle
+                    class="q-mb-lg"
+                    v-model="glass" 
+                    push
+                    toggle-color="blue"
+                    :options="listOf('glass')"
+                />
 
-                <q-btn-dropdown class="q-my-xs text-black" :style="'background-color:#' + color_" :label="color_">
-                    <q-list>
-                        <q-item 
-                        clickable v-close-popup 
-                        v-for="item in color" 
-                        :key="item"
-                        @click="color_ = item"
-                        >
-                        <q-item-section :style="'background-color:#'+item">
-                            <q-item-label :style="'background-color:white'">{{item}}</q-item-label>
-                        </q-item-section>
-                        </q-item>
-                    </q-list>
-                </q-btn-dropdown><br>
+                <div class="q-mt-lg text-h6"> What is it? </div>
+                <q-btn-toggle
+                    v-model="type" 
+                    push
+                    toggle-color="red"
+                    :options="options"
+                /><br>
 
-                <q-btn-dropdown class="q-my-xs text-black" color="white" :label="fill_">
-                    <q-list>
-                        <q-item 
-                        clickable v-close-popup 
-                        v-for="item in fill" 
-                        :key="item"
-                        @click="fill_ = item"
-                        >
-                        <q-item-section>
-                            <q-item-label>{{item}}</q-item-label>
-                        </q-item-section>
-                        </q-item>
-                    </q-list>
-                </q-btn-dropdown><br>
-
-                <q-btn-dropdown class="q-my-xs text-black" color="white" :label="garnish_">
-                    <q-list>
-                        <q-item 
-                        clickable v-close-popup 
-                        v-for="item in garnish" 
-                        :key="item"
-                        @click="garnish_ = item"
-                        >
-                        <q-item-section>
-                            <q-item-label>{{item}}</q-item-label>
-                        </q-item-section>
-                        </q-item>
-                    </q-list>
-                </q-btn-dropdown><br>
-
-                <q-btn-dropdown class="q-my-xs text-black" v-if="garnish_=='whippedcream'" color="yellow" :label="whippedCream_">
-                    <q-list>
-                        <q-item 
-                        clickable v-close-popup 
-                        v-for="item in whippedCream" 
-                        :key="item"
-                        @click="whippedCream_ = item"
-                        >
-                        <q-item-section>
-                            <q-item-label>{{item}}</q-item-label>
-                        </q-item-section>
-                        </q-item>
-                    </q-list>
-                </q-btn-dropdown><br>
-
-                <q-checkbox v-if="garnish_ != 'whippedcream' && foam_ == false" v-model="ice_" label="Ice"/>
-                <q-checkbox v-if="garnish_ != 'whippedcream' && ice_ == false" v-model="foam_" label="Foam"/><br>
-
-                <q-btn class="q-my-sm" color="green" label="Check" @click="check = true"/>
+                <div v-if="type!='' && type!='ice' && type!='foam'" class="q-mt-lg">
+                    <q-scroll-area
+                        horizontal
+                        style="height:40px;width:700px;"
+                        class="rounded-borders"
+                    >
+     
+                        <div v-if="type!='glass'">
+                            <q-btn-toggle
+                                v-model="choose" 
+                                push
+                                color="grey"
+                                class="text-no-wrap"
+                                toggle-color="purple"
+                                :options="listOf(type)"
+                            />
+                        </div>
+                    </q-scroll-area>
+                    <br>
+                    <div v-if="type=='color'" :style="'background-color:' + choose"  class="text-h5">
+                        CHOOSEN COLOR: {{choose}}
+                    </div> 
+                </div>
             </q-card-section>
+            <q-btn 
+                v-if="!check && !submit"
+                style="position:absolute;bottom:10px;right:10px" 
+                color="green" label="check" @click="check = true"/>
             <q-card-section v-if="check && !submit">
                 <div class="text-h4 q-mb-lg"> Check the correct choices: </div>
-                <div class="text-subtitle1"> Glass: {{glass_}} </div>
-                <div class="text-subtitle1" :style="'background-color:#' + color_"> Color: {{color_}} </div>
-                <div class="text-subtitle1"> Fill In: {{fill_}} </div>
-                <div class="text-subtitle1"> Garnish: {{garnish_}} </div>
-                <div class="text-subtitle1" v-if="garnish_ == 'whippedcream'"> Whipped Cream: {{whippedCream_}} </div>
-                <div class="text-subtitle1" v-if="garnish_ != 'whippedcream'"> Ice: {{ice_}} </div>
-                <div class="text-subtitle1" v-if="garnish_ != 'whippedcream'"> Foam: {{foam_}} </div>
+                <div class="text-h6"> Glass: {{glass}} </div>
 
-                <q-btn class='q-ma-md' color="red" label="Cancel" @click="check = false"/>
-                <q-btn class='q-ma-md' color="green" label="Add Photo" @click="createPath()"/>
+                <div class="text-h6"> Type of image uploading: {{type}} </div>
 
-
+                <div v-if="type!='glass' && type!='ice' && type !='foam'">
+                    <div v-if="choose!=''" class="text-h6"> 
+                        <div v-if="type=='color'"
+                            :style="'background-color:' + choose"
+                        >   Item: {{choose}} </div>
+                        <div v-else> Item: {{choose}} </div>
+                    </div>
+                </div>
             </q-card-section>
+            <q-btn 
+                v-if="check && !submit"
+                style="position:absolute;bottom:10px;left:10px" 
+                class='q-ma-md' 
+                color="red" label="Cancel" 
+                @click="check = false"/>
+            <q-btn 
+                v-if="check && !submit"
+                style="position:absolute;bottom:10px;right:10px" 
+                class='q-ma-md' 
+                color="green" label="Add Photo" 
+                @click="createPath()"/>
             <q-card-section v-if="!check && submit">
-                <QFirebaseUploader :path="path" auto-upload/>
-                <q-btn color="green" label="Next graphic!" @click="restart()"/>
+                <QFirebaseUploader 
+                    class="q-ma-lg" 
+                    :path="path" 
+                    auto-upload
+                />
             </q-card-section>
+            <q-btn 
+                v-if="!check && submit"
+                style="position:absolute;bottom:10px;left:10px" 
+                class='q-ma-md' 
+                color="red" label="Cancel" 
+                @click="submit = false"/>
+            <q-btn 
+                v-if="!check && submit"
+                style="position:absolute;bottom:10px;right:10px" 
+                class='q-ma-md' 
+                color="green" label="Next Graphic" 
+                @click="submit = false"/>
         </q-card>
 
         <q-footer class="transparent">
@@ -124,115 +116,87 @@ export default {
 
     data () {
         return {
-            path: 'graphics/',
+            path: 'artwork/',
+            loaded: false,
+
+            data: {},
+            type: '',
+            options: [],
+
+            choose: '',
+
+            color: 'white',
+            colors_: [],
+            glass: '',
+
 
             check: false,
             submit: false,
-
-            glass_: 'Glass Style',
-            color_: 'Color',
-            garnish_: 'Garnish',
-            top_: 'Top Fill',
-            fill_: 'Fill In',
-            whippedCream_: 'Whipped Cream',
-            ice_: false,
-            foam_: false,
-
-            glass: [
-                "champagne",
-                "margarita",
-                "martini",
-                "shot",
-                "short",
-                "tall",
-                "wine"
-            ],
-            color: [
-                'FFA6C9',
-                'F7468A',
-                'C40850',
-                'FE6F5E',
-                'E81717',
-                '9E1030',
-                'E58E73',
-                'B33B24',
-                '77212E',
-                'D2A679',
-                'AC7339',
-                '734D26',
-                'FEAF4D',
-                'F28600',
-                'CB6601',
-                'FFE999',
-                'FFCD1A',
-                'E6B400',
-                '1E1E1E',
-                'FCEBD2'
-            ],
-            garnish: [
-                'apple',
-                'cherry',
-                'grapes',
-                'watermellon',
-                'lemon',
-                'lime',
-                'leaves',
-                'pineapple',
-                'orange',
-                'strawberry',
-                'whippedcream',
-                'none'
-            ],
-            whippedCream: [
-                'chocolate',
-                'cherry',
-                'sprinkes',
-                'plain',
-            ],
-            fill: [
-                'blackberries',
-                'blueberries',
-                'leaves',
-                'mixedBerries',
-                'raspberries',
-                'none'
-            ]
         }
     },
 
     methods: {
+        listOf(item) {
+            let res = [];
+            if(item != 'color'){
+                for(let id in this.data[item]) {
+                    let name = this.data[item][id]
+                    res.push({'label': name, 'value': name})
+                }
+            }
+            else {
+                for(let id in this.data[item]) {
+                    let name = this.data[item][id]
+                    res.push({'label': name.name, 'value': name.hex})
+                }
+            }
+            return res
+        },
         createPath() {
             this.check = false
             this.submit = true
 
-            this.path += this.glass_ + '/' + this.color_ + '/' + this.fill_ + '/' + this.garnish_ + '/';
-            if(this.garnish_ == 'whippedcream'){
-                this.path += this.whippedCream_ + '/'
-            }
-            else if(this.ice_){
-                this.path += 'ice/'
-            }
-            else if(this.foam_){
-                this.path += 'foam/'
+            this.path = 'artwork/'
+
+            this.path += this.glass + '/' + this.type + '/'
+
+            if(this.type != 'glass' && this.type != 'ice' && this.type != 'foam') {
+                if(this.type == 'color') this.path += this.choose.slice(1) + '/'
+                else this.path += this.choose + '/'
             }
 
             console.log(this.path);
         },
 
-        restart() {
-            this.submit = false
-
-            this.path = 'graphics/'
-        },
-
         returnHome() {
             this.$router.push('/')
+        },
+
+        test() {
+            console.log(this.data)
         }
 
     },
 
     mounted () {
+        this.$database.ref('graphics').once("value", data => {
+            for(let type in data.val()){
+                this.options.push({'label': type, 'value': type})
+                this.data[type] = []
 
+                for(let item in data.val()[type]){
+                    this.data[type].push(data.val()[type][item]);
+                }
+            } 
+            this.options.push({'label': 'ice', 'value': 'ice'})
+            this.data['ice'] = []
+
+            this.options.push({'label': 'foam', 'value': 'foam'})
+            this.data['foam'] = []
+
+            this.loaded = true
+            console.log(this.data)
+        })
     }
 }
 </script>
