@@ -62,16 +62,6 @@
                 filled
                 bg-color="white"
             />
-
-            <div class="q-mt-lg text-h6 text-white"> Birthday: </div>
-            <q-input 
-                class="q-mt-sm"
-                v-model="bday" 
-                filled bg-color="white" 
-                type="date" 
-                error-message="You must be over 21"
-                :error="bdayValid()"
-            />
             <q-btn :disable="disableSubmit()" class="q-mt-lg" label="submit" color="green" @click="submit()"/>
             <div v-if="disable" class="text-h6 text-center text-red"> To create account, please use link from email. </div>
         </div>
@@ -99,7 +89,6 @@ export default {
 
             first: '',
             last: '',
-            bday: '',
 
             error: false,
             message: ''
@@ -108,23 +97,29 @@ export default {
 
     methods: {
         submit() {
-            this.$auth.createUserWithEmailAndPassword(this.email, this.password).then(() => {
-                
-                let user = this.$auth.currentUser;
-                console.log('success', user)
-                user.updateProfile({
-                    displayName: this.first + ' ' + this.last,
-                    emailVerfied: true
+            var user = this.$auth.currentUser;
+            user.updatePassword(this.password).then(() => {
+            // Update successful.
+                console.log('password success')
+                this.$auth.signInWithEmailAndPassword(this.email, this.password).then(() =>{
+                    var user_ = this.$auth.currentUser;
+                    user_.updateProfile({
+                        displayName: this.first + ' ' + this.last,
+                        emailVerified: true
+                    }).then(() => {
+                        this.$router.push('/')
+                    })
                 })
-            }).catch((error) => {
-                console.log(error.code, error.message)
-            })
+            }).catch(function(error) {
+                console.log('error')
+            // An error happened.
+            });
         },
 
         disableSubmit() {
             if(this.password == '' || this.verify == '' || this.bday == '') return true
 
-            return !(!this.disable && !this.isValid() && !this.isVerified() && !this.bdayValid())
+            return !(!this.disable && !this.isValid() && !this.isVerified())
         },
 
         isValid() {
@@ -155,22 +150,6 @@ export default {
                 return this.password != this.verify
             }
             return false
-        },
-
-        bdayValid() {
-            let timestamp = new Date()
-            let bday = new Date(this.bday)
-
-            if(timestamp.getYear() - bday.getYear() > 21) return false
-            else if(timestamp.getYear() - bday.getYear() === 21) {
-                if(timestamp.getMonth() - bday.getMonth() > 0) return false
-                else if(timestamp.getMonth() - bday.getMonth() === 0) {
-                    if(timestamp.getDay() - bday.getDay() >= 0) return false
-                    return true
-                }
-                return true
-            }
-            return true
         },
     },
 

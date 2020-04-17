@@ -4,13 +4,14 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/Index.vue') },
+      { path: '/create', component: () => import('pages/ManageUser/Email.vue')},
+      { path: '/create/update', component: () => import('pages/ManageUser/CreateAccount.vue')},
+      { path: '/signin', component: () => import('pages/ManageUser/SignIn.vue')},
       { path: '/auth', component: () => import('pages/Auth.vue') },
       { path: '/recipes/:id', component: () => import('pages/Recipes.vue')},
       { path: '/select/:id', component: () => import('pages/Select/Personal.vue') },
       { path: '/available/:id', component: () => import('pages/Select/Available.vue') },
       { path: '/add', component: () => import('pages/AddRecipe.vue')},
-      { path: '/account/test', component: () => import('pages/test.vue')},
-      { path: '/account', component: () => import('pages/Account.vue')},
       { path: '/graphics', component: () => import('pages/Graphics.vue')}
     ]
   },

@@ -72,7 +72,7 @@ export default {
                         user.updateProfile({
                             displayName: name
                         }).then(() => {
-                            this.$router.push('/')
+                            this.$router.replace('/')
                         }).catch(error => {
                             console.log(error.code)
                             console.log(error.message)
