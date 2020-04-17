@@ -189,10 +189,11 @@ export default {
                 // attacks, ask the user to provide the associated email again. For example:
                 this.email = window.prompt('Please provide your email for confirmation');
             }
-            this.$auth.signInWithEmailLink(email, window.location.href)
+            this.$auth.signInWithEmailLink(this.email, window.location.href)
             .then(function(result) {
                 // Clear email from storage.
                 this.$q.localStorage.remove('emailForSignIn');
+                console.log(result.user)
                 // You can access the new user via result.user
                 // Additional user info profile not available via:
                 // result.additionalUserInfo.profile == null
