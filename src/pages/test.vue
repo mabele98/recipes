@@ -1,10 +1,80 @@
 <template>
     <q-page class="flex flex-center">
-        
-        <div class="text-h4 text-white">
-            Hello {{email}}
-        </div>
+        <div class="q-mx-sm q-my-lg fit column wrap content-center">
+            <div class="text-h4 text-white text-center">
+                Fill out the below information
+            </div>
+            <q-input 
+                class="q-mt-md"
+                v-model="email"
+                label="email"
+                disable
+                filled
+                bg-color="white"
+            />
+            <q-input 
+                class="q-mt-md"
+                v-model="password" 
+                filled :type="isPwd ? 'password' : 'text'"
+                label="Password"
+                error-message="MUST contain at least 8 characters, a letter and a number"
+                :error="isValid()"
+                :color="strength"
+                bg-color="white"
+                >
+                <template v-slot:append>
+                <q-icon
+                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="isPwd = !isPwd"
+                />
+                </template>
+            </q-input>
+            <q-input 
+                class="q-mt-md"
+                v-model="verify" 
+                filled :type="isVer ? 'password' : 'text'"
+                label="Verify Password"
+                error-message="Does not match password"
+                :error="isVerified()"
+                bg-color="white"
+                >
+                <template v-slot:append>
+                <q-icon
+                    :name="isVer ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="isVer = !isVer"
+                />
+                </template>
+            </q-input>
+            <div class="q-mt-lg text-h6 text-white"> Display Name: </div>
+            <q-input 
+                class="q-mt-sm"
+                v-model="first"
+                label="First Name"
+                filled
+                bg-color="white"
+            />
+            <q-input 
+                class="q-mt-md"
+                v-model="last"
+                label="Last Name"
+                filled
+                bg-color="white"
+            />
 
+            <div class="q-mt-lg text-h6 text-white"> Birthday: </div>
+            <q-input 
+                class="q-mt-sm"
+                v-model="bday" 
+                filled bg-color="white" 
+                type="date" 
+                error-message="You must be over 21"
+                :error="bdayValid()"
+            />
+            <q-btn :disable="disableSubmit()" class="q-mt-lg" label="submit" color="green" @click="submit()"/>
+            <div v-if="disable" class="text-h6 text-center text-red"> To create account, please use link from email. </div>
+        </div>
     </q-page>
 </template>
 
@@ -18,12 +88,90 @@ export default {
 
     data () {
         return {
-            email: ''
+            disable: true,
+            email: '',
+
+            isPwd: true,
+            password: '',
+            isVer: true,
+            verify: '',
+            strength: 'black',
+
+            first: '',
+            last: '',
+            bday: '',
+
+            error: false,
+            message: ''
         }
     },
 
     methods: {
+        submit() {
+            this.$auth.createUserWithEmailAndPassword(this.email, this.password).then(() => {
+                
+                let user = this.$auth.currentUser;
+                console.log('success', user)
+                user.updateProfile({
+                    displayName: this.first + ' ' + this.last,
+                    emailVerfied: true
+                })
+            }).catch((error) => {
+                console.log(error.code, error.message)
+            })
+        },
 
+        disableSubmit() {
+            if(this.password == '' || this.verify == '' || this.bday == '') return true
+
+            return !(!this.disable && !this.isValid() && !this.isVerified() && !this.bdayValid())
+        },
+
+        isValid() {
+            if(this.password != ''){
+                var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+                var mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{8,})");
+
+                if(strongRegex.test(this.password)) {
+                    this.strength = 'green'
+                    return false
+                }
+                else if(mediumRegex.test(this.password)) {
+                    this.strength = 'orange'
+                    return false
+                }
+                else{
+                    this.strength = 'red'
+                    return true  
+                } 
+            }
+            this.strenght = 'black'
+            return false
+        },
+
+
+        isVerified() {
+            if(this.verify != ''){
+                return this.password != this.verify
+            }
+            return false
+        },
+
+        bdayValid() {
+            let timestamp = new Date()
+            let bday = new Date(this.bday)
+
+            if(timestamp.getYear() - bday.getYear() > 21) return false
+            else if(timestamp.getYear() - bday.getYear() === 21) {
+                if(timestamp.getMonth() - bday.getMonth() > 0) return false
+                else if(timestamp.getMonth() - bday.getMonth() === 0) {
+                    if(timestamp.getDay() - bday.getDay() >= 0) return false
+                    return true
+                }
+                return true
+            }
+            return true
+        },
     },
 
     mounted() {
@@ -33,29 +181,31 @@ export default {
             // the sign-in operation.
             // Get the email if available. This should be available if the user completes
             // the flow on the same device where they started it.
+            this.disable = false
             this.email = this.$q.localStorage.getItem('emailForSignIn');
             console.log(this.email)
             if (!this.email) {
                 // User opened the link on a different device. To prevent session fixation
                 // attacks, ask the user to provide the associated email again. For example:
                 this.email = window.prompt('Please provide your email for confirmation');
-        }
-        // The client SDK will parse the code from the link for you.
-        this.$auth.signInWithEmailLink(this.email, window.location.href)
+            }
+            this.$auth.signInWithEmailLink(email, window.location.href)
             .then(function(result) {
-            // Clear email from storage.
-            window.localStorage.removeItem('emailForSignIn');
-            // You can access the new user via result.user
-            // Additional user info profile not available via:
-            // result.additionalUserInfo.profile == null
-            // You can check if the user is new or existing:
-            // result.additionalUserInfo.isNewUser
+                // Clear email from storage.
+                this.$q.localStorage.remove('emailForSignIn');
+                // You can access the new user via result.user
+                // Additional user info profile not available via:
+                // result.additionalUserInfo.profile == null
+                // You can check if the user is new or existing:
+                // result.additionalUserInfo.isNewUser
             })
             .catch(function(error) {
-            // Some error occurred, you can inspect the code: error.code
-            // Common errors could be invalid email and invalid or expired OTPs.
+                // Some error occurred, you can inspect the code: error.code
+                // Common errors could be invalid email and invalid or expired OTPs.
             });
         }
+        
+        
     }
 }
 </script>
