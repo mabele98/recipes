@@ -120,6 +120,7 @@
                 </q-card-section>
                 <div v-if="loadGraphic">
                     <Graphic
+                        id="1"
                         :graphic="graphic"
                     />
                 </div>
@@ -237,10 +238,10 @@ export default {
                 'name': this.name,
                 'description': this.description,
                 'url': this.url,
-                'color': '#' + this.color_,
+                'color': this.graphic.color,
                 'dislikes': 0,
                 'likes': 0,
-                'image': this.path
+                'graphic': this.graphic
             }
 
             var check = data;

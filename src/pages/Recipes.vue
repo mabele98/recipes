@@ -64,12 +64,14 @@
               
 
             <q-card-section horizontal>
-              <img 
-                :id="'img' + key"
-                v-if="selectedDrink != key"
-                style="height:30vh;width:auto"
-                class="q-ml-md"
-              />
+              <div v-if="selectedDrink != key" class="q-ml-sm"
+              style="height:30vh;width:140px"
+              >
+                <Graphic
+                  :graphic="recipes[key].graphic"
+                  :id="key"
+                />
+              </div>
               <q-card-section horizontal v-if="selectedDrink == key">
                 <q-card-section vertical>
                   <q-btn dense class="q-my-xs text-black" label="1x"
@@ -175,8 +177,13 @@
 </template>
 
 <script>
+import Graphic from 'components/Graphic.vue'
+
 export default {
   name: 'PageRecipes',
+  components: {
+    Graphic
+  },
   data () {
     return {
       user: null,
@@ -219,11 +226,6 @@ export default {
           }
 
           this.selectedDrink = null
-          let imageRef = this.$storage.ref().child(this.recipes[drink].image)
-          imageRef.getDownloadURL().then(url => {
-            let img = document.getElementById('img' + drink);
-            img.src = url; 
-          })
 
           ref = this.$database.ref("recipes/" + this.id + "/" + drink + '/likes')
           ref.on("value", data => { this.opinionChange(drink, data.val(), 'likes') })
@@ -232,7 +234,7 @@ export default {
           ref.on("value", data => { this.opinionChange(drink, data.val(), 'dislikes') })
         }
 
-        let ref = this.$database.ref("/available/" + this.id)
+        let ref = this.$database.ref("available/" + this.id)
         ref.on("value", data => {
           this.availableItems(data.val());
         });
@@ -247,7 +249,7 @@ export default {
           this.opinion(data.val());
         })
 
-        console.log(this.recipes)
+        console.log('recipes', this.recipes)
       })
     },
 
@@ -282,10 +284,11 @@ export default {
         this.recipes[drink].show.available = true
         for(let id in this.recipes[drink].ingredients) {
           let type = this.recipes[drink].ingredients[id].type
-          if(list != null) {
-            if(type in list && id in list) {
+          if(list != null && type in list) {
+            if(id in list) {
               if(list[type] && !list[id]) this.recipes[drink].show.available = false
             }
+            else if(list[type]) this.recipes[drink].show.available = false
           }
         }
       }
