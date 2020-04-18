@@ -4,7 +4,7 @@
         <q-toolbar>
             <q-avatar> <img src="statics/logo.png"/> </q-avatar>
             <q-toolbar-title class="text-weight-bold"> MyPub </q-toolbar-title>
-            <q-btn-dropdown v-if="loggedIn" stretch flat dense label="Account">
+            <q-btn-dropdown v-if="loggedIn" stretch flat label="Account">
                 <q-list>
                     <q-item clickable v-close-popup @click="signOut()">
                         <q-item-section>
@@ -36,14 +36,15 @@
                     size="sm" color="grey-9"
                     v-if="loggedIn && own" 
                     class="q-mt-sm" 
-                    label="Manage your pubs?" 
+                    label="Manage your pubs" 
                     @click="managePubs"/>
             </div>
             <div class="text-white text-h3 text-center"> ENTER PUB ID </div>
             <q-input 
                 style="width:310px"
                 filled item-alligned
-                class="q-ma-sm text-h2"
+                class="q-ma-sm"
+                :class="size.sm ? 'text-h4' : 'text-h2'"
                 bg-color="white"
                 mask="XXX-XXXX" 
                 fill-mask
@@ -60,13 +61,14 @@
                     @click="cancel()" />
             </div>
             <div class="fit column wrap justify-center items-start content-center">
-                <div class="q-mt-sm text-white caption"> Pubs to choose from... </div>
+                <div class="q-mt-sm text-white text-center caption"> Pubs to choose from... </div>
                 <q-btn-toggle
                     class="self-center"
-                    v-model="current"
+                    v-model="selected"
                     toggle-color="primary"
-                    flat
+                    flat dense
                     :options="listOf(available)"
+                    @input="update()"
                 />
             </div>
            
@@ -116,40 +118,63 @@ export default {
             size: this.$q.screen,
             
             available: {},
+            users: {},
 
             recipes: [],
             current: '',
             own: false,
-            pub: ''
+            pub: '',
+            selected: ''
         }
     },
     methods: {
         listOf(list) {
             let res = []
             for(let item in list) {
-                res.push({'label': list[item].name, 'value': list[item].name})
+                res.push({'label': list[item], 'value': item})
+            }
+            for(let item in this.users) {
+                res.push({'label': this.users[item], 'value': item})
             }
             return res
         },
         loadPub() {
             let pub = this.pub.replace('-', '')
-            let ref = this.$database.ref('pubs/' + pub)
-            ref.once('value', data => {
-                if(data.exists()) {
-                    this.$set(this.available, pub, data.val())
-                    this.current = data.val().name
-                    this.$q.sessionStorage.set('pub', {
-                        'id': this.pub,
-                        'name': this.current
-                    })
-                }
-            })
+            if(!(pub in this.users)){
+                let ref = this.$database.ref('pubs/' + pub)
+                ref.once('value', data => {
+                    if(data.exists()) {
+                        this.$set(this.available, pub, data.val().name)
+                        this.current = data.val().name
+                        this.selected = this.pub.replace('-', '')
+                        this.$q.sessionStorage.set('pub', {
+                            'id': this.pub,
+                            'name': this.current,
+                            'selected': this.selected
+                        })
+                        this.$q.sessionStorage.set('available', this.available)
+                    }
+                })
+            }
+            else {
+                this.selected = this.pub.replace('-', '')
+                this.current = this.users[this.selected]
+                this.$q.sessionStorage.set('pub', {
+                    'id': this.pub,
+                    'name': this.current,
+                    'selected': this.selected
+                })
+            }
         },
         cancel() {
             this.current = ''
             this.pub = ''
 
             this.$q.sessionStorage.remove('pub')
+        },
+        update() {
+            this.pub = this.selected.slice(0, 3) + "-" + this.selected.slice(3)
+            this.current = this.available[this.selected]
         },
         signIn() {
             this.$router.push('/signin');
@@ -190,7 +215,9 @@ export default {
 
                 this.$database.ref('users/' + user.uid + '/pubs/owner').once("value", data => {
                     if(data.exists()) {
-                        this.available = data.val()
+                        for(let key in data.val()){
+                            this.users[data.val()[key].id] = data.val()[key].name
+                        }
                         this.own = true
                     }
                 })
@@ -204,9 +231,15 @@ export default {
             }
         })
 
+        //this.$q.sessionStorage.remove('available')
+
+        if(this.$q.sessionStorage.has('available')) this.available = this.$q.sessionStorage.getItem('available')
+
         if(this.$q.sessionStorage.has('pub')) {
-            this.pub = this.$q.sessionStorage.getItem('pub').id
-            this.current = this.$q.sessionStorage.getItem('pub').name
+            let data = this.$q.sessionStorage.getItem('pub')
+            this.pub = data.id
+            this.current = data.name
+            this.selected = data.selected
         }
     }
 }

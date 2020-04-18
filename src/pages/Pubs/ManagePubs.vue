@@ -169,8 +169,6 @@ export default {
                         else this.addLabels(null, id)
                     });
                 }
-
-                console.log(this.options)
             });
 
         },
@@ -222,7 +220,6 @@ export default {
                     }
                 }
             }
-            console.log(this.options)
             this.loaded=true;
         },
         formatLabel(item) {
@@ -237,7 +234,6 @@ export default {
         },
         updateDatabase(type, main, name, pub) {
             let check = false
-            console.log(type, main, name, pub)
             if(main != ''){
                 check = !this.options[type][main][name][pub].check
                 this.options[type][main][name][pub].check = check
@@ -294,7 +290,6 @@ export default {
             }
         })
         this.$q.screen.setSizes({sm: 300, md: 500, lg: 1000, xl: 2000 })
-        console.log(this.size)
 
         this.$database.ref('ingredients').once('value', data => {
             for(let type in data.val()) {

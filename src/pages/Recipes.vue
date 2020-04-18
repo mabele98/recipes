@@ -238,7 +238,6 @@ export default {
           pub = pub.replace('-', '')
           let ref = this.$database.ref("pubs/" + pub + '/available')
           ref.on("value", data => {
-            console.log(data.val())
             this.availableItems(data.val());
           });
         }
@@ -259,8 +258,6 @@ export default {
         else {
           this.filterItems(null)
         }
-
-        console.log('recipes', this.recipes)
       })
     },
 
@@ -309,7 +306,6 @@ export default {
         for(let id in this.recipes[drink].ingredients) {
           let type = this.recipes[drink].ingredients[id].type
           if(list != null && type in list) {
-            console.log(type)
             if(id in list) {
               if(list[type] && !list[id]) this.recipes[drink].show.available = false
             }
