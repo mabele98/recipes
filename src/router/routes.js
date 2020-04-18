@@ -11,8 +11,8 @@ const routes = [
       { path: '/recipes/:id', component: () => import('pages/Recipes.vue')},
       { path: '/select/:id', component: () => import('pages/Select/Personal.vue') },
       { path: '/available/:id', component: () => import('pages/Select/Available.vue') },
-      { path: '/add', component: () => import('pages/AddRecipe.vue')},
-      { path: '/graphics', component: () => import('pages/Graphics.vue')}
+      { path: '/add', component: () => import('pages/Admin/AddRecipe.vue')},
+      { path: '/graphics', component: () => import('pages/Admin/Graphics.vue')}
     ]
   },
 ]
