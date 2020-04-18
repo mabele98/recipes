@@ -241,10 +241,13 @@ export default {
           ref.on("value", data => { this.opinionChange(drink, data.val(), 'dislikes') })
         }
 
-        let ref = this.$database.ref("available/" + this.id)
-        ref.on("value", data => {
-          this.availableItems(data.val());
-        });
+        if(this.$q.sessionStorage.has('pub')){
+          let pub = this.$q.sessionStorage.getItem('pub').id
+          let ref = this.$database.ref("pubs/" + pub + '/available/' + this.id)
+          ref.on("value", data => {
+            this.availableItems(data.val());
+          });
+        }
 
         if(this.loggedIn){
           this.loadedFilter = false
