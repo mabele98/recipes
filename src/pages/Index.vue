@@ -62,7 +62,7 @@
             @click="logOut()"
         />
 
-        <q-footer class="transparent">
+        <q-footer v-if="admin" class="transparent">
             <q-toolbar>
                 <q-btn push class="q-ma-sm" color="orange" label="Add Graphics" @click="loadGraphics"/>
                 <q-btn push class="q-ma-sm" color="orange" label="Add Recipe" @click="loadAdd"/>
@@ -77,6 +77,7 @@ export default {
     data () {
         return {
             loggedIn: false,
+            admin: false,
             user: '',
             size: this.$q.screen,
 
@@ -112,6 +113,10 @@ export default {
             if (user) {
                 this.loggedIn = true
                 this.user = user.displayName
+                let ref = this.$database.ref("users/" + user.uid + "/admin")
+                ref.on("value", data => {
+                    this.admin = data.val();
+                })
             }
         });
 

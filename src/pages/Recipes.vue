@@ -18,6 +18,7 @@
             :label="size.sm ? 'Filter Available' : 'Filter Available Ingredients'" 
             @click="loadPage('/available/' + id)" />
           <q-btn 
+            v-show="loggedIn"
             dense push
             class="q-mx-sm text-no-wrap"
             color="green-8" 
@@ -115,6 +116,7 @@
               </div>
               <q-btn flat 
                 v-show="loadedOpinion"
+                :disable="!loggedIn"
                 :ripple="false"
                 :color="recipes[key].like ? 'green' : 'black'"
                 icon-right="thumb_up" @click="like(key, true)" />
@@ -122,6 +124,7 @@
               <q-btn v-else flat @click="selectedDrink = key">Recipe</q-btn>
               <q-btn flat 
                 v-show="loadedOpinion"
+                :disable="!loggedIn"
                 :ripple="false"
                 :color="recipes[key].dislike ? 'red' : 'black'"
                 icon="thumb_down" @click="like(key, false)"/>
@@ -153,6 +156,7 @@
               {label: 'Available', value: true}
             ]" />
           <q-btn-toggle
+            v-if="loggedIn"
             dense push rounded
             class="q-mx-xs"
             v-model="filterLiked"
@@ -186,14 +190,15 @@ export default {
   },
   data () {
     return {
+      loggedIn: false,
       user: null,
       admin: false,
       size: this.$q.screen,
       id: this.$route.params.id,
       
       loadedAvailable: false,
-      loadedFilter: false,
-      loadedOpinion: false,
+      loadedFilter: true,
+      loadedOpinion: true,
 
       change: {
         'likes': {id: '', change: false, add: true},
@@ -225,6 +230,9 @@ export default {
             'filter': true
           }
 
+          this.recipes[drink]["like"] = false
+          this.recipes[drink]["dislike"] = false
+
           this.selectedDrink = null
 
           ref = this.$database.ref("recipes/" + this.id + "/" + drink + '/likes')
@@ -239,15 +247,19 @@ export default {
           this.availableItems(data.val());
         });
 
-        ref = this.$database.ref("users/" + this.user + "/filter/" + this.id)
-        ref.orderByKey().on("value", data => {
-          this.filterItems(data.val());
-        });
+        if(this.loggedIn){
+          this.loadedFilter = false
+          ref = this.$database.ref("users/" + this.user + "/filter/" + this.id)
+          ref.orderByKey().on("value", data => {
+            this.filterItems(data.val());
+          });
 
-        ref = this.$database.ref("users/" + this.user + "/recipes/" + this.id)
-        ref.on("value", data => {
-          this.opinion(data.val());
-        })
+          this.loadedOpinion = false
+          ref = this.$database.ref("users/" + this.user + "/recipes/" + this.id)
+          ref.on("value", data => {
+            this.opinion(data.val());
+          })
+        }
 
         console.log('recipes', this.recipes)
       })
@@ -297,7 +309,7 @@ export default {
     },
 
     opinion(list) {
-      this.liked = false;
+      this.loadedOpinion = false;
       for(let drink in this.recipes){
 
         this.recipes[drink]["like"] = false
@@ -426,12 +438,14 @@ export default {
   },
   mounted() {
     this.$auth.onAuthStateChanged(user => {
-      if (user == null) this.loadPage('/auth');
-      this.user = user.uid
-      let ref = this.$database.ref("users/" + user.uid + "/admin")
-      ref.on("value", data => {
-        this.admin = data.val();
-      })
+      if(user) {
+        this.loggedIn = true
+        this.user = user.uid
+        let ref = this.$database.ref("users/" + user.uid + "/admin")
+        ref.on("value", data => {
+          this.admin = data.val();
+        })
+      }
       this.loadDrinks();
     });
     this.$q.screen.setSizes({sm: 300, md: 500, lg: 1000, xl: 2000 })
