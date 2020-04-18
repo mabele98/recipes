@@ -35,7 +35,7 @@
                 fill-mask
                 v-model="pub"
             />
-            <q-btn class="q-mt-sm" label="Start your own pub?"/>
+            <q-btn v-if="loggedIn" class="q-mt-sm" label="Start your own pub?"/>
         </div>
 
         <div class="q-mb-lg column justify-center">
