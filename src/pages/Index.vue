@@ -28,10 +28,16 @@
             <div class="q-mb-xl">
                 <q-btn 
                     size="sm" color="grey-9"
-                    v-if="loggedIn && own" 
+                    v-if="loggedIn && !own" 
                     class="q-mt-sm" 
                     label="Start your own pub?" 
                     @click="createPub"/>
+                <q-btn 
+                    size="sm" color="grey-9"
+                    v-if="loggedIn && own" 
+                    class="q-mt-sm" 
+                    label="Manage your pubs?" 
+                    @click="managePubs"/>
             </div>
             <div class="text-white text-h3 text-center"> ENTER PUB ID </div>
             <q-input 
@@ -153,6 +159,9 @@ export default {
         },
         createPub() {
             this.$router.push('/createpub')
+        },
+        managePubs() {
+            this.$router.push('/managepubs')
         },
         loadRecipes(id){
             this.$router.push('/recipes/' + id)
