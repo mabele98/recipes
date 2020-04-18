@@ -19,10 +19,7 @@
                     <q-card-section class="text-center"> 
                         <div class="text-h4 text-weight-bolder"> {{value.name}} </div>
                         <div class="text-h6"> ID: {{value.lookup}} </div>
-                    </q-card-section>
-        
-                    <q-card-section horizontal>
-                        <q-btn-dropdown class="q-mx-sm" color="orange" :label="filter +' ('+selected[filter]+')'">
+                        <q-btn-dropdown class="q-mt-lg" color="orange" :label="filter +' ('+selected[filter]+')'">
                             <q-item 
                                 clickable v-close-popup
                                 @click="filter = 'ALL'"
@@ -43,7 +40,7 @@
                         </q-btn-dropdown>
                     </q-card-section>
 
-                    <q-card-section class="q-mx-sm" v-if="loaded" horizontal>
+                    <q-card-section class="q-mx-lg" v-if="loaded" horizontal>
                         <q-scroll-area
                             :style="!size.lg ? size.sm ? 'width:90vw' : 'width:45vw' : 'width:29vw'"
                             style="height:65vh"
@@ -62,7 +59,7 @@
                                         v-bind:key="name"
                                     >   
                                         <div v-if="type == 'MAIN ALCOHOL'">
-                                            <div class="text-h6 text-italic"> {{name}} </div>
+                                            <div class="text-h6 text-italic text-grey-9"> {{name}} </div>
                                             <div 
                                                 class="q-pa-sm text-subtitle1"
                                                 v-for="(info,drink) in options[type][name]" 

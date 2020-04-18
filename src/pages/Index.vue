@@ -57,7 +57,7 @@
                     dense class="self-center" 
                     size="xs"
                     icon="cancel"
-                    @click="current = ''; pub=''" />
+                    @click="cancel()" />
             </div>
             <div class="fit column wrap justify-center items-start content-center">
                 <div class="q-mt-sm text-white caption"> Pubs to choose from... </div>
@@ -131,7 +131,6 @@ export default {
             }
             return res
         },
-
         loadPub() {
             let pub = this.pub.replace('-', '')
             let ref = this.$database.ref('pubs/' + pub)
@@ -145,6 +144,12 @@ export default {
                     })
                 }
             })
+        },
+        cancel() {
+            this.current = ''
+            this.pub = ''
+
+            this.$q.sessionStorage.remove('pub')
         },
         signIn() {
             this.$router.push('/signin');

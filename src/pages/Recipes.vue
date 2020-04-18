@@ -8,15 +8,7 @@
           class="rounded-borders"
         >
         <div class="q-mt-xs row inline no-wrap">
-          <div :class="size.sm ? 'text-h6' : 'text-h5'" class="text-weight-bold q-px-md text-no-wrap">  Cîroc Recipes </div>
-          <q-btn 
-            v-show="admin"
-            dense push
-            class="q-mx-md text-no-wrap"
-            color="white" 
-            text-color="green-8" 
-            :label="size.sm ? 'Filter Available' : 'Filter Available Ingredients'" 
-            @click="loadPage('/available/' + id)" />
+          <div :class="size.sm ? 'text-h6' : 'text-h5'" class="text-weight-bold q-px-md text-no-wrap">  {{id}} recipes </div>
           <q-btn 
             dense push
             class="q-mx-sm text-no-wrap"
@@ -241,13 +233,15 @@ export default {
           ref.on("value", data => { this.opinionChange(drink, data.val(), 'dislikes') })
         }
         this.loadedAvailable = true
-        /*if(this.$q.sessionStorage.has('pub')){
+        if(this.$q.sessionStorage.has('pub')){
           let pub = this.$q.sessionStorage.getItem('pub').id
-          let ref = this.$database.ref("pubs/" + pub + '/available/' + this.id)
+          pub = pub.replace('-', '')
+          let ref = this.$database.ref("pubs/" + pub + '/available')
           ref.on("value", data => {
+            console.log(data.val())
             this.availableItems(data.val());
           });
-        }*/
+        }
 
         if(this.loggedIn){
           this.loadedFilter = false
@@ -315,6 +309,7 @@ export default {
         for(let id in this.recipes[drink].ingredients) {
           let type = this.recipes[drink].ingredients[id].type
           if(list != null && type in list) {
+            console.log(type)
             if(id in list) {
               if(list[type] && !list[id]) this.recipes[drink].show.available = false
             }
