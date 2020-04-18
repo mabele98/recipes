@@ -18,7 +18,6 @@
             :label="size.sm ? 'Filter Available' : 'Filter Available Ingredients'" 
             @click="loadPage('/available/' + id)" />
           <q-btn 
-            v-show="loggedIn"
             dense push
             class="q-mx-sm text-no-wrap"
             color="green-8" 
@@ -260,6 +259,9 @@ export default {
             this.opinion(data.val());
           })
         }
+        else {
+          this.filterItems(null)
+        }
 
         console.log('recipes', this.recipes)
       })
@@ -273,11 +275,24 @@ export default {
         this.recipes[drink].show.filter = false
         for(let id in this.recipes[drink].ingredients) {
           this.recipes[drink].ingredients[id].filter = false
-          if(list != null && id in list) {
-            this.recipes[drink].ingredients[id].filter = list[id]
-            if(list[id]) {
-              this.recipes[drink].show.filter = true
-              noFilter = false
+
+          if(this.loggedIn){
+            if(list != null && id in list) {
+              this.recipes[drink].ingredients[id].filter = list[id]
+              if(list[id]) {
+                this.recipes[drink].show.filter = true
+                noFilter = false
+              }
+            }
+          }
+          else {
+            if(this.$q.sessionStorage.has(id)) {
+              let check = this.$q.sessionStorage.getItem(id)
+              this.recipes[drink].ingredients[id].filter = check
+              if(check) {
+                this.recipes[drink].show.filter = true
+                noFilter = false
+              }
             }
           }
         }

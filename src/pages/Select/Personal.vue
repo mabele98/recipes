@@ -71,6 +71,8 @@ export default {
             loaded: false,
             size: this.$q.screen,
             user: null,
+            loggedIn: false,
+
             selected: {},
             check: [],
             options: {},
@@ -106,14 +108,18 @@ export default {
                     this.options[type] = ordered;
                 }
 
-                
-                let filter = this.$database.ref("users/" + this.user + "/filter/" + this.id)
-                filter.orderByKey().once("value", info => {
-                    if(info.exists()){
-                        this.addLabels(info.val())
-                    }
-                    else this.addLabels(null)
-                });
+                if(this.loggedIn) {
+                    let filter = this.$database.ref("users/" + this.user + "/filter/" + this.id)
+                    filter.orderByKey().once("value", info => {
+                        if(info.exists()){
+                            this.addLabels(info.val())
+                        }
+                        else this.addLabels(null)
+                    });
+                }
+                else {
+                    this.addLabels(null)
+                }
             });
 
         },
@@ -125,7 +131,12 @@ export default {
                     let check = false
                     let id = this.options[type][name].ingredients[0]
 
-                    if(list != null) check = list[id]
+                    if(this.loggedIn){
+                        if(list != null) check = list[id]
+                    }
+                    else {
+                        if(this.$q.sessionStorage.has(id)) check = this.$q.sessionStorage.getItem(id)
+                    }
 
                     if(check) {
                         this.check.push(id)
@@ -175,7 +186,12 @@ export default {
 
             for (let i in this.options[type][name].ingredients) {
                 let id = this.options[type][name].ingredients[i]
-                this.$database.ref("users/" + this.user + "/filter/" + this.id + "/" + id).set(check)
+                if(this.loggedIn){
+                    this.$database.ref("users/" + this.user + "/filter/" + this.id + "/" + id).set(check)
+                }
+                else {
+                    this.$q.sessionStorage.set(id, check)
+                }
             }
         },
 
@@ -186,7 +202,10 @@ export default {
 
     mounted() {
         this.$auth.onAuthStateChanged(user => {
-            this.user = user.uid
+            if(user){
+                this.loggedIn = true
+                this.user = user.uid
+            }
             this.loadIngredients();
         })
     }
