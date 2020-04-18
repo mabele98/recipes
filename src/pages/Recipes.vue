@@ -44,7 +44,7 @@
           elevated
           v-for="key in index" v-bind:key="key"
           v-show="display(key)"
-          v-bind:style="!size.lg ? size.sm ? 'width:92vw' : 'width:47vw' : 'width:31vw'"
+          :style="!size.lg ? size.sm ? 'width:92vw' : 'width:47vw' : 'width:31vw'"
           class="my-card text-black"
           v-bind:class="selectedDrink != key ? recipes[key].show.available ? 'bg-white' : 'bg-grey-4' : 'bg-orange'"
           >
@@ -240,14 +240,14 @@ export default {
           ref = this.$database.ref("recipes/" + this.id + "/" + drink + '/dislikes')
           ref.on("value", data => { this.opinionChange(drink, data.val(), 'dislikes') })
         }
-
-        if(this.$q.sessionStorage.has('pub')){
+        this.loadedAvailable = true
+        /*if(this.$q.sessionStorage.has('pub')){
           let pub = this.$q.sessionStorage.getItem('pub').id
           let ref = this.$database.ref("pubs/" + pub + '/available/' + this.id)
           ref.on("value", data => {
             this.availableItems(data.val());
           });
-        }
+        }*/
 
         if(this.loggedIn){
           this.loadedFilter = false
