@@ -35,7 +35,10 @@
                 fill-mask
                 v-model="pub"
             />
-            <q-btn v-if="loggedIn" class="q-mt-sm" label="Start your own pub?"/>
+            <div v-if="loggedIn">
+                <q-btn disable v-if="userPubs.length == 0" class="q-mt-sm" label="Start your own pub?" @click="loadPub"/>
+                <div v-for="(value, key) in userPubs" :key="key" class="text-h6 text-white"> {{userPubs[key].name}}</div>
+            </div>
         </div>
 
         <div class="q-mb-lg column justify-center">
@@ -80,8 +83,11 @@ export default {
             admin: false,
             user: '',
             size: this.$q.screen,
+            
 
             recipes: [],
+            current: '',
+            userPubs: [],
             pub: ''
         }
     },
@@ -96,6 +102,9 @@ export default {
             }).catch(error => {
                 console.log(error)
             });
+        },
+        loadPub() {
+            this.$router.push('/createpub')
         },
         loadRecipes(id){
             this.$router.push('/recipes/' + id)
@@ -116,6 +125,13 @@ export default {
                 let ref = this.$database.ref("users/" + user.uid + "/admin")
                 ref.on("value", data => {
                     this.admin = data.val();
+                })
+
+                this.$database.ref('users/' + user.uid + '/pubs/owner').once("value", data => {
+                    if(data.exists()) {
+                        this.userPubs = data.val();
+                        console.log(this.userPubs)
+                    }
                 })
             }
         });

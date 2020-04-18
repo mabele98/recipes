@@ -6,6 +6,7 @@ export default async ({Vue}) => {
   var config = {
     apiKey: "AIzaSyB7JlRAeih93d_PkawJGhCPcYJJtiWx7W4",
     authDomain: "recipes-ad241.firebaseapp.com",
+    projectId: 'recipes-ad241',
     databaseURL: "https://recipes-ad241.firebaseio.com",
     storageBucket: "recipes-ad241.appspot.com"
   };
@@ -19,5 +20,6 @@ export default async ({Vue}) => {
   Vue.prototype.$auth = firebase.auth();
 
   Vue.prototype.$storage = firebase.storage();
+  Vue.prototype.$functions = firebase.functions();
 }
 
