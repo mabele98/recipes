@@ -21,9 +21,17 @@
             <q-btn v-else label="Sign In" @click="signIn()"/>
         </q-toolbar>
         </q-header>
-        <div class="fit column wrap items-center content-center">
-            <div v-if="loggedIn" class="q-mb-xl q-mt-md text-white text-h3 text-center">
+        <div class="fit column wrap items-center content-center justify-center">
+            <div v-if="loggedIn" class="q-mt-md text-white text-h3 text-center">
                 Dia duit {{user}}!
+            </div>
+            <div class="q-mb-xl">
+                <q-btn 
+                    size="sm" color="grey-9"
+                    v-if="loggedIn && own" 
+                    class="q-mt-sm" 
+                    label="Start your own pub?" 
+                    @click="createPub"/>
             </div>
             <div class="text-white text-h3 text-center"> ENTER PUB ID </div>
             <q-input 
@@ -34,11 +42,28 @@
                 mask="XXX-XXXX" 
                 fill-mask
                 v-model="pub"
+                @input="loadPub()"
             />
-            <div v-if="loggedIn">
-                <q-btn disable v-if="userPubs.length == 0" class="q-mt-sm" label="Start your own pub?" @click="loadPub"/>
-                <div v-for="(value, key) in userPubs" :key="key" class="text-h6 text-white"> {{userPubs[key].name}}</div>
+            <div class="fit row wrap justify-center items-start content-center">
+                <div class="q-ma-md text-subtitle1 text-white"> Current Pub: {{current}}</div>
+                <q-btn 
+                    v-if="current != ''"
+                    dense class="self-center" 
+                    size="xs"
+                    icon="cancel"
+                    @click="current = ''; pub=''" />
             </div>
+            <div class="fit column wrap justify-center items-start content-center">
+                <div class="q-mt-sm text-white caption"> Pubs to choose from... </div>
+                <q-btn-toggle
+                    class="self-center"
+                    v-model="current"
+                    toggle-color="primary"
+                    flat
+                    :options="listOf(available)"
+                />
+            </div>
+           
         </div>
 
         <div class="q-mb-lg column justify-center">
@@ -84,14 +109,37 @@ export default {
             user: '',
             size: this.$q.screen,
             
+            available: {},
 
             recipes: [],
             current: '',
-            userPubs: [],
+            own: false,
             pub: ''
         }
     },
     methods: {
+        listOf(list) {
+            let res = []
+            for(let item in list) {
+                res.push({'label': list[item].name, 'value': list[item].name})
+            }
+            return res
+        },
+
+        loadPub() {
+            let pub = this.pub.replace('-', '')
+            let ref = this.$database.ref('pubs/' + pub)
+            ref.once('value', data => {
+                if(data.exists()) {
+                    this.$set(this.available, pub, data.val())
+                    this.current = data.val().name
+                    this.$q.sessionStorage.set('pub', {
+                        'id': this.pub,
+                        'name': this.current
+                    })
+                }
+            })
+        },
         signIn() {
             this.$router.push('/signin');
         },
@@ -103,7 +151,7 @@ export default {
                 console.log(error)
             });
         },
-        loadPub() {
+        createPub() {
             this.$router.push('/createpub')
         },
         loadRecipes(id){
@@ -118,7 +166,6 @@ export default {
     },
     mounted() {
         this.$auth.onAuthStateChanged(user => {
-            console.log(user)
             if (user) {
                 this.loggedIn = true
                 this.user = user.displayName
@@ -129,8 +176,8 @@ export default {
 
                 this.$database.ref('users/' + user.uid + '/pubs/owner').once("value", data => {
                     if(data.exists()) {
-                        this.userPubs = data.val();
-                        console.log(this.userPubs)
+                        this.available = data.val()
+                        this.own = true
                     }
                 })
             }
@@ -142,6 +189,11 @@ export default {
                 this.recipes.push(drink)
             }
         })
+
+        if(this.$q.sessionStorage.has('pub')) {
+            this.pub = this.$q.sessionStorage.getItem('pub').id
+            this.current = this.$q.sessionStorage.getItem('pub').name
+        }
     }
 }
 </script>
