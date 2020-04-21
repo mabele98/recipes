@@ -6,13 +6,13 @@
             style="position:absolute;height:30vh;width:auto;"
         />
         <img
-            v-if="glass"
-            :id="id + 'glass'"
+            v-if="fill"
+            :id="id + 'fill'"
             style="position:absolute;height:30vh;width:auto;"
         />
         <img
-            v-if="fill"
-            :id="id + 'fill'"
+            v-if="glass"
+            :id="id + 'glass'"
             style="position:absolute;height:30vh;width:auto;"
         />
         <img

@@ -255,12 +255,15 @@ export default {
 
                 ref = this.$database.ref('recipes/' + this.type + '/' + key + '/ingredients')
                 for(let item in this.ingredients) {
-                    if(this.ingredients[item].type == "MAIN INGREDIENT") {
+                    let type = this.ingredients[item].type
+                    if(type == "MAIN INGREDIENT") {
                         this.ingredients[item].type = this.type.toUpperCase();
+                        
                     }
-
                     ref.push(this.ingredients[item]);
                 }
+
+                
 
                 this.name = ''
                 this.type = ''
