@@ -1,26 +1,5 @@
 <template>
     <q-page class="flex flex-center">
-        <q-header reveal class="bg-orange">
-        <q-toolbar>
-            <q-avatar> <img src="statics/logo.png"/> </q-avatar>
-            <q-toolbar-title class="text-weight-bold"> MyPub </q-toolbar-title>
-            <q-btn-dropdown v-if="loggedIn" stretch flat label="Account">
-                <q-list>
-                    <q-item clickable v-close-popup @click="signOut()">
-                        <q-item-section>
-                            <q-item-label>Log Out</q-item-label>
-                        </q-item-section>
-                    </q-item>
-                    <q-item clickable v-close-popup @click="signOut()">
-                        <q-item-section>
-                            <q-item-label>Settings</q-item-label>
-                        </q-item-section>
-                    </q-item>
-                </q-list>
-            </q-btn-dropdown>
-            <q-btn v-else label="Sign In" @click="signIn()"/>
-        </q-toolbar>
-        </q-header>
         <div class="fit column wrap items-center content-center justify-center">
             <div v-if="loggedIn" class="q-mt-md text-white text-h3 text-center">
                 Dia duit {{user}}!
@@ -61,15 +40,21 @@
                     @click="cancel()" />
             </div>
             <div class="fit column wrap justify-center items-start content-center">
-                <div class="q-mt-sm text-white text-center caption"> Pubs to choose from... </div>
-                <q-btn-toggle
-                    class="self-center"
-                    v-model="selected"
-                    toggle-color="primary"
-                    flat dense
-                    :options="listOf(available)"
-                    @input="update()"
-                />
+                <div class="q-mt-sm text-white text-center caption"> Available pubs below </div>
+                <q-scroll-area
+                    horizontal
+                    style="height:40px;width:300px;"
+                    class="rounded-borders"
+                >
+                    <q-btn-toggle
+                        class="self-center text-no-wrap"
+                        v-model="selected"
+                        toggle-color="primary"
+                        flat
+                        :options="listOf(available)"
+                        @input="update()"
+                    />
+                </q-scroll-area>
             </div>
            
         </div>
@@ -169,12 +154,19 @@ export default {
         cancel() {
             this.current = ''
             this.pub = ''
+            this.selected = ''
 
             this.$q.sessionStorage.remove('pub')
         },
         update() {
             this.pub = this.selected.slice(0, 3) + "-" + this.selected.slice(3)
-            this.current = this.available[this.selected]
+            if(this.selected in this.available) this.current = this.available[this.selected]
+            else this.current = this.users[this.selected]
+            this.$q.sessionStorage.set('pub', {
+                'id': this.pub,
+                'name': this.current,
+                'selected': this.selected
+            })
         },
         signIn() {
             this.$router.push('/signin');
