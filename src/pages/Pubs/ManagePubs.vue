@@ -1,6 +1,6 @@
 <template>
     <q-page>
-        <div class="q-mt-xl full column justify-start items-start content-start">
+        <div class="full column justify-start items-start content-start">
             <div class="q-pa-md row wrap justify-evenly items-start q-gutter-md">
                 <q-card 
                     elevated
@@ -263,7 +263,6 @@ export default {
                         else this.addLabels(null, id)
                     });
                 }
-                console.log(this.selected)
             });
 
         },

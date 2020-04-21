@@ -6,6 +6,21 @@
             <q-toolbar-title class="text-weight-bold" @click="index"> MyPub </q-toolbar-title>
             <q-btn-dropdown v-if="loggedIn" stretch flat label="Account">
                 <q-list>
+                  <q-item clickable v-close-popup @click="$router.push('/managepubs')">
+                        <q-item-section>
+                            <q-item-label>Manage Pubs</q-item-label>
+                        </q-item-section>
+                    </q-item>
+                    <q-item clickable v-close-popup @click="$router.push('/createpub')">
+                        <q-item-section>
+                            <q-item-label>Open your own Pub</q-item-label>
+                        </q-item-section>
+                    </q-item>
+                    <q-item clickable v-close-popup @click="$router.push('/contributepub')">
+                        <q-item-section>
+                            <q-item-label>Contribute to a Pub</q-item-label>
+                        </q-item-section>
+                    </q-item>
                     <q-item clickable v-close-popup @click="signOut()">
                         <q-item-section>
                             <q-item-label>Log Out</q-item-label>
@@ -13,7 +28,7 @@
                     </q-item>
                     <q-item clickable v-close-popup @click="signOut()">
                         <q-item-section>
-                            <q-item-label>Settings</q-item-label>
+                            <q-item-label>Account Settings</q-item-label>
                         </q-item-section>
                     </q-item>
                 </q-list>
@@ -21,7 +36,7 @@
             <q-btn v-else label="Sign In" @click="signIn()"/>
         </q-toolbar>
       </q-header>
-    <q-page-container class="q-mt-md">
+    <q-page-container class="q-mt-sm">
       <router-view />
     </q-page-container>
   </q-layout>

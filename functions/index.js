@@ -44,5 +44,29 @@ exports.createPub = functions.https.onCall((data, context) => {
     })
 
     return id
+});
+
+exports.contributePub = functions.https.onCall((data, context) => {
+    const user = context.auth.uid
+    const name = data.name
+    const pub = data.pub
+
+    admin.database().ref('/pubs/' + pub).once('value', data => {
+        if(!data.exists()) {
+            throw new functions.https.HttpsError('invalid-argument', 'The pub id input ' +
+            'does not exist');
+        }
+        else {
+            let pending = {}
+            let ref = admin.database().ref('/pubs/' + pub + '/pending')
+            ref.once('value', data => {
+                if(data.exists()) pending = data.val()
+                if(!(user in pending)) pending[user] = name
+                ref.set(pending)
+
+                return user
+            })
+        }
+    })
 })
     
