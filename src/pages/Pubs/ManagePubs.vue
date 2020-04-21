@@ -1,13 +1,6 @@
 <template>
     <q-page>
-        <q-header reveal class="bg-orange">
-        <q-toolbar>
-            <q-avatar> <img src="statics/logo.png"/> </q-avatar>
-            <q-toolbar-title class="text-weight-bold"> MyPub </q-toolbar-title>
-            <q-btn label="Return Home" @click="home()"/>
-        </q-toolbar>
-        </q-header>
-        <div class="full column justify-start items-start content-start">
+        <div class="q-mt-xl full column justify-start items-start content-start">
             <div class="q-pa-md row wrap justify-evenly items-start q-gutter-md">
                 <q-card 
                     elevated
@@ -19,76 +12,163 @@
                     <q-card-section class="text-center"> 
                         <div class="text-h4 text-weight-bolder"> {{value.name}} </div>
                         <div class="text-h6"> ID: {{value.lookup}} </div>
-                        <q-btn-dropdown class="q-mt-lg" color="orange" :label="filter +' ('+selected[filter]+')'">
-                            <q-item 
-                                clickable v-close-popup
-                                @click="filter = 'ALL'"
-                            >
-                                <q-item-section>
-                                    <q-item-label> ALL </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                            <q-item 
-                                clickable v-close-popup
-                                v-for="(val,type) in options" :key="type"
-                                @click="filter = type"
-                            >
-                                <q-item-section>
-                                    <q-item-label> {{type}} </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                        </q-btn-dropdown>
+                        <q-btn-toggle
+                            v-model="available[key].edit"
+                            dense class="q-mt-xs"
+                            toggle-color="primary"
+                            :options="[
+                            {label: 'Edit', value: 'edit'},
+                            {label: 'Filter', value: 'filter'}]"
+                        />
                     </q-card-section>
+                    <div v-if="value.edit == 'edit'">
+                        <q-card-section>
+                            <q-input 
+                            rounded outlined 
+                            v-model="available[key].name" 
+                            hint="Pub Name" 
+                            @input="pubName(key)"
+                            />
+                            <q-input 
+                            rounded outlined disable class="q-mt-lg"
+                            v-model="available[key].owner" 
+                            hint="Owner" 
+                            />
+                            <div class="q-pa-md q-gutter-md">
+                                <q-list bordered class="rounded-borders">
+                                    <q-item v-if="info">
+                                        <div v-if="info" class="q-gutter-sm">
+                                            <q-banner inline-actions rounded class="bg-green text-white">
+                                            Friends can request to have access to filtering available ingredients.
+                                            <template v-slot:action>
+                                                <q-btn flat dense label="Dismiss" @click="info=false"/>
+                                            </template>
+                                            </q-banner>
+                                        </div>
+                                    </q-item>
+                                <q-item>
+                                    <q-item-label header>Contributors</q-item-label>
+                                    <q-item-section side>
+                                        <q-btn dense unelevated icon="info" class="text-green" @click="info=true"/>
+                                    </q-item-section>
+                                </q-item>
 
-                    <q-card-section class="q-mx-lg" v-if="loaded" horizontal>
-                        <q-scroll-area
-                            :style="!size.lg ? size.sm ? 'width:90vw' : 'width:45vw' : 'width:29vw'"
-                            style="height:65vh"
-                            class="rounded-borders q-mt-sm"
-                        >
-                            <div v-for="(val,type) in options" :key="type">
-                                <div v-show="filter == type || filter == 'ALL'">
-
-                                    <div class="text-h5 q-mt-sm text-weight-bold">
-                                        <div v-if="type == 'ADDITIONAL ALCOHOL'"> ADD. ALCOHOL </div>
-                                        <div v-else> {{type}} </div>
-                                    </div>
-                                    <div
-                                        class="q-pa-sm text-subtitle1"
-                                        v-for="(data,name) in options[type]" 
-                                        v-bind:key="name"
+                                <div v-if="value.contributors != null" >
+                                    <q-item 
+                                        v-for="(user, id) in value.contributors" :key="id"
+                                        class="text-green"
+                                    >
+                                        <q-expansion-item
+                                            expand-separator
+                                            icon="check"
+                                            :label="user"
+                                            style="width:300px"
+                                        >
+                                            <q-btn class="q-ma-xs" label="Remove" color="red" @click="removeContributor(value.id,id,true)"/>
+                                        </q-expansion-item>
+                                    </q-item>
+                                </div>
+                                <div v-if="value.pending != null" >
+                                    <q-item 
+                                        v-for="(user, id) in value.pending" :key="id"
+                                        class="text-orange"
                                     >   
-                                        <div v-if="type == 'MAIN ALCOHOL'">
-                                            <div class="text-h6 text-italic text-grey-9"> {{name}} </div>
-                                            <div 
-                                                class="q-pa-sm text-subtitle1"
-                                                v-for="(info,drink) in options[type][name]" 
-                                                v-bind:key="drink" 
-                                            >
+                                        <q-expansion-item
+                                            expand-separator
+                                            icon="person_add"
+                                            :label="user"
+                                            style="width:300px"
+                                        >
+                                            <q-btn class="q-ma-xs" label="Remove" color="red" @click="removeContributor(value.id,id,false)"/>
+                                            <q-btn class="q-ma-xs" label="Add" color="green" @click="addContributor(value.id,id,user)"/>
+                                        </q-expansion-item>
+                                    </q-item>
+                                </div>
+                                </q-list>
+                            </div>
+                        </q-card-section>
+                    </div>
+                    <div v-if="value.edit == 'filter'">
+                        <q-card-section class="text-center">
+                            <q-btn-dropdown color="orange" :label="filter +' ('+selected[value.id][filter]+')'">
+                                <q-item 
+                                    clickable v-close-popup
+                                    @click="filter = 'ALL'"
+                                >
+                                    <q-item-section>
+                                        <q-item-label> ALL </q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                                <q-item 
+                                    clickable v-close-popup
+                                    v-for="(val,type) in options" :key="type"
+                                    @click="filter = type"
+                                >
+                                    <q-item-section>
+                                        <q-item-label> {{type}} </q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                            </q-btn-dropdown>
+                        </q-card-section>
+
+                        <q-card-section class="q-mx-lg" v-if="loaded" horizontal>
+                            <q-scroll-area
+                                :style="!size.lg ? size.sm ? 'width:90vw' : 'width:45vw' : 'width:29vw'"
+                                style="height:65vh"
+                                class="rounded-borders q-mt-sm"
+                            >
+                                <div v-for="(val,type) in options" :key="type">
+                                    <div v-show="filter == type || filter == 'ALL'">
+
+                                        <div class="text-h5 q-mt-sm text-weight-bold">
+                                            <div v-if="type == 'ADDITIONAL ALCOHOL'"> ADD. ALCOHOL </div>
+                                            <div v-else> {{type}} </div>
+                                        </div>
+                                        <div
+                                            class="q-pa-sm text-subtitle1"
+                                            v-for="(data,name) in options[type]" 
+                                            v-bind:key="name"
+                                        >   
+                                            <div v-if="type == 'MAIN ALCOHOL'">
+                                                <div class="text-h6 text-italic text-grey-9"> {{name}} </div>
+                                                <div 
+                                                    class="q-pa-sm text-subtitle1"
+                                                    v-for="(info,drink) in options[type][name]" 
+                                                    v-bind:key="drink" 
+                                                >
+                                                    <q-checkbox 
+                                                        v-model="check[value.id]" 
+                                                        color="orange"
+                                                        v-bind:val="info[value.id].id" 
+                                                        v-bind:label="info[value.id].name" 
+                                                        @input="updateDatabase(type,name,drink,value.id)"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div v-else>
                                                 <q-checkbox 
-                                                    v-model="check" 
+                                                    v-model="check[value.id]" 
                                                     color="orange"
-                                                    v-bind:val="info[value.id].id" 
-                                                    v-bind:label="info[value.id].name" 
-                                                    @input="updateDatabase(type,name,drink,value.id)"
+                                                    class="text-subtitle1"
+                                                    v-bind:val="data[value.id].id" 
+                                                    v-bind:label="data[value.id].name" 
+                                                    @input="updateDatabase(type,'',name,value.id)"
                                                 />
                                             </div>
                                         </div>
-                                        <div v-else>
-                                            <q-checkbox 
-                                                v-model="check" 
-                                                color="orange"
-                                                class="text-subtitle1"
-                                                v-bind:val="data[value.id].id" 
-                                                v-bind:label="data[value.id].name" 
-                                                @input="updateDatabase(type,'',name,value.id)"
-                                            />
-                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </q-scroll-area>
-                    </q-card-section>
+                            </q-scroll-area>
+                        </q-card-section>
+                    </div>
+                </q-card>
+                <q-card
+                    elevated
+                    class="my-card text-black"
+                    :style="!size.lg ? size.sm ? 'width:92vw' : 'width:47vw' : 'width:31vw'"
+                    v-show="total < 3"
+                >
+                    <q-btn label="ADD A NEW PUB" />
                 </q-card>
             </div>
         </div>
@@ -104,31 +184,45 @@ export default {
             size: this.$q.screen,
             loaded: false,
 
-            all: {},
-            names: {},
-            main: {},
-
             filter: 'ALL',
 
             options: {},
-            selected: {'ALL': 0},
-            check: [],
+            selected: {},
+            check: {},
+
+            edit: {},
+            name: '',
+            info: false,
 
 
             available: null,
+            contributing: null,
+            total: 0,
             pub: '',
             current: '',
             teal: false,
         }
     },
     methods: {
+        owner(key, id) {
+            this.$database.ref('/pubs/' + id).on('value', data => {
+                this.$set(this.available[key], 'contributors', data.val().contributors)
+                this.$set(this.available[key], 'pending', data.val().pending)
+
+                let owner = data.val().owner
+                this.$database.ref('/users/' + owner + '/name').once('value', user => {
+                    this.$set(this.available[key], 'owner', user.val())
+                })
+            })
+        },
         loadIngredients() {
             let ref = this.$database.ref("ingredients")
             ref.orderByKey().on("value", data => {
                 for(let key in data.val()){
                     let type = key.substring(2)
                     this.options[type] = {}
-                    this.selected[type] = 0;
+
+                    
                     for(let id in data.val()[key]){
                         let name = data.val()[key][id]
 
@@ -169,13 +263,15 @@ export default {
                         else this.addLabels(null, id)
                     });
                 }
+                console.log(this.selected)
             });
 
         },
 
         addLabels(list, pub) {
-  
+            this.$set(this.check, pub, [])
             for(let type in this.options){
+                this.selected[pub][type] = 0
                 for(let name in this.options[type]){
                     let check = false
                     if(type == "MAIN ALCOHOL"){
@@ -186,9 +282,9 @@ export default {
                             if(list != null) check = list[id]
 
                             if(check) {
-                                this.check.push(id)
-                                this.selected[type] += 1;
-                                this.selected['ALL'] += 1;
+                                this.check[pub].push(id)
+                                this.selected[pub][type] += 1;
+                                this.selected[pub]['ALL'] += 1;
                             }
 
                             this.options[type][name][i][pub] = {
@@ -206,9 +302,9 @@ export default {
                         if(list != null) check = list[id]
 
                         if(check) {
-                            this.check.push(id)
-                            this.selected[type] += 1
-                            this.selected['ALL'] += 1
+                            this.check[pub].push(id)
+                            this.selected[pub][type] += 1
+                            this.selected[pub]['ALL'] += 1
                         }
 
                         this.options[type][name][pub] = {
@@ -232,6 +328,20 @@ export default {
             })
             return ordered
         },
+        pubName(pub) {
+            this.$database.ref('pubs/' + this.available[pub].id).update({'/name': this.available[pub].name})
+        },
+        removeContributor(pub,uid,contributor) {
+            let ref = null
+            if(contributor) ref = this.$database.ref('pubs/' + pub + '/contributors/' + uid)
+            else ref = this.$database.ref('pubs/' + pub + '/pending/' + uid)
+
+            ref.remove()
+        },
+        addContributor(pub,uid,name) {
+            this.$database.ref('pubs/' + pub + '/pending/' + uid).remove()
+            this.$database.ref('pubs/' + pub + '/contributors/' + uid).set(name)
+        },
         updateDatabase(type, main, name, pub) {
             let check = false
             if(main != ''){
@@ -244,12 +354,12 @@ export default {
             }
 
             if(check) {
-                this.selected[type] += 1
-                this.selected['ALL'] += 1
+                this.selected[pub][type] += 1
+                this.selected[pub]['ALL'] += 1
             }
             else {
-                this.selected[type] -= 1
-                this.selected['ALL'] -= 1
+                this.selected[pub][type] -= 1
+                this.selected[pub]['ALL'] -= 1
             }
 
             if(main != '') {
@@ -268,8 +378,8 @@ export default {
             let id = type
             if(main != '') id = main
 
-            if(this.selected[type] == 0) this.$database.ref("pubs/" + pub + "/available/" + id).set(false)
-            else if(this.selected[type] == 1) this.$database.ref("pubs/" + pub + "/available/" + id).set(true)
+            if(this.selected[pub][type] == 0) this.$database.ref("pubs/" + pub + "/available/" + id).set(false)
+            else if(this.selected[pub][type] == 1) this.$database.ref("pubs/" + pub + "/available/" + id).set(true)
         },
         home() {
             this.$router.push('/')
@@ -280,23 +390,32 @@ export default {
             if (user) {
                 let ref = this.$database.ref('users/' + user.uid + '/pubs/owner')
                 ref.once('value', data => {
+                    this.total += 1
                     this.available = data.val()
                     for(let i in data.val()){
+                        this.$set(this.available[i], 'edit', 'edit')
+
                         this.available[i]['lookup'] = data.val()[i].id.slice(0, 3) + "-" + data.val()[i].id.slice(3)
+                        this.$set(this.available[i], 'name', data.val()[i].name)
+
+                        this.owner(i, data.val()[i].id)
+                        this.selected[data.val()[i].id] = {}
+                        this.selected[data.val()[i].id]['ALL'] = 0
                     }
 
                     this.loadIngredients()
                 })
+                ref = this.$database.ref('users/' + user.uid + '/pubs/contributor')
+                ref.once('value', data => {
+                    this.contributing = data.val()
+                    for(let i in data.val()) {
+                        this.contributing[i]['lookup'] = data.val()[i].id.sleic(0,3) + "-" + data.val()[i].id.slice(3)
+                        this.$set(contributing[i], 'name', data.val()[i].name)
+                    }
+                })
             }
         })
         this.$q.screen.setSizes({sm: 300, md: 500, lg: 1000, xl: 2000 })
-
-        this.$database.ref('ingredients').once('value', data => {
-            for(let type in data.val()) {
-                let name = type.substring(2)
-                this.all[name] = data.val()[type]
-            }
-        })
     }
 }
 </script>
