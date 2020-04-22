@@ -3,7 +3,7 @@
     <q-header reveal class="bg-orange">
         <q-toolbar>
             <q-avatar @click="index"> <img src="statics/logo.png"/> </q-avatar>
-            <q-toolbar-title class="text-weight-bold" @click="index"> MyPub </q-toolbar-title>
+            <q-toolbar-title class="text-weight-bold" @click="index"> PubLuck </q-toolbar-title>
             <q-btn-dropdown v-if="loggedIn" stretch flat label="Account">
                 <q-list>
                   <q-item clickable v-close-popup @click="$router.push('/managepubs')">
