@@ -16,10 +16,14 @@
             </div>
          </div>
 
-        <div v-if="created">
+        <div v-if="created" class="text-center">
             <div class="text-h2 text-white"> Congrats! </div>
-            <div class="text-h4 text-white"> {{pub}} was created! </div>
+            <div class="text-h4 text-white"> 
+                <div class="text-weight-bold">{{pub}} </div> 
+                was created! 
+            </div>
             <div class="text-h4 text-white"> The id is: {{id}} </div>
+            <q-btn class="q-ma-sm" color="green" label="Manage pubs?" @click="$router.push('/managepubs')"/>
             <q-btn class="q-ma-sm" color="orange" label="Return Home" @click="home()"/>
         </div>
 
@@ -68,7 +72,7 @@ export default {
             var create = this.$functions.httpsCallable('createPub');
             create(data).then((result) => {
                 this.created = true
-                this.id = id
+                this.id = id.slice(0, 3) + "-" + id.slice(3)
             }).catch((error) => {
                 console.log(error.message)
             })

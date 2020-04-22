@@ -53,6 +53,7 @@
                                     </q-item-section>
                                 </q-item>
 
+                                <q-scroll-area style="height:200px">
                                 <div v-if="value.contributors != null" >
                                     <q-item 
                                         v-for="(user, id) in value.contributors" :key="id"
@@ -84,6 +85,13 @@
                                         </q-expansion-item>
                                     </q-item>
                                 </div>
+                                </q-scroll-area>
+                                <q-item>
+                                    <q-btn dense unelevated 
+                                        :label="available[key].disable ? 'Enable Future Requests' : 'Disable Future Requests'" 
+                                        :class="available[key].disable ? 'text-green' : 'text-red'"
+                                        @click="disable(key)"/>
+                                </q-item>
                                 </q-list>
                             </div>
                         </q-card-section>
@@ -162,14 +170,6 @@
                         </q-card-section>
                     </div>
                 </q-card>
-                <q-card
-                    elevated
-                    class="my-card text-black"
-                    :style="!size.lg ? size.sm ? 'width:92vw' : 'width:47vw' : 'width:31vw'"
-                    v-show="total < 3"
-                >
-                    <q-btn label="ADD A NEW PUB" />
-                </q-card>
             </div>
         </div>
 
@@ -197,6 +197,7 @@ export default {
 
             available: null,
             contributing: null,
+            button: 'Disable?',
             total: 0,
             pub: '',
             current: '',
@@ -327,6 +328,12 @@ export default {
             })
             return ordered
         },
+        disable(key) {
+            let check = !this.available[key].disable
+            this.available[key].disable = check
+
+            this.$database.ref('pubs/' + this.available[key].id + '/disable').set(check)
+        },
         pubName(pub) {
             this.$database.ref('pubs/' + this.available[pub].id).update({'/name': this.available[pub].name})
         },
@@ -400,6 +407,10 @@ export default {
                         this.owner(i, data.val()[i].id)
                         this.selected[data.val()[i].id] = {}
                         this.selected[data.val()[i].id]['ALL'] = 0
+                        
+                        this.$database.ref('pubs/' + data.val()[i].id + '/disable').once('value', snapshot => {
+                            this.$set(this.available[i], 'disable', snapshot.val())
+                        })
                     }
 
                     this.loadIngredients()

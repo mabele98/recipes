@@ -13,7 +13,7 @@
                 :error="error"
                 style="width: 300px"
             />
-            <div class="row items-center q-mt-lg">
+            <div class="row items-center q-mt-sm">
                 <q-btn :disable="user==null || loading" class="q-ma-sm" color="green" label="Send Request" @click="check()"/>
                 <q-btn class="q-ma-sm" color="red" label="Cancel" @click="home()"/>
             </div>
