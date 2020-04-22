@@ -58,6 +58,9 @@ export default {
   },
 
   methods: {
+    signIn() {
+      this.$router.push('/signin');
+    },
     signOut() {
       this.$auth.signOut().then(() => {
         this.loggedIn = false

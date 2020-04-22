@@ -168,9 +168,6 @@ export default {
                 'selected': this.selected
             })
         },
-        signIn() {
-            this.$router.push('/signin');
-        },
         signOut() {
             this.$auth.signOut().then(() => {
                 this.loggedIn = false

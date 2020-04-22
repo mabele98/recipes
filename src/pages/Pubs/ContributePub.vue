@@ -1,26 +1,29 @@
 <template>
     <q-page class="flex flex-center">
-        <div v-if="!created" class="fit column wrap justify-center items-center content-center">
+        <div v-if="!requested" class="fit column wrap justify-center items-center content-center">
             <div class="text-h6 text-white"> Enter Pub ID </div>
             <q-input 
                 class="q-mt-xs"
                 v-model="pub"
                 label="Pub ID"
                 filled
+                mask="XXX-XXXX" 
                 bg-color="white"
+                :error-message="message"
+                :error="error"
                 style="width: 300px"
             />
             <div class="row items-center q-mt-lg">
-                <q-btn :disable="user==null" class="q-ma-sm" color="green" label="Send Request" @click="submit()"/>
+                <q-btn :disable="user==null || loading" class="q-ma-sm" color="green" label="Send Request" @click="check()"/>
                 <q-btn class="q-ma-sm" color="red" label="Cancel" @click="home()"/>
             </div>
          </div>
 
-        <div v-if="created">
-            <div class="text-h2 text-white"> Congrats! </div>
-            <div class="text-h4 text-white"> {{pub}} was created! </div>
-            <div class="text-h4 text-white"> The id is: {{id}} </div>
-            <q-btn class="q-ma-sm" color="orange" label="Return Home" @click="home()"/>
+        <div v-if="requested" class="text-center">
+            <div class="text-h2 text-white"> A contribution request was sent to </div>
+            <div class="text-h2 text-white text-weight-bold"> {{pub}} </div>
+            <q-btn class="q-ma-md" color="green" label="Another request?" @click="requested = false"/>
+            <q-btn class="q-ma-md" color="orange" label="Return Home" @click="home()"/>
         </div>
 
         
@@ -34,9 +37,13 @@ export default {
     data () {
         return {
             pub: '',
-            created: false,
+            submitted: '',
+            requested: false,
             id: '',
             user: null,
+            loading: false,
+            error: false,
+            message: '',
         }
     },
     methods: {
@@ -57,25 +64,37 @@ export default {
             return id
         },
 
-        submit() {
-            console.log(this.user.displayName)
-
-            var data = {
-                'name': this.user.displayName,
-                'pub': this.pub,
-            }
-            let ref = this.$database.ref('/pubs/' + this.pub + '/pending')
-            ref.on('value', data => {
-                console.log(data.val())
+        check() {
+            this.loading = true
+            let ref = this.$database.ref('/pubs/' + this.pub.replace('-', '') )
+            ref.once('value', data => {
+                if(!data.exists()) {
+                    this.loading = false
+                    this.submitted = this.pub
+                    this.error = true
+                    this.message = 'The id (' + this.submitted + ') does not exist'
+                }
+                else {
+                    if(this.user.uid in data.val().contributors ||  this.user.uid in data.val().pending) {
+                        this.loading = false
+                        this.submitted = this.pub
+                        this.error = true
+                        this.message = 'You have already sent a request to (' + this.submitted + ')'
+                    }
+                    else {
+                        this.error = false
+                        this.submit(data.val().pending)
+                    }
+                }
             })
+        },
+        submit(pending) {
+            if(pending === null) pending = {}
 
-            
-            console.log(data)
-            var contribute = this.$functions.httpsCallable('contributePub');
-            contribute(data).then((result) => {
-                console.log(result)
-            }).catch((error) => {
-                console.log('error', error)
+            pending[this.user.uid] = this.user.displayName
+            this.$database.ref('pubs/' + this.pub.replace('-', '') + '/pending').set(pending).then(() => {
+                this.loading = false
+                this.requested = true
             })
         },
 
@@ -87,6 +106,7 @@ export default {
         this.$auth.onAuthStateChanged(user => {
             this.user = user
         })
+        console.log(this.loading)
         
     }
 }
