@@ -35,7 +35,8 @@ exports.createPub = functions.https.onCall((data, context) => {
 
     admin.database().ref('/pubs/' + id).set({
         'owner': user,
-        'name': name
+        'name': name,
+        'disable': true
     })
 
     admin.database().ref('/users/' + user + '/pubs/owner').push({
