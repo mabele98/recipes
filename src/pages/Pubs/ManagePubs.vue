@@ -170,7 +170,7 @@
                         </q-card-section>
                     </div>
                     <q-card-section>
-                        <q-btn label="DELETE PUB" color="red" @click="remove()"/>
+                        <q-btn label="DELETE PUB" color="red" @click="remove(key)"/>
                     </q-card-section>
                 </q-card>
             </div>
@@ -353,10 +353,7 @@ export default {
         addContributor(pub,pubName,uid,uName) {
             this.$database.ref('pubs/' + pub + '/pending/' + uid).remove()
             this.$database.ref('pubs/' + pub + '/contributors/' + uid).set(uName)
-            this.$database.ref('users/' + uid + '/pubs/contribute/' + pub).set({
-                'id': pub,
-                'name': pubName
-            })
+            this.$database.ref('users/' + uid + '/pubs/contribute/' + pub).set(pubName)
         },
         updateDatabase(type, main, name, pub) {
             let check = false
@@ -401,14 +398,16 @@ export default {
             this.$router.push('/')
         },
         remove(pub) {
+            let friends = this.available[pub].contributors
+            if(friends == null) friends = {}
             var data = {
                 'id': pub,
-                'contributors': available[key].contributors
+                'contributors': friends
             }
+            console.log(data)
             var remove = this.$functions.httpsCallable('removePub');
             remove(data).then((result) => {
-                this.created = true
-                this.id = id.slice(0, 3) + "-" + id.slice(3)
+                delete this.available[pub]
             }).catch((error) => {
                 console.log(error.message)
             })

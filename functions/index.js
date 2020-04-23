@@ -51,14 +51,7 @@ exports.removePub = functions.https.onCall((data, context) => {
 
     admin.database().ref('/pubs/' + id).remove()
 
-    admin.database().ref('/users/' + owner + '/pubs/owner').once('value', data => {
-        var key = null
-        for(let item in data.val()) {
-            if(data.val()[item].id === id) key = item
-        }
-
-        admin.database().ref('/users/' + owner + '/pubs/owner/' + key).remove()
-    })
+    admin.database().ref('/users/' + owner + '/pubs/owner/' + id).remove()
 
     for(let friend in contributors) {
         admin.database().ref('/users/' + friend + '/pubs/contribute/' + id).remove()
