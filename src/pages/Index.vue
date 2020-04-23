@@ -26,7 +26,6 @@
                 :class="size.sm ? 'text-h4' : 'text-h2'"
                 bg-color="white"
                 mask="XXX-XXXX" 
-                fill-mask
                 v-model="pub"
                 @input="loadPub()"
             />
