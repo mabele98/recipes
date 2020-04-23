@@ -1,6 +1,6 @@
 <template>
     <q-page>
-        <div class="full column justify-start items-start content-start">
+        <div v-if="loaded" class="full column justify-start items-start content-start">
             <div class="q-pa-md row wrap justify-evenly items-start q-gutter-md">
                 <q-card 
                     elevated
@@ -13,7 +13,7 @@
                         <div class="text-h4 text-weight-bolder"> {{value.name}} </div>
                         <div class="text-h6"> ID: {{value.lookup}} </div>
                         <q-btn-toggle
-                            v-model="available[key].edit"
+                            v-model="value.edit"
                             dense class="q-mt-xs"
                             toggle-color="primary"
                             :options="[
@@ -25,23 +25,23 @@
                         <q-card-section>
                             <q-input 
                             rounded outlined 
-                            v-model="available[key].name" 
+                            v-model="value.name" 
                             hint="Pub Name" 
                             @input="pubName(key)"
                             />
                             <q-input 
                             rounded outlined disable class="q-mt-lg"
-                            v-model="available[key].owner" 
+                            v-model="value.owner" 
                             hint="Owner" 
                             />
                             <div class="q-pa-md q-gutter-md">
                                 <q-list bordered class="rounded-borders">
-                                    <q-item v-if="info">
-                                        <div v-if="info" class="q-gutter-sm">
+                                    <q-item v-if="value.info">
+                                        <div v-if="value.info" class="q-gutter-sm">
                                             <q-banner inline-actions rounded class="bg-green text-white">
                                             Friends can request to have access to filtering available ingredients.
                                             <template v-slot:action>
-                                                <q-btn flat dense label="Dismiss" @click="info=false"/>
+                                                <q-btn flat dense label="Dismiss" @click="value.info=false"/>
                                             </template>
                                             </q-banner>
                                         </div>
@@ -49,11 +49,11 @@
                                 <q-item>
                                     <q-item-label header>Contributors</q-item-label>
                                     <q-item-section side>
-                                        <q-btn dense unelevated icon="info" class="text-green" @click="info=true"/>
+                                        <q-btn dense unelevated icon="info" class="text-green" @click="value.info=true"/>
                                     </q-item-section>
                                 </q-item>
 
-                                <q-scroll-area style="height:200px">
+                                <q-scroll-area style="height:200px;">
                                 <div v-if="value.contributors != null" >
                                     <q-item 
                                         v-for="(user, id) in value.contributors" :key="id"
@@ -81,7 +81,7 @@
                                             style="width:300px"
                                         >
                                             <q-btn class="q-ma-xs" label="Remove" color="red" @click="removeContributor(value.id,id,false)"/>
-                                            <q-btn class="q-ma-xs" label="Add" color="green" @click="addContributor(value.id,id,user)"/>
+                                            <q-btn class="q-ma-xs" label="Add" color="green" @click="addContributor(value.id,value.name,id,user)"/>
                                         </q-expansion-item>
                                     </q-item>
                                 </div>
@@ -169,6 +169,9 @@
                             </q-scroll-area>
                         </q-card-section>
                     </div>
+                    <q-card-section>
+                        <q-btn label="DELETE PUB" color="red" @click="remove()"/>
+                    </q-card-section>
                 </q-card>
             </div>
         </div>
@@ -205,14 +208,14 @@ export default {
         }
     },
     methods: {
-        owner(key, id) {
+        owner(id) {
             this.$database.ref('/pubs/' + id).on('value', data => {
-                this.$set(this.available[key], 'contributors', data.val().contributors)
-                this.$set(this.available[key], 'pending', data.val().pending)
+                this.$set(this.available[id], 'contributors', data.val().contributors)
+                this.$set(this.available[id], 'pending', data.val().pending)
 
                 let owner = data.val().owner
                 this.$database.ref('/users/' + owner + '/name').once('value', user => {
-                    this.$set(this.available[key], 'owner', user.val())
+                    this.$set(this.available[id], 'owner', user.val())
                 })
             })
         },
@@ -316,7 +319,7 @@ export default {
                     }
                 }
             }
-            this.loaded=true;
+            this.loaded = true
         },
         formatLabel(item) {
             return { label: item, value: item, color: "orange"}
@@ -335,18 +338,25 @@ export default {
             this.$database.ref('pubs/' + this.available[key].id + '/disable').set(check)
         },
         pubName(pub) {
-            this.$database.ref('pubs/' + this.available[pub].id).update({'/name': this.available[pub].name})
+            this.$database.ref('pubs/' + pub).update({'/name': this.available[pub].name})
         },
         removeContributor(pub,uid,contributor) {
             let ref = null
-            if(contributor) ref = this.$database.ref('pubs/' + pub + '/contributors/' + uid)
+            if(contributor) {
+                ref = this.$database.ref('pubs/' + pub + '/contributors/' + uid)
+                this.$database.ref('users/' + uid + '/pubs/contribute/' + pub).remove()
+            }
             else ref = this.$database.ref('pubs/' + pub + '/pending/' + uid)
 
             ref.remove()
         },
-        addContributor(pub,uid,name) {
+        addContributor(pub,pubName,uid,uName) {
             this.$database.ref('pubs/' + pub + '/pending/' + uid).remove()
-            this.$database.ref('pubs/' + pub + '/contributors/' + uid).set(name)
+            this.$database.ref('pubs/' + pub + '/contributors/' + uid).set(uName)
+            this.$database.ref('users/' + uid + '/pubs/contribute/' + pub).set({
+                'id': pub,
+                'name': pubName
+            })
         },
         updateDatabase(type, main, name, pub) {
             let check = false
@@ -389,7 +399,20 @@ export default {
         },
         home() {
             this.$router.push('/')
-        }
+        },
+        remove(pub) {
+            var data = {
+                'id': pub,
+                'contributors': available[key].contributors
+            }
+            var remove = this.$functions.httpsCallable('removePub');
+            remove(data).then((result) => {
+                this.created = true
+                this.id = id.slice(0, 3) + "-" + id.slice(3)
+            }).catch((error) => {
+                console.log(error.message)
+            })
+        },
     },
     mounted() {
         this.$auth.onAuthStateChanged(user => {
@@ -397,32 +420,34 @@ export default {
                 let ref = this.$database.ref('users/' + user.uid + '/pubs/owner')
                 ref.once('value', data => {
                     this.total += 1
-                    this.available = data.val()
+                    this.available = {}
                     for(let i in data.val()){
+                        this.$set(this.available, i, {})
+                        this.$set(this.available[i], 'id', i)
+                        this.$set(this.available[i], 'name', data.val()[i])
                         this.$set(this.available[i], 'edit', 'edit')
+                        this.$set(this.available[i], 'info', false)
+                        this.$set(this.available[i], 'lookup', i.slice(0, 3) + "-" + i.slice(3))
 
-                        this.available[i]['lookup'] = data.val()[i].id.slice(0, 3) + "-" + data.val()[i].id.slice(3)
-                        this.$set(this.available[i], 'name', data.val()[i].name)
-
-                        this.owner(i, data.val()[i].id)
-                        this.selected[data.val()[i].id] = {}
-                        this.selected[data.val()[i].id]['ALL'] = 0
+                        this.owner(i)
+                        this.selected[i] = {}
+                        this.selected[i]['ALL'] = 0
                         
-                        this.$database.ref('pubs/' + data.val()[i].id + '/disable').once('value', snapshot => {
+                        this.$database.ref('pubs/' + i + '/disable').once('value', snapshot => {
                             this.$set(this.available[i], 'disable', snapshot.val())
                         })
                     }
-
+                    console.log(this.available)
                     this.loadIngredients()
                 })
-                ref = this.$database.ref('users/' + user.uid + '/pubs/contributor')
+                /*ref = this.$database.ref('users/' + user.uid + '/pubs/contribute')
                 ref.once('value', data => {
                     this.contributing = data.val()
                     for(let i in data.val()) {
                         this.contributing[i]['lookup'] = data.val()[i].id.sleic(0,3) + "-" + data.val()[i].id.slice(3)
                         this.$set(contributing[i], 'name', data.val()[i].name)
                     }
-                })
+                })*/
             }
         })
         this.$q.screen.setSizes({sm: 300, md: 500, lg: 1000, xl: 2000 })

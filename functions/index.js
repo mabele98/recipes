@@ -39,11 +39,30 @@ exports.createPub = functions.https.onCall((data, context) => {
         'disable': true
     })
 
-    admin.database().ref('/users/' + user + '/pubs/owner').push({
-        'id': id,
-        'name': name
-    })
+    admin.database().ref('/users/' + user + '/pubs/owner/' + id).set(name)
 
     return id
+});
+
+exports.removePub = functions.https.onCall((data, context) => {
+    const owner = context.auth.uid
+    const id = data.id
+    const contributors = data.contributors
+
+    admin.database().ref('/pubs/' + id).remove()
+
+    admin.database().ref('/users/' + owner + '/pubs/owner').once('value', data => {
+        var key = null
+        for(let item in data.val()) {
+            if(data.val()[item].id === id) key = item
+        }
+
+        admin.database().ref('/users/' + owner + '/pubs/owner/' + key).remove()
+    })
+
+    for(let friend in contributors) {
+        admin.database().ref('/users/' + friend + '/pubs/contribute/' + id).remove()
+    }
+
 });
     

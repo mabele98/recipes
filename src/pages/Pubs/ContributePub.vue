@@ -75,7 +75,11 @@ export default {
                     this.message = 'The id (' + this.submitted + ') does not exist'
                 }
                 else {
-                    if(this.user.uid in data.val().contributors ||  this.user.uid in data.val().pending) {
+                    let contributors = {}
+                    let pending = {}
+                    if(data.val().contributors != null) contributors = data.val().contributors
+                    if(data.val().pending != null) pending = data.val().pending
+                    if(this.user.uid in contributors ||  this.user.uid in pending) {
                         this.loading = false
                         this.submitted = this.pub
                         this.error = true
@@ -83,14 +87,13 @@ export default {
                     }
                     else {
                         this.error = false
-                        this.submit(data.val().pending)
+                        this.submit(pending)
                     }
                 }
             })
         },
         submit(pending) {
-            if(pending === null) pending = {}
-
+            
             pending[this.user.uid] = this.user.displayName
             this.$database.ref('pubs/' + this.pub.replace('-', '') + '/pending').set(pending).then(() => {
                 this.loading = false
