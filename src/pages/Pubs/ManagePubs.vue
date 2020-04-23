@@ -404,7 +404,6 @@ export default {
                 'id': pub,
                 'contributors': friends
             }
-            console.log(data)
             var remove = this.$functions.httpsCallable('removePub');
             remove(data).then((result) => {
                 delete this.available[pub]
@@ -436,7 +435,6 @@ export default {
                             this.$set(this.available[i], 'disable', snapshot.val())
                         })
                     }
-                    console.log(this.available)
                     this.loadIngredients()
                 })
                 /*ref = this.$database.ref('users/' + user.uid + '/pubs/contribute')

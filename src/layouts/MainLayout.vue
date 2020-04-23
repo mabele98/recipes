@@ -4,19 +4,31 @@
         <q-toolbar>
             <q-avatar @click="index"> <img src="statics/logo.png"/> </q-avatar>
             <q-toolbar-title class="text-weight-bold" @click="index"> PubLuck </q-toolbar-title>
-            <q-btn-dropdown v-if="loggedIn" stretch flat label="Account">
+            <q-btn-dropdown v-if="loggedIn" stretch flat :label="label">
                 <q-list>
-                  <q-item clickable v-close-popup @click="$router.push('/managepubs')">
+                  <q-item 
+                  :class="label=='Manage your Pubs' ? 'bg-orange-3' : 'bg-white'"
+                  :clickable="label != 'Manage your Pubs'"
+                  v-close-popup 
+                  @click="label='Manage your Pubs';$router.push('/managepubs')">
                         <q-item-section>
                             <q-item-label>Manage Pubs</q-item-label>
                         </q-item-section>
                     </q-item>
-                    <q-item clickable v-close-popup @click="$router.push('/createpub')">
+                    <q-item 
+                    :class="label=='Open a Pub' ? 'bg-orange-3' : 'bg-white'"
+                    :clickable="label != 'Open a Pub'"
+                    v-close-popup 
+                    @click="label='Open a Pub';$router.push('/createpub')">
                         <q-item-section>
                             <q-item-label>Open your own Pub</q-item-label>
                         </q-item-section>
                     </q-item>
-                    <q-item clickable v-close-popup @click="$router.push('/contributepub')">
+                    <q-item 
+                    :class="label=='Contribute to a Pub' ? 'bg-orange-3' : 'bg-white'"
+                    :clickable="label != 'Contribute to a Pub'"
+                    v-close-popup 
+                    @click="label='Contribute to a Pub';$router.push('/contributepub')">
                         <q-item-section>
                             <q-item-label>Contribute to a Pub</q-item-label>
                         </q-item-section>
@@ -54,6 +66,7 @@ export default {
   data () {
     return {
       loggedIn: false,
+      label: 'Home',
     }
   },
 
@@ -70,6 +83,7 @@ export default {
       });
     },
     index() {
+      this.label="Home"
       this.$router.replace('/')
     },
     test() {
@@ -83,7 +97,7 @@ export default {
         this.loggedIn = true
       }
     })
-    
+    console.log(window.location)
   }
 }
 </script>

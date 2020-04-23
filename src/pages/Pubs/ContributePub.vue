@@ -117,7 +117,6 @@ export default {
         this.$auth.onAuthStateChanged(user => {
             this.user = user
         })
-        console.log(this.loading)
         
     }
 }
