@@ -75,19 +75,27 @@ export default {
                     this.message = 'The id (' + this.submitted + ') does not exist'
                 }
                 else {
-                    let contributors = {}
-                    let pending = {}
-                    if(data.val().contributors != null) contributors = data.val().contributors
-                    if(data.val().pending != null) pending = data.val().pending
-                    if(this.user.uid in contributors ||  this.user.uid in pending) {
+                    if(data.val().disable) {
                         this.loading = false
                         this.submitted = this.pub
                         this.error = true
-                        this.message = 'You have already sent a request to (' + this.submitted + ')'
+                        this.message = 'This pub (' + this.submitted + ') is not taking requests'
                     }
-                    else {
-                        this.error = false
-                        this.submit(pending)
+                    else{
+                        let contributors = {}
+                        let pending = {}
+                        if(data.val().contributors != null) contributors = data.val().contributors
+                        if(data.val().pending != null) pending = data.val().pending
+                        if(this.user.uid in contributors ||  this.user.uid in pending) {
+                            this.loading = false
+                            this.submitted = this.pub
+                            this.error = true
+                            this.message = 'You have already sent a request to (' + this.submitted + ')'
+                        }
+                        else {
+                            this.error = false
+                            this.submit(pending)
+                        }
                     }
                 }
             })
