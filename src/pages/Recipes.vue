@@ -36,7 +36,7 @@
           elevated
           v-for="key in index" v-bind:key="key"
           v-show="display(key)"
-          :style="!size.lg ? size.sm ? 'width:92vw' : 'width:47vw' : 'width:31vw'"
+          :style="!size.lg ? size.sm ? 'width:92vw' : 'width:46vw' : 'width:31vw'"
           class="my-card text-black"
           v-bind:class="selectedDrink != key ? recipes[key].show.available ? 'bg-white' : 'bg-grey-4' : 'bg-orange'"
           >
@@ -57,7 +57,7 @@
 
             <q-card-section horizontal>
               <div v-if="selectedDrink != key" class="q-ml-sm"
-              style="height:30vh;width:140px"
+              :style="!size.lg ? size.sm ? 'height:30vh;width:40vw' : 'height:20vh;width:20vw' : 'height:30vh;width:11vw'"
               >
                 <Graphic
                   :graphic="recipes[key].graphic"
@@ -457,7 +457,8 @@ export default {
       }
       this.loadDrinks();
     });
-    this.$q.screen.setSizes({sm: 300, md: 500, lg: 1000, xl: 2000 })
+    this.$q.screen.setSizes({sm: 300, md: 500, lg: 1100, xl: 2000 })
+    console.log(this.size)
   }
 }
 </script>

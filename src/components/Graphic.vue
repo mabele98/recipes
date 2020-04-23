@@ -3,32 +3,32 @@
         <img
             v-if="color"
             :id="id + 'color'"
-            style="position:absolute;height:30vh;width:auto;"
+            :style="style"
         />
         <img
             v-if="fill"
             :id="id + 'fill'"
-            style="position:absolute;height:30vh;width:auto;"
+            :style="style"
         />
         <img
             v-if="glass"
             :id="id + 'glass'"
-            style="position:absolute;height:30vh;width:auto;"
+            :style="style"
         />
         <img
             v-if="garnish"
             :id="id + 'garnish'"
-            style="position:absolute;height:30vh;width:auto;"
+            :style="style"
         />
         <img
             v-if="ice"
             :id="id + 'ice'"
-            style="position:absolute;height:30vh;width:auto;"
+            :style="style"
         />
         <img
             v-if="foam"
             :id="id + 'foam'"
-            style="position:absolute;height:30vh;width:auto;"
+            :style="style"
         />
     </div>
 </template>
@@ -45,6 +45,8 @@ export default {
 
     data () {
         return {
+            style: "position:absolute;height:30vh;width:auto;",
+
             glass: false,
             color: false,
             fill: false,
@@ -64,6 +66,13 @@ export default {
     },
 
     mounted() {
+        this.$q.screen.setSizes({sm: 300, md: 500, lg: 1100, xl: 2000 })
+        if(this.$q.screen.md) {
+            this.style = "position:absolute;height:20vh;width:auto;"
+        }
+        else this.style = "position:absolute;height:30vh;width:auto;"
+
+
         const path = 'artwork/' + this.graphic['glass'] + '/'
         if('glass' in this.graphic && this.graphic['glass'] != ''){
             this.glass = true
