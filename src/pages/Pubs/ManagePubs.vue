@@ -1,6 +1,16 @@
 <template>
     <q-page>
         <div v-if="loaded" class="full column justify-start items-start content-start">
+            <div class="fixed-center text-h3 text-center text-white">
+                <div v-if="show == 'owner' && !owner_"> 
+                    You do not own any pubs. <br>
+                    <q-btn class="q-mt-md" label="Open one now!" color="green" @click="$router.push('/createpub')"/>
+                </div>
+                <div v-if="show == 'contribute' && !contribute_"> 
+                    You are not a contributor for any pubs. <br> 
+                    <q-btn class="q-mt-md" label="Request to contribute now!" color="green" @click="$router.push('/contributepub')"/>
+                </div>
+            </div>
             <div class="q-pa-md row wrap justify-evenly items-start q-gutter-md">
             <div v-for="(value,key) in available" :key="key">
                 <q-card 
@@ -28,6 +38,7 @@
                             rounded outlined 
                             v-model="value.name" 
                             hint="Pub Name" 
+                            :rules="[ val => val.length <= 50 || 'Please use maximum 50 characters']"
                             @input="pubName(key)"
                             />
                             <q-input 
@@ -200,6 +211,7 @@ export default {
     name: "PageManagePubs",
     data() {
         return {
+            user: null,
             size: this.$q.screen,
             loaded: false,
 
@@ -216,12 +228,11 @@ export default {
 
 
             available: null,
-            contributing: null,
-            button: 'Disable?',
             total: 0,
             pub: '',
-            current: '',
-            teal: false,
+
+            owner_: false,
+            contribute_: false
         }
     },
     methods: {
@@ -356,6 +367,7 @@ export default {
         },
         pubName(pub) {
             this.$database.ref('pubs/' + pub).update({'/name': this.available[pub].name})
+            this.$database.ref('users/' + this.user + '/pubs/owner/' + pub).set(this.available[pub].name)
         },
         removeContributor(pub,uid,contributor) {
             let ref = null
@@ -432,6 +444,7 @@ export default {
     mounted() {
         this.$auth.onAuthStateChanged(user => {
             if (user) {
+                this.user = user.uid
                 let ref = this.$database.ref('users/' + user.uid + '/pubs')
                 ref.once('value', data => {
                     if(data.exists()){
@@ -446,8 +459,14 @@ export default {
                                 this.$set(this.available[i], 'info', false)
                                 this.$set(this.available[i], 'lookup', i.slice(0, 3) + "-" + i.slice(3))
 
-                                if(type == 'owner') this.$set(this.available[i], 'edit', 'edit')
-                                else this.$set(this.available[i], 'edit', 'filter')
+                                if(type == 'owner') {
+                                    this.$set(this.available[i], 'edit', 'edit')
+                                    this.owner_ = true
+                                }
+                                else {
+                                    this.$set(this.available[i], 'edit', 'filter')
+                                    this.contribute_ = true
+                                }
                                 this.owner(i)
                                 this.selected[i] = {}
                                 this.selected[i]['ALL'] = 0
@@ -460,7 +479,7 @@ export default {
                         this.loadIngredients()
                         console.log(this.available)
                     }
-                    else {}
+                    else this.loaded = true
                 })
             }
         })
