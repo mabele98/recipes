@@ -1,35 +1,5 @@
 <template>
   <q-page v-if="loadedAvailable && loadedFilter" class="flex flex-left">
-    <q-header reveal>
-      <q-toolbar>
-        <q-scroll-area
-          horizontal
-          style="height:40px;width:100vw;"
-          class="rounded-borders"
-        >
-        <div class="q-mt-xs row inline no-wrap">
-          <div :class="size.sm ? 'text-h6' : 'text-h5'" class="text-weight-bold q-px-md text-no-wrap">  {{id}} recipes </div>
-          <q-btn 
-            dense push
-            class="q-mx-sm text-no-wrap"
-            color="green-8" 
-            text-color="black" 
-            :label="size.sm ? 'Ingredients' : 'Filter Ingredients'" 
-            @click="loadPage('/select/' + id)" />
-          <q-btn 
-            dense push
-            class="q-mx-sm text-no-wrap"
-            color="green-8" 
-            text-color="black" 
-            :label="size.sm ? 'Return' : 'Return Home'" 
-            @click="loadPage('/')" />
-        </div>
-        </q-scroll-area>
-      </q-toolbar>
-      <div class="q-ml-lg text-caption text-italic">
-          Bolded ingredients are your filter choices.
-      </div>
-    </q-header>
     <div class="full column justify-start items-start content-start">
       <div class="q-pa-md row wrap justify-evenly items-start q-gutter-md">
           <q-card  
@@ -440,12 +410,8 @@ export default {
       }
       this.index = temp;
     },
-
-    loadPage(link){
-      this.$router.push(link)
-    }
   },
-  mounted() {
+  created() {
     this.$auth.onAuthStateChanged(user => {
       if(user) {
         this.loggedIn = true
@@ -458,7 +424,13 @@ export default {
       this.loadDrinks();
     });
     this.$q.screen.setSizes({sm: 300, md: 500, lg: 1100, xl: 2000 })
-    console.log(this.size)
+  },
+  watch: {
+    $route (to, from) {
+      console.log('TF')
+      this.id = to.params.id
+      this.loadDrinks()
+    }
   }
 }
 </script>

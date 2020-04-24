@@ -10,11 +10,17 @@ const routes = [
       { path: '/createpub', component: () => import('pages/Pubs/CreatePub.vue') },
       { path: '/managepubs', component: () => import('pages/Pubs/ManagePubs.vue')},
       { path: '/contributepub', component: () => import('pages/Pubs/ContributePub.vue')},
-      { path: '/recipes/:id', component: () => import('pages/Recipes.vue')},
-      { path: '/select/:id', component: () => import('pages/Select/Personal.vue') },
-      { path: '/available/:id', component: () => import('pages/Select/Available.vue') },
       { path: '/add', component: () => import('pages/Admin/AddRecipe.vue')},
       { path: '/graphics', component: () => import('pages/Admin/Graphics.vue')}
+    ]
+  },
+  {
+    path: '/recipes/:id',
+    name: 'recipes',
+    component: () => import('layouts/RecipesLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/Recipes.vue')},
+      { path: 'select', component: () => import('pages/Select/Personal.vue') },
     ]
   },
 ]
