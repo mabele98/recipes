@@ -10,13 +10,13 @@
                     v-if="loggedIn && !own" 
                     class="q-mt-sm" 
                     label="Start your own pub?" 
-                    @click="createPub"/>
+                    @click="$router.push('/createpub')"/>
                 <q-btn 
                     size="sm" color="grey-9"
                     v-if="loggedIn && own" 
                     class="q-mt-sm" 
                     label="Manage your pubs" 
-                    @click="managePubs"/>
+                    @click="$router.push('/managepubs')"/>
             </div>
             <div class="text-white text-h3 text-center"> ENTER PUB ID </div>
             <q-input 

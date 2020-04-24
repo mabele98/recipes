@@ -78,6 +78,7 @@ export default {
       this.$auth.signOut().then(() => {
         this.loggedIn = false
         this.user = ''
+        this.index()
       }).catch(error => {
         console.log(error)
       });
@@ -97,7 +98,14 @@ export default {
         this.loggedIn = true
       }
     })
-    console.log(window.location)
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    if(to.fullPath == '/') this.label='Home'
+    else if(to.fullPath == '/managepubs') this.label='Manage your Pubs'
+    else if(to.fullPath == '/createpub') this.label='Open a Pub'
+    else if(to.fullPath == '/contributepub') this.label='Contribute to a Pub'
+    next()
   }
 }
 </script>
