@@ -167,22 +167,12 @@ export default {
                 'selected': this.selected
             })
         },
-        signOut() {
-            this.$auth.signOut().then(() => {
-                this.loggedIn = false
-                this.user = ''
-            }).catch(error => {
+        loadRecipes(drink){
+            this.$router.push({ name: 'recipes', params: { id: drink } }).then(() => {
+                this.type = drink
+            }).catch((error) => {
                 console.log(error)
-            });
-        },
-        createPub() {
-            this.$router.push('/createpub')
-        },
-        managePubs() {
-            this.$router.push('/managepubs')
-        },
-        loadRecipes(id){
-            this.$router.push('/recipes/' + id)
+            })
         },
         loadGraphics(){
             this.$router.push('/graphics')

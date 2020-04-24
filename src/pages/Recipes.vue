@@ -19,9 +19,11 @@
               </div>
             </div>
             <div 
-              class="text-caption text-center text-no-wrap text-italic">
-              <div v-if="recipes[key].show.available"> Available </div>
-              <div v-else> Not Available </div>
+              class="text-caption text-center text-no-wrap text-italic"
+              v-if="pub != ''"
+              >
+              <div v-if="recipes[key].show.available"> Available at {{pub}}</div>
+              <div v-else> Not Available at {{pub}} </div>
             </div>
               
 
@@ -107,6 +109,7 @@
         >
         <q-btn-toggle
             dense push rounded
+            v-if="pub != ''"
             v-model="filterAvailable"
             class="q-mx-xs"
             toggle-color="orange"
@@ -156,6 +159,7 @@ export default {
       admin: false,
       size: this.$q.screen,
       id: this.$route.params.id,
+      pub: '',
       
       loadedAvailable: false,
       loadedFilter: true,
@@ -204,6 +208,7 @@ export default {
         }
         this.loadedAvailable = true
         if(this.$q.sessionStorage.has('pub')){
+          this.pub = this.$q.sessionStorage.getItem('pub').name
           let pub = this.$q.sessionStorage.getItem('pub').id
           pub = pub.replace('-', '')
           let ref = this.$database.ref("pubs/" + pub + '/available')
@@ -228,6 +233,8 @@ export default {
         else {
           this.filterItems(null)
         }
+        console.log(this.recipes)
+      console.log(this.index)
       })
     },
 
@@ -411,7 +418,7 @@ export default {
       this.index = temp;
     },
   },
-  created() {
+  mounted() {
     this.$auth.onAuthStateChanged(user => {
       if(user) {
         this.loggedIn = true
@@ -427,9 +434,11 @@ export default {
   },
   watch: {
     $route (to, from) {
-      console.log('TF')
-      this.id = to.params.id
-      this.loadDrinks()
+      if(to.fullPath != from.fullPath) {
+        this.id = to.params.id
+        this.index = []
+        this.loadDrinks()
+      }
     }
   }
 }
