@@ -2,17 +2,18 @@
     <q-page>
         <div v-if="loaded" class="full column justify-start items-start content-start">
             <div class="q-pa-md row wrap justify-evenly items-start q-gutter-md">
+            <div v-for="(value,key) in available" :key="key">
                 <q-card 
                     elevated
                     class="my-card text-black"
                     :style="!size.lg ? size.sm ? 'width:92vw' : 'width:47vw' : 'width:31vw'"
-                    v-for="(value,key) in available" 
-                    :key="key"
+                    v-if="value.type == show"
                 >
                     <q-card-section class="text-center"> 
                         <div class="text-h4 text-weight-bolder"> {{value.name}} </div>
                         <div class="text-h6"> ID: {{value.lookup}} </div>
                         <q-btn-toggle
+                            v-if="value.type == 'owner'"
                             v-model="value.edit"
                             dense class="q-mt-xs"
                             toggle-color="primary"
@@ -123,7 +124,7 @@
                             <q-scroll-area
                                 :style="!size.lg ? size.sm ? 'width:90vw' : 'width:45vw' : 'width:29vw'"
                                 style="height:65vh"
-                                class="rounded-borders q-mt-sm"
+                                class="rounded-borders q-mt-sm q-mb-lg"
                             >
                                 <div v-for="(val,type) in options" :key="type">
                                     <div v-show="filter == type || filter == 'ALL'">
@@ -169,13 +170,28 @@
                             </q-scroll-area>
                         </q-card-section>
                     </div>
-                    <q-card-section>
+                    <q-card-section v-if="value.type == 'owner'">
                         <q-btn label="DELETE PUB" color="red" @click="remove(key)"/>
                     </q-card-section>
                 </q-card>
             </div>
+            </div>
         </div>
-
+        <q-footer class="transparent">
+            <q-toolbar>
+                <q-btn-toggle
+                    dense push rounded
+                    v-model="show"
+                    class="q-mx-xs"
+                    toggle-color="orange"
+                    color="green-8"
+                    text-color="black"
+                    :options="[
+                    {label: 'Owner', value: 'owner'},
+                    {label: 'Contributor', value: 'contribute'}
+                    ]" />
+            </q-toolbar>
+        </q-footer>
     </q-page>
 </template>
 
@@ -188,6 +204,7 @@ export default {
             loaded: false,
 
             filter: 'ALL',
+            show: 'owner',
 
             options: {},
             selected: {},
@@ -398,15 +415,15 @@ export default {
             this.$router.push('/')
         },
         remove(pub) {
-            let friends = this.available[pub].contributors
-            if(friends == null) friends = {}
+            let friends = {}
+            if('contributors' in this.available[pub]) friends = this.available[pub].contributors
             var data = {
                 'id': pub,
                 'contributors': friends
             }
             var remove = this.$functions.httpsCallable('removePub');
             remove(data).then((result) => {
-                delete this.available[pub]
+                this.$delete(this.available, pub)
             }).catch((error) => {
                 console.log(error.message)
             })
@@ -415,36 +432,36 @@ export default {
     mounted() {
         this.$auth.onAuthStateChanged(user => {
             if (user) {
-                let ref = this.$database.ref('users/' + user.uid + '/pubs/owner')
+                let ref = this.$database.ref('users/' + user.uid + '/pubs')
                 ref.once('value', data => {
-                    this.total += 1
-                    this.available = {}
-                    for(let i in data.val()){
-                        this.$set(this.available, i, {})
-                        this.$set(this.available[i], 'id', i)
-                        this.$set(this.available[i], 'name', data.val()[i])
-                        this.$set(this.available[i], 'edit', 'edit')
-                        this.$set(this.available[i], 'info', false)
-                        this.$set(this.available[i], 'lookup', i.slice(0, 3) + "-" + i.slice(3))
+                    if(data.exists()){
+                        this.total += 1
+                        this.available = {}
+                        for(let type in data.val()){
+                            for(let i in data.val()[type]) {
+                                this.$set(this.available, i, {})
+                                this.$set(this.available[i], 'type', type)
+                                this.$set(this.available[i], 'id', i)
+                                this.$set(this.available[i], 'name', data.val()[type][i])
+                                this.$set(this.available[i], 'info', false)
+                                this.$set(this.available[i], 'lookup', i.slice(0, 3) + "-" + i.slice(3))
 
-                        this.owner(i)
-                        this.selected[i] = {}
-                        this.selected[i]['ALL'] = 0
-                        
-                        this.$database.ref('pubs/' + i + '/disable').once('value', snapshot => {
-                            this.$set(this.available[i], 'disable', snapshot.val())
-                        })
+                                if(type == 'owner') this.$set(this.available[i], 'edit', 'edit')
+                                else this.$set(this.available[i], 'edit', 'filter')
+                                this.owner(i)
+                                this.selected[i] = {}
+                                this.selected[i]['ALL'] = 0
+                                
+                                this.$database.ref('pubs/' + i + '/disable').once('value', snapshot => {
+                                    this.$set(this.available[i], 'disable', snapshot.val())
+                                })
+                            }
+                        }
+                        this.loadIngredients()
+                        console.log(this.available)
                     }
-                    this.loadIngredients()
+                    else {}
                 })
-                /*ref = this.$database.ref('users/' + user.uid + '/pubs/contribute')
-                ref.once('value', data => {
-                    this.contributing = data.val()
-                    for(let i in data.val()) {
-                        this.contributing[i]['lookup'] = data.val()[i].id.sleic(0,3) + "-" + data.val()[i].id.slice(3)
-                        this.$set(contributing[i], 'name', data.val()[i].name)
-                    }
-                })*/
             }
         })
         this.$q.screen.setSizes({sm: 300, md: 500, lg: 1000, xl: 2000 })
