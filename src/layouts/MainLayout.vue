@@ -33,6 +33,15 @@
                             <q-item-label>Contribute to a Pub</q-item-label>
                         </q-item-section>
                     </q-item>
+                    <q-item 
+                    :class="label=='Print a Menu' ? 'bg-orange-3' : 'bg-white'"
+                    :clickable="label != 'Print a Menu'"
+                    v-close-popup 
+                    @click="label='Print a Menu';$router.push('/printmenu')">
+                        <q-item-section>
+                            <q-item-label>Print a Menu</q-item-label>
+                        </q-item-section>
+                    </q-item>
                     <q-item clickable v-close-popup @click="signOut()">
                         <q-item-section>
                             <q-item-label>Log Out</q-item-label>
@@ -93,6 +102,8 @@ export default {
   },
 
   mounted () {
+    this.$q.screen.setSizes({sm: 300, md: 500, lg: 1100, xl: 2000 })
+
     this.$auth.onAuthStateChanged(user => {
       if (user) {
         this.loggedIn = true

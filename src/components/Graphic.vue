@@ -40,7 +40,11 @@ export default {
 
     props: {
         graphic: Object,
-        id: String
+        id: String,
+        size: {
+            type: String,
+            default: ''
+        }
     },
 
     data () {
@@ -66,11 +70,16 @@ export default {
     },
 
     mounted() {
-        this.$q.screen.setSizes({sm: 300, md: 500, lg: 1100, xl: 2000 })
-        if(this.$q.screen.md) {
-            this.style = "position:absolute;height:20vh;width:auto;"
+        if(this.size == '') { 
+            this.$q.screen.setSizes({sm: 300, md: 500, lg: 1100, xl: 2000 })
+            if(this.$q.screen.md) {
+                this.style = "position:absolute;height:20vh;width:auto;"
+            }
+            else this.style = "position:absolute;height:30vh;width:auto;"
         }
-        else this.style = "position:absolute;height:30vh;width:auto;"
+        else{
+            this.style = "position:absolute;width:auto;" + this.size
+        }
 
 
         const path = 'artwork/' + this.graphic['glass'] + '/'

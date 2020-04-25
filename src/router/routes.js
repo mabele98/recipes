@@ -10,9 +10,15 @@ const routes = [
       { path: '/createpub', component: () => import('pages/Pubs/CreatePub.vue') },
       { path: '/managepubs', component: () => import('pages/Pubs/ManagePubs.vue')},
       { path: '/contributepub', component: () => import('pages/Pubs/ContributePub.vue')},
+      { path: '/printmenu', component: () => import('pages/Pubs/PrintMenu.vue')},
       { path: '/add', component: () => import('pages/Admin/AddRecipe.vue')},
       { path: '/graphics', component: () => import('pages/Admin/Graphics.vue')}
     ]
+  },
+  {
+    path: '/print/:drink/:pub/:like/:available/:ingredients',
+    name: 'print',
+    component: () => import('pages/Pubs/PrintTemplate.vue')
   },
   {
     path: '/recipes/:id',
