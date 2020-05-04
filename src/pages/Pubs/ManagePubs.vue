@@ -237,6 +237,7 @@ export default {
     },
     methods: {
         owner(id) {
+            console.log(id)
             this.$database.ref('/pubs/' + id).on('value', data => {
                 this.$set(this.available[id], 'contributors', data.val().contributors)
                 this.$set(this.available[id], 'pending', data.val().pending)
@@ -288,7 +289,7 @@ export default {
                 for(let pub in this.available) {
                     let id = this.available[pub].id
                     let available = this.$database.ref("pubs/" + id + "/available")
-                    available.orderByKey().once("value", info => {
+                    available.orderByKey().on("value", info => {
                         if(info.exists()){
                             this.addLabels(info.val(), id)
                         }

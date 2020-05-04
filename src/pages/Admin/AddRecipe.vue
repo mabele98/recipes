@@ -1,9 +1,10 @@
 <template>
     <q-page class="flex flex-center">
 
-        <q-card v-if="!confirm" style="width:500px;">
+        <q-card v-if="!confirm" :style="size.sm ? 'width:95vw;' : 'width:500px;'">
             <q-scroll-area
-                style="height:90vh;width:500px;"
+                style="height:90vh"
+                :style="size.sm ? 'width:95vw;' : 'width:500px;'"
                 class="rounded-borders"
             >
             <q-card-section vertical>
@@ -58,7 +59,9 @@
             </q-scroll-area>
         </q-card>
 
-        <q-card v-if="confirm && loaded" style="width:600px;height:90vh">
+        <q-card v-if="confirm && loaded" style="height:90vh"
+            :style="size.sm ? 'width:95vw;' : 'width:500px;'"
+        >
 
             <div class="text-h4 q-mx-md text-blue"> Create a graphic! </div>
 
@@ -121,6 +124,7 @@
                 <div v-if="loadGraphic">
                     <Graphic
                         id="1"
+                        size="height:50vh"
                         :graphic="graphic"
                     />
                 </div>
@@ -153,6 +157,7 @@ export default {
 
             confirm: false,
             loaded: false,
+            size: this.$q.screen,
 
             name: '',
             type: '',
@@ -260,7 +265,12 @@ export default {
                         this.ingredients[item].type = this.type.toUpperCase();
                         
                     }
-                    ref.push(this.ingredients[item]);
+                    ref.push(this.ingredients[item])
+                    .then((snap) => {
+                        const key = snap.key
+
+                        this.$database.ref('ingredients/' + )
+                    })
                 }
 
                 
@@ -323,7 +333,6 @@ export default {
             this.$set(this.graphic, 'foam', false)
 
             this.loaded = true
-            console.log(this.data)
         })
     }
 }
