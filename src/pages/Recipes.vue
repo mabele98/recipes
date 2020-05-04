@@ -14,7 +14,10 @@
               v-bind:class="size.sm ? 'text-h5' : 'text-h4'"
               class="q-pt-lg text-center text-weight-bolder text-no-wrap"
             >
-              <div v-bind:style="selectedDrink == key ? 'color: white' : 'color: ' + recipes[key].color"> 
+              <div 
+                v-bind:style="selectedDrink == key ? 'color: white' : 'color: ' + recipes[key].color"
+                @click="selectedDrink == key ? selectedDrink = '' : selectedDrink = key"
+              > 
                 {{ recipes[key].name }}
               </div>
             </div>
@@ -30,6 +33,7 @@
             <q-card-section horizontal>
               <div v-if="selectedDrink != key" class="q-ml-sm"
               :style="!size.lg ? size.sm ? 'height:30vh;width:40vw' : 'height:20vh;width:20vw' : 'height:30vh;width:11vw'"
+              @click="selectedDrink = key"
               >
                 <Graphic
                   :graphic="recipes[key].graphic"
@@ -83,8 +87,7 @@
                 :ripple="false"
                 :color="recipes[key].like ? 'green' : 'black'"
                 icon-right="thumb_up" @click="like(key, true)" />
-              <q-btn v-if="selectedDrink == key" flat icon="clear" @click="selectedDrink = ''"/>
-              <q-btn v-else flat @click="selectedDrink = key">Recipe</q-btn>
+              <q-btn :disable="!('url' in recipes[key])" flat @click="openPage(key)">Method</q-btn>
               <q-btn flat 
                 v-show="loadedOpinion"
                 :disable="!loggedIn"
@@ -233,8 +236,6 @@ export default {
         else {
           this.filterItems(null)
         }
-        console.log(this.recipes)
-      console.log(this.index)
       })
     },
 
@@ -416,6 +417,10 @@ export default {
         temp[j] = x;
       }
       this.index = temp;
+    },
+
+    openPage(key) {
+      window.open(this.recipes[key].url)
     },
   },
   mounted() {
