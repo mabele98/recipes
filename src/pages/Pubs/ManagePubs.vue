@@ -72,6 +72,8 @@
                                         class="text-green"
                                     >
                                         <q-expansion-item
+                                            :default-opened="false"
+                                            group="friends"
                                             expand-separator
                                             icon="check"
                                             :label="user"
@@ -87,6 +89,7 @@
                                         class="text-orange"
                                     >   
                                         <q-expansion-item
+                                            group="friends"
                                             expand-separator
                                             icon="person_add"
                                             :label="user"
@@ -110,7 +113,8 @@
                     </div>
                     <div v-if="value.edit == 'filter'">
                         <q-card-section class="text-center">
-                            <q-btn-dropdown color="orange" :label="filter +' ('+selected[value.id][filter]+')'">
+                            <q-btn-dropdown color="orange" 
+                            :label="filter != 'ALL' ? filter +' ('+selected[value.id][filter]+')' : filter">
                                 <q-item 
                                     clickable v-close-popup
                                     @click="filter = 'ALL'"
@@ -125,7 +129,7 @@
                                     @click="filter = type"
                                 >
                                     <q-item-section>
-                                        <q-item-label> {{type}} </q-item-label>
+                                        <q-item-label> {{type}} ({{selected[value.id][type]}})</q-item-label>
                                     </q-item-section>
                                 </q-item>
                             </q-btn-dropdown>
@@ -181,7 +185,7 @@
                             </q-scroll-area>
                         </q-card-section>
                     </div>
-                    <q-card-section v-if="value.type == 'owner'">
+                    <q-card-section v-if="value.type == 'owner' && value.edit=='edit'">
                         <q-btn label="DELETE PUB" color="red" @click="remove(key)"/>
                     </q-card-section>
                 </q-card>
