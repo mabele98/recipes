@@ -3,7 +3,20 @@
     <q-header reveal class="bg-green">
         <q-toolbar>
             <q-avatar @click="$router.push('/')"> <img src="statics/logo.png"/> </q-avatar>
-            <q-toolbar-title @click="$router.push('/')" class="text-weight-bold"> {{type}} recipes </q-toolbar-title>
+            <q-toolbar-title 
+                v-if="size.sm" 
+                class="text-weight-bold"
+                @click="$router.push('/')"
+            > 
+                {{type}}
+            </q-toolbar-title>
+            <q-toolbar-title 
+                v-else 
+                class="text-weight-bold"
+                @click="$router.push('/')"
+            > 
+                {{type}} recipes 
+            </q-toolbar-title>
             <q-btn-dropdown v-if="!select" stretch flat label="Recipes">
                 <q-list v-for="drink in recipes" :key="drink">
                   <q-item
@@ -21,7 +34,9 @@
             <q-btn v-if="select" unelevated label="Return" @click="goTo(type)"/>
         </q-toolbar>
         <div v-if="!select" class="q-ml-md row">
-            <div class="q-mr-md text-subtitle2 text-italic"> Bolded ingredients are your filter choices. </div>
+            <div class="q-mr-md text-italic"
+                :class="size.sm ? 'text-caption' : 'text-subtitle2'"
+            > Bolded ingredients are your filter choices. </div>
             <q-btn dense unelevated size="sm" label="Filter Here" @click="filter(type)"/>
         </div>
     </q-header>
@@ -44,6 +59,7 @@ export default {
         return {
             recipes: [],
             type: this.$route.params.id,
+            size: this.$q.screen,
             select: false,
         }
     },
