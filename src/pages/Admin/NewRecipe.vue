@@ -7,21 +7,46 @@
                 </q-card-section>
                 <q-scroll-area class="q-mb-lg" style="height:78vh">
                     <q-card-section>
-                        <q-input 
-                            class="q-mb-lg"
-                            square outlined v-model="recipe.name" 
-                            :rules="[ val => val.length <= 30 || 'Please use maximum 30 characters']"
-                            label="Recipe Name" />
+                        <q-card-section horizontal>
+                            <q-input 
+                                class="q-mb-lg" style="width:60vw"
+                                square outlined v-model="recipe.name" 
+                                :rules="[ val => val.length <= 30 || 'Please use maximum 30 characters']"
+                                label="Recipe Name" />
+                            <q-btn-dropdown class="q-ml-sm" :label="pub.id" style="height:55px">
+                                <q-list>
+                                    <q-item 
+                                        clickable v-close-popup :class="pub.id == value.id ? 'bg-orange' : 'bg-white'"
+                                        v-for="(value,key) in pubs" :key="key"
+                                        @click="pub=value">
+                                        <q-item-label>{{value.name}}</q-item-label>
+                                    </q-item>
+                                    <q-item
+                                        v-if="admin" :class="pub.name == 'None' ? 'bg-orange' : 'bg-white'"
+                                        clickable v-close-popup
+                                        @click="pub={'id': 'None', 'name': 'None'}">
+                                        <q-item-label>None</q-item-label>
+                                    </q-item>
+                                </q-list>
+                            </q-btn-dropdown>
+                        </q-card-section>
                         <q-input 
                             class="q-mb-lg"
                             square outlined v-model="recipe.description"
                             :rules="[ val => val.length <= 100 || 'Please use maximum 100 characters']" 
                             label="Recipe Description" />
-                        <q-input 
-                            class="q-mb-lg"
-                            square outlined v-model="recipe.url" 
-                            hint="If your recipe links to another site, add url here!"
-                            label="Recipe URL" />
+                        <div v-if="admin && pub.name == 'None'">
+                            <q-input 
+                                class="q-mb-lg"
+                                square outlined v-model="recipe.id"
+                                :rules="[ val => val.length <= 100 || 'Please use maximum 100 characters']" 
+                                label="Drink Type" />
+                            <q-input 
+                                class="q-mb-lg"
+                                square outlined v-model="recipe.url" 
+                                hint="If your recipe links to another site, add url here!"
+                                label="Recipe URL" />
+                        </div>
                     </q-card-section>
                     <q-card-section class="text-h6 text-grey-10"> Ingredients </q-card-section>
                     <q-card-section v-for="(item,key) in ingredients" :key="key">
@@ -170,6 +195,7 @@
                             'like': false,
                             'dislike': false
                         }"
+                        :pub="pub.name == 'None' ? '' : pub.name"
                         :selected="selected"
                         @selected="selected = !selected"
                     />
@@ -206,11 +232,15 @@ export default {
     },
     data () {
         return {
+            admin: false,
             step: 1,
+            pubs: [],
+            pub: {'id': 'Pub', 'name': 'Pub'},
             recipe: {
                 'name': '',
                 'description': '',
-                'url': ''
+                'url': '',
+                'id': ''
             },
             ingredients: [
                 {
@@ -306,6 +336,23 @@ export default {
         }
     },
     mounted () {
+        this.$auth.onAuthStateChanged(user => {
+            if (user) {
+                let ref = this.$database.ref("users/" + user.uid)
+                ref.on("value", data => {
+                    this.admin = data.val().admin;
+                    for(let type in data.val().pubs) {
+                        for(let id in data.val().pubs[type]) {
+                            this.pubs.push({
+                                'id': id,
+                                'name': data.val().pubs[type][id] 
+                            })
+                        }
+                    }
+                })
+            }
+        })
+
         this.$database.ref('graphics').once("value", data => {
             for(let type in data.val()){
                 this.options.push({'label': type, 'value': type})
