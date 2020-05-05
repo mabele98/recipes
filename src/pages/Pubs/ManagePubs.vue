@@ -145,8 +145,7 @@
                                     <div v-show="filter == type || filter == 'ALL'">
 
                                         <div class="text-h5 q-mt-sm text-weight-bold">
-                                            <div v-if="type == 'ADDITIONAL ALCOHOL'"> ADD. ALCOHOL </div>
-                                            <div v-else> {{type}} </div>
+                                            {{type}}
                                         </div>
                                         <div
                                             class="q-pa-sm text-subtitle1"
@@ -241,7 +240,6 @@ export default {
     },
     methods: {
         owner(id) {
-            console.log(id)
             this.$database.ref('/pubs/' + id).on('value', data => {
                 this.$set(this.available[id], 'contributors', data.val().contributors)
                 this.$set(this.available[id], 'pending', data.val().pending)
@@ -258,24 +256,20 @@ export default {
                 for(let key in data.val()){
                     let type = key.substring(2)
                     this.options[type] = {}
-
                     
                     for(let id in data.val()[key]){
-                        let name = data.val()[key][id]
-
                         if(type == "MAIN ALCOHOL") {
-                            if(!(id in this.options[type])) this.options[type][id] = {}
+                            this.options[type][id] = {}
                             for(let alc in data.val()[key][id]) {
-                                let name = data.val()[key][id][alc]
-                                if(name in this.options[type][id]) this.options[type][id][name].ingredients.push(alc)
-                                else this.options[type][id][name] = { 'ingredients': [alc]}
+                                let name = data.val()[key][id][alc].name
+                                this.options[type][id][name] = {}
+                                this.options[type][id][name]['ingredients'] = data.val()[key][id][alc].ingredients
                             }
                         }
-                        
                         else {
-                            let name = data.val()[key][id]
-                            if(name in this.options[type]) this.options[type][name].ingredients.push(id);
-                            else this.options[type][name] = { 'ingredients': [id] }
+                            let name = data.val()[key][id].name
+                            this.options[type][name] = {}
+                            this.options[type][name]['ingredients'] = data.val()[key][id].ingredients
                         }
                     }
                 }
@@ -300,6 +294,8 @@ export default {
                         else this.addLabels(null, id)
                     });
                 }
+
+                console.log('options', this.options)
             });
 
         },
@@ -391,6 +387,7 @@ export default {
         },
         updateDatabase(type, main, name, pub) {
             let check = false
+            console.log(type, main, name, pub)
             if(main != ''){
                 check = !this.options[type][main][name][pub].check
                 this.options[type][main][name][pub].check = check
@@ -463,15 +460,11 @@ export default {
                                 this.$set(this.available[i], 'name', data.val()[type][i])
                                 this.$set(this.available[i], 'info', false)
                                 this.$set(this.available[i], 'lookup', i.slice(0, 3) + "-" + i.slice(3))
+                                this.$set(this.available[i], 'edit', 'filter')
 
-                                if(type == 'owner') {
-                                    this.$set(this.available[i], 'edit', 'edit')
-                                    this.owner_ = true
-                                }
-                                else {
-                                    this.$set(this.available[i], 'edit', 'filter')
-                                    this.contribute_ = true
-                                }
+                                if(type == 'owner') this.owner_ = true
+                                else this.contribute_ = true
+
                                 this.owner(i)
                                 this.selected[i] = {}
                                 this.selected[i]['ALL'] = 0
@@ -482,7 +475,6 @@ export default {
                             }
                         }
                         this.loadIngredients()
-                        console.log(this.available)
                     }
                     else this.loaded = true
                 })
