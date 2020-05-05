@@ -161,6 +161,19 @@
                 <q-card-section class="text-h4 text-weight-bold">
                     Check your recipe!
                 </q-card-section>
+                <q-card-section>
+                    <Recipe
+                        :recipe="loadRecipe()"
+                        :size="$q.screen"
+                        width="315px"
+                        :change="{
+                            'like': false,
+                            'dislike': false
+                        }"
+                        :selected="selected"
+                        @selected="selected = !selected"
+                    />
+                </q-card-section>
 
                 <q-card-actions>
                     <q-btn 
@@ -182,16 +195,18 @@
 <script>
 import QFirebaseUploader from 'components/QFirebaseUploader'
 import Graphic from 'components/Graphic'
+import Recipe from 'components/Recipe'
 
 export default {
     name: "PageNewRecipe",
     components: {
         QFirebaseUploader,
-        Graphic
+        Graphic,
+        Recipe
     },
     data () {
         return {
-            step: 2,
+            step: 1,
             recipe: {
                 'name': '',
                 'description': '',
@@ -216,6 +231,7 @@ export default {
             choose: 'glass',
             options: [],
             data: {},
+            selected: false
         }
     },
 
@@ -270,6 +286,23 @@ export default {
             else image[choose] = item
 
             return image
+        },
+        loadRecipe() {
+            let recipe = {}
+            recipe['name'] = this.recipe.name
+            recipe['url'] = this.recipe.url
+            recipe['graphic'] = this.graphic
+            recipe['ingredients'] = this.ingredients
+            recipe['likes'] = 0
+            recipe['like'] = false
+            recipe['dislikes'] = 0
+            recipe['dislike'] = false
+            recipe['available'] = true
+
+            return recipe
+        },
+        submit() {
+
         }
     },
     mounted () {
