@@ -178,7 +178,7 @@ export default {
             this.$router.push('/graphics')
         },
         loadAdd(){
-            this.$router.push('/add')
+            this.$router.push('/newrecipe')
         }
     },
     mounted() {

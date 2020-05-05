@@ -11,8 +11,7 @@ const routes = [
       { path: '/managepubs', component: () => import('pages/Pubs/ManagePubs.vue')},
       { path: '/contributepub', component: () => import('pages/Pubs/ContributePub.vue')},
       { path: '/printmenu', component: () => import('pages/Pubs/PrintMenu.vue')},
-      { path: '/newrecipe', component: () => import('pages/Admin/NewRecipe.vue')},
-      { path: '/add', component: () => import('pages/Admin/AddRecipe.vue')},
+      { path: '/newrecipe', component: () => import('pages/Admin/NewRecipe.vue')},å
       { path: '/graphics', component: () => import('pages/Admin/Graphics.vue')}
     ]
   },
