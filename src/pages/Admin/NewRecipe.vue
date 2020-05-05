@@ -210,7 +210,7 @@
                     <q-btn 
                         style="margin:auto;width:50%"
                         unelevated class="q-mx-xs" color="green" 
-                        @click="step = 1"
+                        @click="submit()"
                         label="Submit" />
                 </q-card-actions>
             </div>
@@ -332,7 +332,43 @@ export default {
             return recipe
         },
         submit() {
+            let ingredients = {}
+            for(let id in this.ingredients) {
+                let item = this.ingredients[id]
+                ingredients[id] = item
+                if(item.type == 'MAIN') {
+                    if(this.pub.name == 'None') ingredients[id].type = this.recipe.id.toUpperCase()
+                    else ingredients[id].type = this.pub.name.toUpperCase()
+                }
+                if(item.type == 'ADD. ALCOHOL') {
+                    ingredients[id].type = 'ADDITIONAL ALCOHOL'
+                }
+            }
 
+
+            let recipe = {}
+            recipe['name'] = this.recipe.name
+            recipe['url'] = this.recipe.url
+            recipe['graphic'] = this.graphic
+            recipe['likes'] = 0
+            recipe['dislikes'] = 0
+
+            let data = {}
+            data['id'] = this.recipe.id
+            data['recipe'] = recipe
+            data['ingredients'] = ingredients
+            data['pub'] = null
+
+            if(this.pub.name != 'None') data['pub'] = this.pub.id
+
+            var create = this.$functions.httpsCallable('createRecipe');
+            create(data).then((result) => {
+                console.log('success', result)
+                this.step = 1
+            })
+            .catch((error) => {
+                console.log(error)
+            })
         }
     },
     mounted () {
