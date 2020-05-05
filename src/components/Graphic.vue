@@ -65,7 +65,85 @@ export default {
 
     },
 
-    method: {
+    methods: {
+        update() {
+            const path = 'artwork/' + this.graphic['glass'] + '/'
+            if('glass' in this.graphic && this.graphic['glass'] != ''){
+                this.glass = true
+                let glass = path + 'graphic.png'
+                this.$storage.ref().child(glass).getDownloadURL().then(url => {
+                    let img = document.getElementById(this.id + 'glass');
+                    img.src = url
+                })
+            }
+
+            if('color' in this.graphic && this.graphic['color'] != '') {
+                this.color = true
+                let color = path + 'color/' + (this.graphic['color'].slice(1)).toUpperCase() + '/graphic.png'
+                this.$storage.ref().child(color).getDownloadURL().then(url => {
+                    let img = document.getElementById(this.id + 'color');
+                    img.src = url
+                })
+            }
+
+            if('fill' in this.graphic && this.graphic['fill'] != '') {
+                if(this.graphic['fill'] == 'none') this.fill = false
+                else {
+                    this.fill = true
+                    let fill = path + 'fill/' + this.graphic['fill'] + '/graphic.png'
+                    this.$storage.ref().child(fill).getDownloadURL().then(url => {
+                        let img = document.getElementById(this.id + 'fill');
+                        img.src = url
+                    })
+                }
+            }
+
+            if('garnish' in this.graphic && this.graphic['garnish'] != '') {
+                if(this.graphic['garnish'] == 'none') this.garnish = false
+                else {
+                    this.garnish = true
+                    let garnish = path + 'garnish/' + this.graphic['garnish'] + '/'
+                    if(this.graphic['garnish'] == 'whippedcream') {
+                        let whippedcream = garnish + this.graphic['whippedcream'] + '/graphic.png'
+                        this.$storage.ref().child(whippedcream).getDownloadURL().then(url => {
+                            let img = document.getElementById(this.id + 'garnish');
+                            img.src = url
+                        })
+                    }
+                    else {
+                        garnish += 'graphic.png'
+                        this.$storage.ref().child(garnish).getDownloadURL().then(url => {
+                            let img = document.getElementById(this.id + 'garnish');
+                            img.src = url
+                        })
+                    }
+                }
+            }
+
+            if('ice' in this.graphic) {
+                if(!this.graphic['ice']) this.ice = false
+                else {
+                    this.ice = true
+                    let ice = path + 'ice/graphic.png'
+                    this.$storage.ref().child(ice).getDownloadURL().then(url => {
+                        let img = document.getElementById(this.id + 'ice');
+                        img.src = url
+                    })
+                }
+            }
+
+            if('foam' in this.graphic) {
+                if(!this.graphic['foam']) this.foam = false
+                else {
+                    this.foam = true
+                    let foam = path + 'foam/graphic.png'
+                    this.$storage.ref().child(foam).getDownloadURL().then(url => {
+                        let img = document.getElementById(this.id + 'foam');
+                        img.src = url
+                    })
+                }
+            }
+        }
 
     },
 
@@ -81,70 +159,11 @@ export default {
             this.style = "position:absolute;width:auto;" + this.size
         }
 
-
-        const path = 'artwork/' + this.graphic['glass'] + '/'
-        if('glass' in this.graphic && this.graphic['glass'] != ''){
-            this.glass = true
-            let glass = path + 'graphic.png'
-            this.$storage.ref().child(glass).getDownloadURL().then(url => {
-                let img = document.getElementById(this.id + 'glass');
-                img.src = url
-            })
-        }
-
-        if('color' in this.graphic && this.graphic['color'] != '') {
-            this.color = true
-            let color = path + 'color/' + (this.graphic['color'].slice(1)).toUpperCase() + '/graphic.png'
-            this.$storage.ref().child(color).getDownloadURL().then(url => {
-                let img = document.getElementById(this.id + 'color');
-                img.src = url
-            })
-        }
-
-        if('fill' in this.graphic && this.graphic['fill'] != '' && this.graphic['fill'] != 'none') {
-            this.fill = true
-            let fill = path + 'fill/' + this.graphic['fill'] + '/graphic.png'
-            this.$storage.ref().child(fill).getDownloadURL().then(url => {
-                let img = document.getElementById(this.id + 'fill');
-                img.src = url
-            })
-        }
-
-        if('garnish' in this.graphic && this.graphic['garnish'] != '' && this.graphic['garnish'] != 'none') {
-            this.garnish = true
-            let garnish = path + 'garnish/' + this.graphic['garnish'] + '/'
-            if(this.graphic['garnish'] == 'whippedcream') {
-                let whippedcream = garnish + this.graphic['whippedcream'] + '/graphic.png'
-                this.$storage.ref().child(whippedcream).getDownloadURL().then(url => {
-                    let img = document.getElementById(this.id + 'garnish');
-                    img.src = url
-                })
-            }
-            else {
-                garnish += 'graphic.png'
-                this.$storage.ref().child(garnish).getDownloadURL().then(url => {
-                    let img = document.getElementById(this.id + 'garnish');
-                    img.src = url
-                })
-            }
-        }
-
-        if('ice' in this.graphic && this.graphic['ice']) {
-            this.ice = true
-            let ice = path + 'ice/graphic.png'
-            this.$storage.ref().child(ice).getDownloadURL().then(url => {
-                let img = document.getElementById(this.id + 'ice');
-                img.src = url
-            })
-        }
-
-        if('foam' in this.graphic && this.graphic['foam']) {
-            this.foam = true
-            let foam = path + 'foam/graphic.png'
-            this.$storage.ref().child(foam).getDownloadURL().then(url => {
-                let img = document.getElementById(this.id + 'foam');
-                img.src = url
-            })
+        this.update()
+    },
+    watch: {
+        graphic: function () {
+            this.update()
         }
     }
 }
