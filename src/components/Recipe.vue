@@ -82,7 +82,13 @@
                     :ripple="false"
                     :color="recipe.like ? 'green' : 'black'"
                     icon-right="thumb_up" @click="updateLike()" />
-                <q-btn :disable="recipe.url == ''" flat @click="openPage()">Method</q-btn>
+                <q-btn 
+                    :disable="recipe.url == ''" 
+                    flat @click="openPage()"
+                    :class="recipe.url == '' ? selected ? 'text-orange' : 'text-white' : 'text-black'"
+                >
+                    Method
+                </q-btn>
                 <q-btn flat 
                     :disable="!loggedIn"
                     :ripple="false"
