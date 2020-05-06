@@ -71,7 +71,7 @@ exports.createRecipe = functions.https.onCall((data, context) => {
             if(data.val() === user) {
                 admin.database().ref('/pubs/' + pub + '/recipes').push(recipe)
                 .then((snap) => {
-                    const key = snap.key
+                    const key =  snap.key
                     for(let item in ingredients) {
                         admin.database().ref('/pubs/' + pub + '/recipes/' + key + '/ingredients').push(ingredients[item])
                     }
@@ -107,6 +107,37 @@ exports.createRecipe = functions.https.onCall((data, context) => {
                 const key = snap.key
                 for(let item in ingredients) {
                     admin.database().ref('/recipes/' + id + '/' + key + '/ingredients').push(ingredients[item])
+                    .then((shot) => {
+                        const k = shot.key
+                        admin.database().ref('/ingredients/').once('value', info => {
+                            const type = ingredients[item].type
+                            const name = ingredients[item].name
+                            let found = false
+                            for(let id in info.val()) {
+                                if(info.val().type === type) {
+                                    if(info.val().name === name) {
+                                        admin.database().ref('/ingredients/' + id + '/keys/').push(k)
+                                        found = true
+                                    }
+                                }
+                            }
+                            if(!found){
+                                admin.database().ref('/ingredients/').push({
+                                    'name': name,
+                                    'type': type
+                                }).then((value) => {
+                                    admin.database().ref('/ingredients/' + value.key + '/keys/').push(k)
+                                    return('success')
+                                }).catch(error => {
+                                    throw new functions.https.HttpsError(error);
+                                })
+                            }
+                        })
+                        return('success')
+                    })
+                    .catch((error) => {
+                        throw new functions.https.HttpsError(error);
+                    })
                 }
                 return('success')
             })
