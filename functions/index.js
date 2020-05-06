@@ -58,4 +58,62 @@ exports.removePub = functions.https.onCall((data, context) => {
     }
 
 });
+
+exports.createRecipe = functions.https.onCall((data, context) => {
+    const id = data.id
+    const recipe = data.recipe
+    const ingredients = data.ingredients
+    const pub = data.pub
+    const user = context.auth.uid
+    
+    if(pub !== null) {
+        admin.database().ref('/pubs/' + pub + '/owner').once('value', data => {
+            if(data.val() === user) {
+                admin.database().ref('/pubs/' + pub + '/recipes').push(recipe)
+                .then((snap) => {
+                    const key = snap.key
+                    for(let item in ingredients) {
+                        admin.database().ref('/pubs/' + pub + '/recipes/' + key + '/ingredients').push(ingredients[item])
+                    }
+                    return('success')
+                })
+                .catch((error) => {
+                    throw new functions.https.HttpsError(error);
+                })
+            }
+            else {
+                admin.database().ref('/pubs/' + pub + '/recipes/pending').push(recipe)
+                .then((snap) => {
+                    const key = snap.key
+                    for(let item in ingredients) {
+                        admin.database().ref('/pubs/' + pub + '/recipes/pending/' + key + '/ingredients').push(ingredients[item])
+                    }
+                    return('success')
+                })
+                .catch((error) => {
+                    throw new functions.https.HttpsError(error);
+                })
+            }
+        })
+    }
+    else{
+        admin.database().ref('/users/' + user + '/admin').once('value', data => {
+            if(!data.val()) {
+                throw new functions.https.HttpsError('user not admin', 'The function must be called ' +
+                'while authenticated.');
+            }
+            admin.database().ref('/recipes/' + id).push(recipe)
+            .then((snap) => {
+                const key = snap.key
+                for(let item in ingredients) {
+                    admin.database().ref('/recipes/' + id + '/' + key + '/ingredients').push(ingredients[item])
+                }
+                return('success')
+            })
+            .catch((error) => {
+                throw new functions.https.HttpsError(error);
+            })
+        })
+    }
+})
     
