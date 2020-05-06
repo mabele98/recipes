@@ -214,6 +214,15 @@
                         label="Submit" />
                 </q-card-actions>
             </div>
+            <div v-if="step == 4">
+                <q-card-section class="text-h4 text-weight-bold">
+                    Your recipe has been submitted!
+                </q-card-section>
+                <q-card-actions>
+                    <q-btn label="Add new recipe" @click="step = 1"/>
+                    <q-btn label="Home Page" />
+                </q-card-actions>
+            </div>
         </q-card>
     </q-page>
 </template>
@@ -360,11 +369,9 @@ export default {
             data['pub'] = null
 
             if(this.pub.name != 'None') data['pub'] = this.pub.id
-
             var create = this.$functions.httpsCallable('createRecipe');
             create(data).then((result) => {
-                console.log('success', result)
-                this.step = 1
+                this.step = 4
             })
             .catch((error) => {
                 console.log(error)
