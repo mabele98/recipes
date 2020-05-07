@@ -2,107 +2,16 @@
   <q-page v-if="loadedAvailable && loadedFilter" class="flex flex-left">
     <div class="full column justify-start items-start content-start">
       <div class="q-pa-md row wrap justify-evenly items-start q-gutter-md">
-          <q-card  
-          elevated
-          v-for="key in index" v-bind:key="key"
-          v-show="display(key)"
-          :style="!size.lg ? size.sm ? 'width:92vw' : 'width:46vw' : 'width:31vw'"
-          class="my-card text-black"
-          v-bind:class="selectedDrink != key ? recipes[key].show.available ? 'bg-white' : 'bg-grey-4' : 'bg-orange'"
-          >
-            <div 
-              v-bind:class="size.sm ? 'text-h5' : 'text-h4'"
-              class="q-pt-lg text-center text-weight-bolder text-no-wrap"
-            >
-              <div 
-                v-bind:style="selectedDrink == key ? 'color: white' : 'color: ' + recipes[key].color"
-                @click="selectedDrink == key ? selectedDrink = '' : selectedDrink = key"
-              > 
-                {{ recipes[key].name }}
-              </div>
-            </div>
-            <div 
-              class="text-caption text-center text-no-wrap text-italic"
-              v-if="pub != ''"
-              >
-              <div v-if="recipes[key].show.available"> Available at {{pub}}</div>
-              <div v-else> Not Available at {{pub}} </div>
-            </div>
-              
-
-            <q-card-section horizontal>
-              <div v-if="selectedDrink != key" class="q-ml-sm"
-              :style="!size.lg ? size.sm ? 'height:30vh;width:40vw' : 'height:20vh;width:20vw' : 'height:30vh;width:11vw'"
-              @click="selectedDrink = key"
-              >
-                <Graphic
-                  :graphic="recipes[key].graphic"
-                  :id="key"
-                />
-              </div>
-              <q-card-section horizontal v-if="selectedDrink == key">
-                <q-card-section vertical>
-                  <q-btn dense class="q-my-xs text-black" label="1x"
-                  :color="mult==1 ? 'white':'orange'" @click="mult=1"/><br>
-                  <q-btn dense class="q-my-xs text-black" label="2x"
-                  :color="mult==2 ? 'white':'orange'" @click="mult=2"/><br>
-                  <q-btn dense class="q-my-xs text-black" label="3x"
-                  :color="mult==3 ? 'white':'orange'" @click="mult=3"/>
-                </q-card-section>
-                <q-card-section vertical>
-                  <ul class="text-body1 text-weight-bold" v-for="(val,i) in recipes[key].ingredients" v-bind:key="i">
-                    <div v-if="val != null">
-                    <li v-if="val.measurement == null"> {{val.amount * mult}} {{val.name}} </li>
-                    <li v-else> {{val.amount * mult}} {{val.measurement}} of {{val.name}} </li>
-                    </div>
-                  </ul>
-                </q-card-section>
-              </q-card-section>
-                <q-card-section v-else>
-                  <div 
-                    class="text-body2 text-grey-9 text-weight-bold" 
-                    style="line-height:2.00rem; letter-spacing: 0.02786em"
-                    v-for="(val,i) in recipes[key].ingredients" v-bind:key="i" 
-                    >
-                    <div v-if="val != null">
-                      <div :class="recipes[key].ingredients[i].filter ? 'text-weight-bold' : 'text-weight-regular'"
-                        class="text-black"
-                      >
-                        {{val.name}}
-                      </div>
-                    </div>
-                  </div>
-                </q-card-section>
-              </q-card-section>
-
-            <q-card-actions align="center">
-              <div 
-                class="text-caption" 
-                :class="change.likes.id == key ? change.likes.change ? 'text-green' : 'text-black' : 'text-black'"> 
-                {{recipes[key].likes}}
-              </div>
-              <q-btn flat 
-                v-show="loadedOpinion"
-                :disable="!loggedIn"
-                :ripple="false"
-                :color="recipes[key].like ? 'green' : 'black'"
-                icon-right="thumb_up" @click="like(key, true)" />
-              <q-btn :disable="!('url' in recipes[key])" flat @click="openPage(key)">Method</q-btn>
-              <q-btn flat 
-                v-show="loadedOpinion"
-                :disable="!loggedIn"
-                :ripple="false"
-                :color="recipes[key].dislike ? 'red' : 'black'"
-                icon="thumb_down" @click="like(key, false)"/>
-              <div 
-                class="text-caption" :class="change.dislikes.id == key ? change.dislikes.change ? 'text-red' : 'text-black' : 'text-black'">
-                {{recipes[key].dislikes}}
-              </div>
-            </q-card-actions>
-          </q-card>
+        <Recipe
+          v-for="key in index" :key="key" v-show="display(key)"
+          :size="$q.screen" :width="!size.lg ? size.sm ? '92vw' : '46vw' : '31vw'"
+          :pub="pub" :selected="selectedDrink == key"
+          :recipe="recipes[key]"
+          :loggedIn="loggedIn" :user="user" :id="id"
+          @selected="selectedDrink==key ? selectedDrink = '' : selectedDrink = key"
+        />
       </div>
     </div>
-
     <q-footer class="transparent">
       <q-toolbar>
         <q-scroll-area
@@ -149,11 +58,13 @@
 
 <script>
 import Graphic from 'components/Graphic.vue'
+import Recipe from 'components/Recipe'
 
 export default {
   name: 'PageRecipes',
   components: {
-    Graphic
+    Graphic,
+    Recipe
   },
   data () {
     return {
@@ -167,11 +78,6 @@ export default {
       loadedAvailable: false,
       loadedFilter: true,
       loadedOpinion: true,
-
-      change: {
-        'likes': {id: '', change: false, add: true},
-        'dislikes': {id: '', change: false, add: true}
-      },
 
       filterLiked: false,
       filterAvailable: false,
@@ -197,18 +103,14 @@ export default {
             'available': true,
             'filter': true
           }
-
+          
+          this.recipes[drink]['key'] = drink
           this.recipes[drink]["like"] = false
           this.recipes[drink]["dislike"] = false
 
           this.selectedDrink = null
-
-          ref = this.$database.ref("recipes/" + this.id + "/" + drink + '/likes')
-          ref.on("value", data => { this.opinionChange(drink, data.val(), 'likes') })
-
-          ref = this.$database.ref("recipes/" + this.id + "/" + drink + '/dislikes')
-          ref.on("value", data => { this.opinionChange(drink, data.val(), 'dislikes') })
         }
+
         this.loadedAvailable = true
         if(this.$q.sessionStorage.has('pub')){
           this.pub = this.$q.sessionStorage.getItem('pub').name
@@ -312,86 +214,6 @@ export default {
       this.loadedOpinion = true;
     },
 
-    opinionChange(key, data, like) {
-      if(data > this.recipes[key][like]) {
-        this.change[like] = {
-          id: key,
-          change: true,
-          add: true
-        }
-      }
-      else if(data < this.recipes[key][like]) {
-        this.change[like] = {
-          id: key,
-          change: true,
-          add: false
-        }
-      }
-
-      this.recipes[key][like] = data;
-          
-      setTimeout(() => {
-        this.change[like].change = false;
-      }, 1000)
-    },
-
-    like(key, like) {
-      this.loadedOpinion = false;
-      let prev = null
-
-      if(like) {
-        this.liked = false;
-        prev = this.recipes[key].dislike
-      }
-      else {
-        this.dislike = false;
-        prev = this.recipes[key].like
-      }
-
-      let ref = this.$database.ref("users/" + this.user + "/recipes/" + this.id + "/" + key)
-      ref.once("value", data => {
-        let _like = false;
-        let _dislike = false;
-
-        if(like) {
-          if(!data.exists() || data.val()['like'] == false) _like = true;
-        }
-        else {
-          if(!data.exists() || data.val()['dislike'] == false) _dislike = true;
-        }
-
-        ref.set({"dislike": _dislike, "like": _like})
-        
-        let recipe = this.$database.ref("recipes/" + this.id + "/" + key)
-        recipe.once("value", info => {
-          let _likes = info.val()["likes"];
-          let _dislikes = info.val()["dislikes"];
-
-          if(like) {
-            if(prev) _dislikes -= 1;
-
-            if(_like) _likes += 1;
-            else _likes -= 1;
-          }
-          else {
-            if(prev) _likes -= 1;
-
-            if(_dislike) _dislikes += 1;
-            else _dislikes -= 1;
-          }
-
-          recipe.update({
-            "dislikes": _dislikes,
-            "likes": _likes
-          });
-
-          this.recipes[key].like = _like;
-          this.recipes[key].dislike = _dislike;
-          this.loadedOpinion = true;
-        })
-      })
-    },
-
     display(key) {
       let available = true;
       let liked = true;
@@ -417,10 +239,6 @@ export default {
         temp[j] = x;
       }
       this.index = temp;
-    },
-
-    openPage(key) {
-      window.open(this.recipes[key].url)
     },
   },
   mounted() {

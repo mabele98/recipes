@@ -189,12 +189,7 @@
                 <q-card-section>
                     <Recipe
                         :recipe="loadRecipe()"
-                        :size="$q.screen"
-                        width="315px"
-                        :change="{
-                            'like': false,
-                            'dislike': false
-                        }"
+                        :size="$q.screen" width="315px"
                         :pub="pub.name == 'None' ? '' : pub.name"
                         :selected="selected"
                         @selected="selected = !selected"
@@ -336,7 +331,7 @@ export default {
             recipe['like'] = false
             recipe['dislikes'] = 0
             recipe['dislike'] = false
-            recipe['available'] = true
+            recipe['show'] = {'available': true}
 
             return recipe
         },

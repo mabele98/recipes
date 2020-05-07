@@ -221,7 +221,15 @@ export default {
             filter: 'ALL',
             show: 'owner',
 
-            options: {},
+            options: {
+                'MAIN ALCOHOL': {},
+                'ADDITIONAL ALCOHOL': {},
+                'JUICE': {},
+                'POP': {},
+                'ADD IN': {},
+                'SYRUP': {},
+                'GARNISH': {}
+            },
             selected: {},
             check: {},
 
@@ -254,23 +262,22 @@ export default {
             let ref = this.$database.ref("ingredients")
             ref.orderByKey().on("value", data => {
                 for(let key in data.val()){
-                    let type = key.substring(2)
-                    this.options[type] = {}
-                    
-                    for(let id in data.val()[key]){
-                        if(type == "MAIN ALCOHOL") {
-                            this.options[type][id] = {}
-                            for(let alc in data.val()[key][id]) {
-                                let name = data.val()[key][id][alc].name
-                                this.options[type][id][name] = {}
-                                this.options[type][id][name]['ingredients'] = data.val()[key][id][alc].ingredients
-                            }
+                    const name = data.val()[key].name
+                    const type = data.val()[key].type
+                    const keys = []
+                    for(let id in data.val()[key].keys){
+                        keys.push(data.val()[key].keys[id])
+                    }
+                    if(type in this.options) {
+                        this.options[type][name] = {}
+                        this.options[type][name]['ingredients'] = keys
+                    }
+                    else {
+                        if(!(type in this.options['MAIN ALCOHOL'])){
+                            this.options['MAIN ALCOHOL'][type] = {}
                         }
-                        else {
-                            let name = data.val()[key][id].name
-                            this.options[type][name] = {}
-                            this.options[type][name]['ingredients'] = data.val()[key][id].ingredients
-                        }
+                        this.options['MAIN ALCOHOL'][type][name] = {}
+                        this.options['MAIN ALCOHOL'][type][name]['ingredients'] = keys
                     }
                 }
 
@@ -278,14 +285,14 @@ export default {
                     this.options[type] = this.alphabetize(this.options[type]);
 
                     if(type == 'MAIN ALCOHOL') {
-                        for(let id in this.options[type]) {
-                            this.options[type][id] = this.alphabetize(this.options[type][id])
+                        for(let drink in this.options[type]) {
+                            this.options[type][drink] = this.alphabetize(this.options[type][drink])
                         }
                     }
                 }
 
                 for(let pub in this.available) {
-                    let id = this.available[pub].id
+                    const id = this.available[pub].id
                     let available = this.$database.ref("pubs/" + id + "/available")
                     available.orderByKey().on("value", info => {
                         if(info.exists()){
@@ -294,8 +301,6 @@ export default {
                         else this.addLabels(null, id)
                     });
                 }
-
-                console.log('options', this.options)
             });
 
         },
@@ -387,7 +392,6 @@ export default {
         },
         updateDatabase(type, main, name, pub) {
             let check = false
-            console.log(type, main, name, pub)
             if(main != ''){
                 check = !this.options[type][main][name][pub].check
                 this.options[type][main][name][pub].check = check

@@ -4,7 +4,7 @@
             elevated
             :style="'width:' + width"
             class="my-card text-black"
-            v-bind:class="!selected ? recipe.available ? 'bg-white' : 'bg-grey-4' : 'bg-orange'"
+            v-bind:class="!selected ? recipe.show.available ? 'bg-white' : 'bg-grey-4' : 'bg-orange'"
             >
                 <div 
                 v-bind:class="size.sm ? 'text-h5' : 'text-h4'"
@@ -14,14 +14,14 @@
                     v-bind:style="selected ? 'color:white' : 'color:' + color_"
                     @click="updateSelected()"
                 > 
-                    {{ recipe.name }}
+                    {{ recipe.name}}
                 </div>
                 </div>
                 <div 
                 class="text-caption text-center text-no-wrap text-italic"
                 v-if="pub != ''"
                 >
-                <div v-if="recipe.available"> Available at {{pub}}</div>
+                <div v-if="recipe.show.available"> Available at {{pub}}</div>
                 <div v-else> Not Available at {{pub}} </div>
                 </div>
                 
@@ -81,7 +81,7 @@
                     :disable="!loggedIn"
                     :ripple="false"
                     :color="recipe.like ? 'green' : 'black'"
-                    icon-right="thumb_up" @click="updateLike()" />
+                    icon-right="thumb_up" @click="like('like')" />
                 <q-btn 
                     :disable="recipe.url == ''" 
                     flat @click="openPage()"
@@ -93,7 +93,7 @@
                     :disable="!loggedIn"
                     :ripple="false"
                     :color="recipe.dislike ? 'red' : 'black'"
-                    icon="thumb_down" @click="updateDislike()"/>
+                    icon="thumb_down" @click="like('dislike')"/>
                 <div 
                     class="text-caption" :class="change.dislike ? 'text-red' : 'text-black'">
                     {{recipe.dislikes}}
@@ -124,35 +124,110 @@ export default {
             type: String,
             default: ''
         },
+        id: {
+            type: String,
+            default: ''
+        },
+        user: {
+            type: String,
+            default: ''
+        },
         recipe: Object,
-        change: Object,
         width: String,
         size: Object,
     },
     data () {
         return {
             color_: "#000000",
-            mult: 1
+            mult: 1,
+            change: {}
         }
     },
     methods: {
+        opinionChange(like) {
+            this.change[like] = true
+                
+            setTimeout(() => {
+                this.change[like] = false
+            }, 1000)
+        },
+        like(like) {
+            let prev = null
+
+            if(like) {
+                this.liked = false;
+                prev = this.recipe.dislike
+            }
+            else {
+                this.dislike = false;
+                prev = this.recipe.like
+            }
+
+            let ref = this.$database.ref("users/" + this.user + "/recipes/" + this.id + "/" + this.recipe.key)
+            ref.once("value", data => {
+                let _like = false;
+                let _dislike = false;
+
+                if(like) {
+                if(!data.exists() || data.val()['like'] == false) _like = true;
+                }
+                else {
+                if(!data.exists() || data.val()['dislike'] == false) _dislike = true;
+                }
+
+                ref.set({"dislike": _dislike, "like": _like})
+                
+                let recipe = this.$database.ref("recipes/" + this.id + "/" + this.recipe.key)
+                recipe.once("value", info => {
+                    let _likes = info.val()["likes"];
+                    let _dislikes = info.val()["dislikes"];
+
+                    if(like) {
+                        if(prev) _dislikes -= 1;
+
+                        if(_like) _likes += 1;
+                        else _likes -= 1;
+                    }
+                    else {
+                        if(prev) _likes -= 1;
+
+                        if(_dislike) _dislikes += 1;
+                        else _dislikes -= 1;
+                    }
+
+                    recipe.update({
+                        "dislikes": _dislikes,
+                        "likes": _likes
+                    });
+
+                    this.recipe.like = _like;
+                    this.recipe.dislike = _dislike;
+                })
+            })
+    },
         updateSelected() {
             this.$emit('selected')
-        },
-        updateLike() {
-            this.$emit('like')
-        },
-        updateDislike() {
-            this.$emit('dislike')
         },
         openPage() {
             window.open(this.recipe.url)
         }
     },
     mounted () {
+        this.$set(this.change, 'like', false)
+        this.$set(this.change, 'dislike', false)
+
+        if(this.id != ''){
+            let ref = this.$database.ref("recipes/" + this.id + "/" + this.recipe.key + '/likes')
+            ref.on("value", data => { this.opinionChange('like') })
+
+            ref = this.$database.ref("recipes/" + this.id + "/" + this.recipe.key + '/dislikes')
+            ref.on("value", data => { this.opinionChange('dislike') })
+        }
+
         if(this.recipe.graphic.color == '#FFFFFF' || this.recipe.graphic.color == '#FCEBD2') {
             this.color_ = "#3c3d40"
         }
+        else if(this.recipe.graphic.color == '#FFE999') this.color_ = "#FFCD1A"
         else this.color_ = this.recipe.graphic.color
     }
 }
