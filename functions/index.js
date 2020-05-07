@@ -69,11 +69,11 @@ exports.createRecipe = functions.https.onCall((data, context) => {
     if(pub !== null) {
         admin.database().ref('/pubs/' + pub + '/owner').once('value', data => {
             if(data.val() === user) {
-                admin.database().ref('/pubs/' + pub + '/recipes').push(recipe)
+                admin.database().ref('/pubs/' + pub + '/recipes/available').push(recipe)
                 .then((snap) => {
                     const key =  snap.key
                     for(let item in ingredients) {
-                        admin.database().ref('/pubs/' + pub + '/recipes/' + key + '/ingredients').push(ingredients[item])
+                        admin.database().ref('/pubs/' + pub + '/recipes/available/' + key + '/ingredients').push(ingredients[item])
                     }
                     return('success')
                 })
