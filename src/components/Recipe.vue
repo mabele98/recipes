@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="loaded">
         <q-card  
             elevated
             :style="'width:' + width"
@@ -32,6 +32,7 @@
                     @click="updateSelected()"
                 >
                     <Graphic
+                    class="q-mt-sm"
                     :graphic="recipe.graphic"
                     :id="recipe.name"
                     />
@@ -138,6 +139,7 @@ export default {
     },
     data () {
         return {
+            loaded: false,
             color_: "#000000",
             mult: 1,
             change: {}
@@ -213,6 +215,13 @@ export default {
         }
     },
     mounted () {
+        if(!('show' in this.recipe)) {
+            this.recipe['show'] = {
+                'available': true
+            }
+        }
+        this.loaded = true
+
         this.$set(this.change, 'like', false)
         this.$set(this.change, 'dislike', false)
 
