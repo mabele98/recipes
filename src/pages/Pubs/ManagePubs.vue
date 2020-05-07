@@ -23,13 +23,14 @@
                         <div class="text-h4 text-weight-bolder"> {{value.name}} </div>
                         <div class="text-h6"> ID: {{value.lookup}} </div>
                         <q-btn-toggle
-                            v-if="value.type == 'owner'"
                             v-model="value.edit"
-                            dense class="q-mt-xs"
-                            toggle-color="primary"
-                            :options="[
-                            {label: 'Edit', value: 'edit'},
-                            {label: 'Filter', value: 'filter'}]"
+                            class="q-mt-xs" toggle-color="primary"
+                            :options="value.type == 'owner' ?
+                            [ {label: 'Edit', value: 'edit'},
+                            {label: 'Filter', value: 'filter'},
+                            {label: 'Your Recipes', value: 'custom'}]
+                            : [{label: 'Filter', value: 'filter'},
+                            {label: 'Your Recipes', value: 'custom'}]"
                         />
                     </q-card-section>
                     <div v-if="value.edit == 'edit'">
@@ -187,6 +188,34 @@
                     <q-card-section v-if="value.type == 'owner' && value.edit=='edit'">
                         <q-btn label="DELETE PUB" color="red" @click="remove(key)"/>
                     </q-card-section>
+                    <div v-if="value.edit=='custom'">
+                        <q-card-section>
+                            <div class="text-h5 q-mt-sm text-weight-bold"> Available </div>
+                            <q-scroll-area
+                                style="height:500px; width:auto"
+                                >
+                                <Recipe
+                                    v-for="(recipe, id) in custom[key].available" :key="id"
+                                    :size="$q.screen" :width="!size.lg ? size.sm ? '88vw' : '43vw' : '26vw'"
+                                    :recipe="recipe" :pub="value.name" class="q-my-sm"
+                                    :selected="select == id" @selected="select==id ? select = '' : select = id"
+                                />
+                            </q-scroll-area>
+                        </q-card-section>
+                        <q-card-section v-if="value.type=='owner'">
+                            <div class="text-h5 q-mt-sm text-weight-bold"> Pending </div>
+                            <q-scroll-area
+                                style="height:500px; width:auto"
+                                >
+                                <Recipe
+                                    v-for="(recipe, id) in custom[key].pending" :key="id"
+                                    :size="$q.screen" :width="!size.lg ? size.sm ? '88vw' : '43vw' : '26vw'"
+                                    :recipe="recipe" :pub="value.name" class="q-my-sm"
+                                    :selected="select == id" @selected="select==id ? select = '' : select = id"
+                                />
+                            </q-scroll-area>
+                        </q-card-section>
+                    </div>
                 </q-card>
             </div>
             </div>
@@ -210,8 +239,13 @@
 </template>
 
 <script>
+import Recipe from 'components/Recipe.vue'
+
 export default {
     name: "PageManagePubs",
+    components: {
+        Recipe
+    },
     data() {
         return {
             user: null,
@@ -230,12 +264,14 @@ export default {
                 'SYRUP': {},
                 'GARNISH': {}
             },
+            custom: {},
             selected: {},
             check: {},
 
             edit: {},
             name: '',
             info: false,
+            select: '',
 
 
             available: null,
@@ -301,6 +337,9 @@ export default {
                         else this.addLabels(null, id)
                     });
                 }
+
+                console.log('options', this.options)
+                this.loadCustom()
             });
 
         },
@@ -354,6 +393,24 @@ export default {
                 }
             }
             this.loaded = true
+        },
+        loadCustom() {
+            for(let pub in this.available) {
+                this.$database.ref('pubs/' + pub + '/recipes').once('value', data => {
+                    if(data.exists()){
+                        this.custom[pub] = {
+                            'available': data.val()['available'],
+                            'pending': data.val()['pending']
+                        }
+                    }
+                    else {
+                        this.custom[pub] = {
+                            'available': {},
+                            'pending': {}
+                        }
+                    }
+                })
+            }
         },
         formatLabel(item) {
             return { label: item, value: item, color: "orange"}

@@ -58,7 +58,7 @@
 
 <script>
 import Graphic from 'components/Graphic.vue'
-import Recipe from 'components/Recipe'
+import Recipe from 'components/Recipe.vue'
 
 export default {
   name: 'PageRecipes',
