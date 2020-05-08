@@ -190,30 +190,27 @@
                     </q-card-section>
                     <div v-if="value.edit=='custom'">
                         <q-card-section>
-                            <div class="text-h5 q-mt-sm text-weight-bold"> Available </div>
-                            <q-scroll-area
-                                style="height:500px; width:auto"
-                                >
-                                <Recipe
-                                    v-for="(recipe, id) in custom[key].available" :key="id"
-                                    :size="$q.screen" :width="!size.lg ? size.sm ? '88vw' : '43vw' : '26vw'"
-                                    :recipe="recipe" :pub="value.name" class="q-my-sm"
-                                    :selected="select == id" @selected="select==id ? select = '' : select = id"
-                                />
-                            </q-scroll-area>
-                        </q-card-section>
-                        <q-card-section v-if="value.type=='owner'">
-                            <div class="text-h5 q-mt-sm text-weight-bold"> Pending </div>
-                            <q-scroll-area
-                                style="height:500px; width:auto"
-                                >
-                                <Recipe
-                                    v-for="(recipe, id) in custom[key].pending" :key="id"
-                                    :size="$q.screen" :width="!size.lg ? size.sm ? '88vw' : '43vw' : '26vw'"
-                                    :recipe="recipe" :pub="value.name" class="q-my-sm"
-                                    :selected="select == id" @selected="select==id ? select = '' : select = id"
-                                />
-                            </q-scroll-area>
+                            <div v-for="(i, type) in custom[key]" :key="type">
+                                <div class="text-h5 q-mt-sm text-weight-bold"> {{type}} </div>
+                                <q-list padding bordered class="rounded-borders">
+                                    <q-expansion-item
+                                        v-for="(recipe, id) in custom[key][type]" :key="id"
+                                        dense dense-toggle expand-separator switch-toggle-side
+                                        :style="'color:' + recipe.graphic.color"
+                                        :label="recipe.name"
+                                    >
+                                        <Recipe
+                                            :size="$q.screen" :width="!size.lg ? size.sm ? '80vw' : '40vw' : '27vw'"
+                                            :recipe="recipe" :pub="value.name" class="q-my-sm"
+                                            :selected="select == id" @selected="select==id ? select = '' : select = id"
+                                        /> 
+                                        <q-card-actions v-if="available[key].type == 'owner'">
+                                            <q-btn label="remove" color="red" style="margin:auto" @click="removeRecipe(key,id,'available')"/>
+                                            <q-btn v-if="type=='pending'" label="add" color="green" style="margin:auto" @click="addRecipe(key,id)"/>
+                                        </q-card-actions>
+                                    </q-expansion-item>
+                                </q-list>
+                            </div>
                         </q-card-section>
                     </div>
                 </q-card>
@@ -337,8 +334,6 @@ export default {
                         else this.addLabels(null, id)
                     });
                 }
-
-                console.log('options', this.options)
                 this.loadCustom()
             });
 
@@ -396,19 +391,15 @@ export default {
         },
         loadCustom() {
             for(let pub in this.available) {
-                this.$database.ref('pubs/' + pub + '/recipes').once('value', data => {
+                this.$database.ref('pubs/' + pub + '/recipes').on('value', data => {
+                    this.$set(this.custom, pub, {})
+                    this.$set(this.custom[pub], 'available', {})
+                    this.$set(this.custom[pub], 'pending', {})
                     if(data.exists()){
-                        this.custom[pub] = {
-                            'available': data.val()['available'],
-                            'pending': data.val()['pending']
-                        }
+                        this.custom[pub].available = data.val()['available']
+                        this.custom[pub].pending = data.val()['pending']
                     }
-                    else {
-                        this.custom[pub] = {
-                            'available': {},
-                            'pending': {}
-                        }
-                    }
+                    console.log(this.custom[pub])
                 })
             }
         },
@@ -503,6 +494,16 @@ export default {
                 console.log(error.message)
             })
         },
+        addRecipe(pub, id) {
+            this.$database.ref('pubs/' + pub + '/recipes/pending/' + id).once('value', data => {
+                let recipe = data.val()
+                this.$database.ref('pubs/' + pub + '/recipes/available/' + id).set(recipe)
+                this.removeRecipe(pub, id, 'pending')
+            })
+        },
+        removeRecipe(pub, id, type) {
+            this.$database.ref('pubs/' + pub + '/recipes/' + type + '/' + id).remove()
+        }
     },
     mounted() {
         this.$auth.onAuthStateChanged(user => {
