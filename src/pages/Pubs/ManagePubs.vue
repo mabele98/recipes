@@ -399,7 +399,6 @@ export default {
                         this.custom[pub].available = data.val()['available']
                         this.custom[pub].pending = data.val()['pending']
                     }
-                    console.log(this.custom[pub])
                 })
             }
         },

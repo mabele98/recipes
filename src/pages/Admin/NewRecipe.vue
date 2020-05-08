@@ -349,7 +349,6 @@ export default {
                 }
             }
 
-
             let recipe = {}
             recipe['name'] = this.recipe.name
             recipe['url'] = this.recipe.url

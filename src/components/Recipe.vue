@@ -2,7 +2,7 @@
     <div v-if="loaded">
         <q-card  
             elevated
-            :style="'width:' + width"
+            :style="'margin:auto; width:' + width"
             class="my-card text-black"
             v-bind:class="!selected ? recipe.show.available ? 'bg-white' : 'bg-grey-4' : 'bg-orange'"
             >

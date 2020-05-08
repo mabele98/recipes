@@ -51,14 +51,14 @@
                             <q-item-label>Print a Menu</q-item-label>
                         </q-item-section>
                     </q-item>
-                    <q-item clickable v-close-popup @click="signOut()">
+                    <q-item clickable v-close-popup>
                         <q-item-section>
-                            <q-item-label>Log Out</q-item-label>
+                            <q-item-label>Account Settings</q-item-label>
                         </q-item-section>
                     </q-item>
                     <q-item clickable v-close-popup @click="signOut()">
                         <q-item-section>
-                            <q-item-label>Account Settings</q-item-label>
+                            <q-item-label>Log Out</q-item-label>
                         </q-item-section>
                     </q-item>
                 </q-list>
@@ -105,9 +105,6 @@ export default {
       this.label="Home"
       this.$router.replace('/')
     },
-    test() {
-      console.log('test')
-    }
   },
 
   mounted () {
