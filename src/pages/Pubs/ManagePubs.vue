@@ -323,6 +323,7 @@ export default {
                         }
                     }
                 }
+                this.loadCustom()
 
                 for(let pub in this.available) {
                     const id = this.available[pub].id
@@ -334,7 +335,6 @@ export default {
                         else this.addLabels(null, id)
                     });
                 }
-                this.loadCustom()
             });
 
         },
@@ -398,7 +398,45 @@ export default {
                     if(data.exists()){
                         this.custom[pub].available = data.val()['available']
                         this.custom[pub].pending = data.val()['pending']
+
+                        /*for(let key in data.val()['available']){
+                            for(let id in data.val()['available'][key].ingredients){
+                                const item = data.val()['available'][key].ingredients[id]
+                                const name = item.name
+                                const type = item.type
+                                if(type in this.options) {
+                                    if(name in this.options[type]) {
+                                        if(!(pub in this.options[type][name])) this.options[type][name][pub] = {'ingredients': []}
+                                    }
+                                    else {
+                                        this.options[type][name] = {}
+                                        this.options[type][name][pub] = {'ingredients': []}
+                                    }
+                                    this.options[type][name][pub]['ingredients'].push(id)
+                                }
+                                else {
+                                    const pubName = this.available[pub].name
+                                    if(!(pubName in this.options['MAIN ALCOHOL'])) this.options['MAIN ALCOHOL'][pubName] = {}
+                                    if(name in this.options['MAIN ALCOHOL'][pubName]){
+                                        if(!(pub in this.options['MAIN ALCOHOL'][pubName][name])){ 
+                                            this.options['MAIN ALCOHOL'][pubName][name][pub] = {'ingredients': []}
+                                        }
+                                    }
+                                    else {
+                                        this.options['MAIN ALCOHOL'][pubName][name] = {}
+                                        this.options['MAIN ALCOHOL'][pubName][name][pub] = {'ingredients': []}
+                                    }
+                                    this.options['MAIN ALCOHOL'][pubName][name][pub]['ingredients'].push(id)
+                                }
+                            }
+                        }*/
                     }
+                    /*this.$database.ref("pubs/" + pub + "/available").on("value", info => {
+                        if(info.exists()){
+                            this.addLabels(info.val(), pub)
+                        }
+                        else this.addLabels(null, pub)
+                    });*/
                 })
             }
         },
@@ -500,8 +538,11 @@ export default {
                 this.removeRecipe(pub, id, 'pending')
             })
         },
-        removeRecipe(pub, id, type) {
-            this.$database.ref('pubs/' + pub + '/recipes/' + type + '/' + id).remove()
+        removeRecipe(pub, key, type) {
+            for(let id in this.custom[pub][id].ingredients){
+                this.$database.ref('pubs/available/' + id).remove()
+            }
+            this.$database.ref('pubs/' + pub + '/recipes/' + type + '/' + key).remove()
         }
     },
     mounted() {
