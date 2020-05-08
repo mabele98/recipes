@@ -34,6 +34,15 @@
                         </q-item-section>
                     </q-item>
                     <q-item 
+                    :class="label=='Add a Recipe' ? 'bg-orange-3' : 'bg-white'"
+                    :clickable="label != 'Add a Recipe'"
+                    v-close-popup 
+                    @click="label='Add a Recipe';$router.push('/newrecipe')">
+                        <q-item-section>
+                            <q-item-label>Add a Recipe</q-item-label>
+                        </q-item-section>
+                    </q-item>
+                    <q-item 
                     :class="label=='Print a Menu' ? 'bg-orange-3' : 'bg-white'"
                     :clickable="label != 'Print a Menu'"
                     v-close-popup 

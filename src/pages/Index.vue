@@ -85,7 +85,6 @@
         <q-footer v-if="admin" class="transparent">
             <q-toolbar>
                 <q-btn push class="q-ma-sm" color="orange" label="Add Graphics" @click="loadGraphics"/>
-                <q-btn push class="q-ma-sm" color="orange" label="Add Recipe" @click="loadAdd"/>
             </q-toolbar>
         </q-footer>
     </q-page>
@@ -177,9 +176,6 @@ export default {
         loadGraphics(){
             this.$router.push('/graphics')
         },
-        loadAdd(){
-            this.$router.push('/newrecipe')
-        }
     },
     mounted() {
         this.$auth.onAuthStateChanged(user => {
