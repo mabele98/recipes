@@ -102,16 +102,16 @@ export default {
                 if(this.graphic['garnish'] == 'none') this.garnish = false
                 else {
                     this.garnish = true
-                    let garnish = path + 'garnish/' + this.graphic['garnish'] + '/'
+                    let garnish = path + 'garnish/' + this.graphic['garnish'] + '/graphic.png'
                     if(this.graphic['garnish'] == 'whippedcream') {
-                        let whippedcream = garnish + this.graphic['whippedcream'] + '/graphic.png'
+                        let whippedcream = path + '/whippedcream/plain/graphic.png'
+                        if('whippedcream' in this.graphic) whippedcream = path + '/whippedcream/' + this.graphic['whippedcream'] + '/graphic.png'
                         this.$storage.ref().child(whippedcream).getDownloadURL().then(url => {
                             let img = document.getElementById(this.id + 'garnish');
                             img.src = url
                         })
                     }
                     else {
-                        garnish += 'graphic.png'
                         this.$storage.ref().child(garnish).getDownloadURL().then(url => {
                             let img = document.getElementById(this.id + 'garnish');
                             img.src = url
