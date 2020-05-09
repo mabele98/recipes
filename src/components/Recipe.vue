@@ -82,7 +82,7 @@
                     :disable="!loggedIn"
                     :ripple="false"
                     :color="recipe.like ? 'green' : 'black'"
-                    icon-right="thumb_up" @click="like('like')" />
+                    icon-right="thumb_up" @click="like(true)" />
                 <q-btn 
                     :disable="recipe.url == ''" 
                     flat @click="openPage()"
@@ -94,7 +94,7 @@
                     :disable="!loggedIn"
                     :ripple="false"
                     :color="recipe.dislike ? 'red' : 'black'"
-                    icon="thumb_down" @click="like('dislike')"/>
+                    icon="thumb_down" @click="like(false)"/>
                 <div 
                     class="text-caption" :class="change.dislike ? 'text-red' : 'text-black'">
                     {{recipe.dislikes}}
@@ -154,14 +154,13 @@ export default {
             }, 1000)
         },
         like(like) {
+            console.log
             let prev = null
 
             if(like) {
-                this.liked = false;
                 prev = this.recipe.dislike
             }
             else {
-                this.dislike = false;
                 prev = this.recipe.like
             }
 
@@ -171,10 +170,10 @@ export default {
                 let _dislike = false;
 
                 if(like) {
-                if(!data.exists() || data.val()['like'] == false) _like = true;
+                    if(!data.exists() || data.val()['like'] == false) _like = true;
                 }
                 else {
-                if(!data.exists() || data.val()['dislike'] == false) _dislike = true;
+                    if(!data.exists() || data.val()['dislike'] == false) _dislike = true;
                 }
 
                 ref.set({"dislike": _dislike, "like": _like})
@@ -203,7 +202,9 @@ export default {
                     });
 
                     this.recipe.like = _like;
+                    this.recipe.likes = _likes;
                     this.recipe.dislike = _dislike;
+                    this.recipe.dislikes = _dislikes;
                 })
             })
     },
