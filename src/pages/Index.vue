@@ -4,7 +4,7 @@
             <div v-if="loggedIn" class="q-mt-md text-white text-h3 text-center">
                 Dia duit {{user}}!
             </div>
-            <div class="q-mb-xl">
+            <div class="q-mb-lg">
                 <q-btn 
                     size="sm" color="grey-9"
                     v-if="loggedIn && !own" 
@@ -18,46 +18,49 @@
                     label="Manage your pubs" 
                     @click="$router.push('/managepubs')"/>
             </div>
-            <div class="text-white text-h3 text-center"> ENTER PUB ID </div>
-            <q-input 
-                style="width:310px"
-                filled item-alligned
-                class="q-ma-sm"
-                :class="size.sm ? 'text-h4' : 'text-h2'"
-                bg-color="white"
-                mask="XXX-XXXX" 
-                v-model="pub"
-                @input="loadPub()"
-            />
-            <div class="fit row wrap justify-center items-start content-center">
-                <div class="q-ma-md text-subtitle1 text-white"> Current Pub: {{current}}</div>
-                <q-btn 
-                    v-if="current != ''"
-                    dense class="self-center" 
-                    size="xs"
-                    icon="cancel"
-                    @click="cancel()" />
+            <q-toggle v-model="view" @input="pubSearch()"
+                label="Want to view available drinks at a pub?" 
+                class="q-mb-md text-white text-italic" />
+            <div v-if="view" class="q-my-sm">
+                <div class="text-white text-h3 text-center"> ENTER PUB ID </div>
+                <q-input 
+                    style="width:310px"
+                    filled item-alligned
+                    class="q-ma-sm"
+                    :class="size.sm ? 'text-h4' : 'text-h2'"
+                    bg-color="white"
+                    mask="XXX-XXXX" 
+                    v-model="pub"
+                    @input="loadPub()"
+                />
+                <div class="fit row wrap justify-center items-start content-center">
+                    <div class="q-ma-md text-subtitle1 text-white"> Current Pub: {{current}}</div>
+                    <q-btn 
+                        v-if="current != ''"
+                        dense class="self-center" 
+                        size="xs"
+                        icon="cancel"
+                        @click="cancel()" />
+                </div>
+                <div class="fit column wrap justify-center items-start content-center">
+                    <div class="q-mt-sm text-white text-center caption"> Available pubs below </div>
+                    <q-scroll-area
+                        horizontal
+                        style="height:40px;width:300px;"
+                        class="rounded-borders"
+                    >
+                        <q-btn-toggle
+                            class="self-center text-no-wrap"
+                            v-model="selected"
+                            toggle-color="primary"
+                            flat
+                            :options="listOf(available)"
+                            @input="update()"
+                        />
+                    </q-scroll-area>
+                </div>
             </div>
-            <div class="fit column wrap justify-center items-start content-center">
-                <div class="q-mt-sm text-white text-center caption"> Available pubs below </div>
-                <q-scroll-area
-                    horizontal
-                    style="height:40px;width:300px;"
-                    class="rounded-borders"
-                >
-                    <q-btn-toggle
-                        class="self-center text-no-wrap"
-                        v-model="selected"
-                        toggle-color="primary"
-                        flat
-                        :options="listOf(available)"
-                        @input="update()"
-                    />
-                </q-scroll-area>
-            </div>
-           
         </div>
-
         <div class="q-mb-lg column justify-center">
             <div class="q-mb-lg text-white text-h4 text-center">
                 What recipes would you like to look at?
@@ -75,13 +78,6 @@
                 </div>
             </div>
         </div>
-        <q-btn
-            class="fixed-top-right q-ma-sm"
-            text-color="white"
-            :label="'Not '+user+'?'"
-            @click="logOut()"
-        />
-
         <q-footer v-if="admin" class="transparent">
             <q-toolbar>
                 <q-btn push class="q-ma-sm" color="orange" label="Add Graphics" @click="loadGraphics"/>
@@ -103,6 +99,7 @@ export default {
             available: {},
             users: {},
 
+            view: false,
             recipes: [],
             current: '',
             own: false,
@@ -166,6 +163,13 @@ export default {
                 'selected': this.selected
             })
         },
+        pubSearch() {
+            if(!this.view) {
+                this.$q.sessionStorage.set('view', false)
+                this.cancel()
+            }
+            else this.$q.sessionStorage.set('view', true)
+        },
         loadRecipes(drink){
             this.$router.push({ name: 'recipes', params: { id: drink } }).then(() => {
                 this.type = drink
@@ -205,8 +209,6 @@ export default {
             }
         })
 
-        //this.$q.sessionStorage.remove('available')
-
         if(this.$q.sessionStorage.has('available')) this.available = this.$q.sessionStorage.getItem('available')
 
         if(this.$q.sessionStorage.has('pub')) {
@@ -215,6 +217,8 @@ export default {
             this.current = data.name
             this.selected = data.selected
         }
+
+        if(this.$q.sessionStorage.has('view')) this.view = this.$q.sessionStorage.getItem('view')
     }
 }
 </script>
