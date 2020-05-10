@@ -18,7 +18,9 @@
         },
         "recipes": {
           "available": {
-          	".read": true,
+          	".read": true
+          },
+          "pending": {
             ".write": "root.child('users').child(auth.uid).child('pubs').child('contribute').child($pub).exists()"
           }
         },
@@ -33,10 +35,10 @@
       "$type": {
         "$key": {
           "likes": {
-            ".write": "root.child('users').child(auth.uid).exists()",
+            ".write": "root.child('users').child(auth.uid).exists()"
           },
           "dislikes": {
-            ".write": "root.child('users').child(auth.uid).exists()",
+            ".write": "root.child('users').child(auth.uid).exists()"
           }
         }
       }
@@ -45,7 +47,7 @@
       "$user": {
         ".read": "auth.uid == $user",
         "admin": {
-          ".write": false,
+          ".write": false
         },
         "name": {
           ".read": "auth != null",
