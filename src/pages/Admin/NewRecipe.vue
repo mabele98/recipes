@@ -12,13 +12,16 @@
                                 class="q-mb-lg" style="width:60vw"
                                 square outlined v-model="recipe.name" 
                                 :rules="[ val => val.length <= 30 || 'Please use maximum 30 characters']"
-                                label="Recipe Name" />
-                            <q-btn-dropdown class="q-ml-sm" :label="pub.id" style="height:55px">
+                                :error="'name' in error && error.name"
+                                label="Recipe Name" /> 
+                            <q-btn-dropdown class="q-ml-sm" 
+                                :class="'pub' in error && error.pub ? 'bg-red' : ''"
+                                :label="pub.id" style="height:55px">
                                 <q-list>
                                     <q-item 
                                         clickable v-close-popup :class="pub.id == value.id ? 'bg-orange' : 'bg-white'"
                                         v-for="(value,key) in pubs" :key="key"
-                                        @click="pub=value">
+                                        @click="pub=value"> 
                                         <q-item-label>{{value.name}}</q-item-label>
                                     </q-item>
                                     <q-item
@@ -55,14 +58,18 @@
                             class="q-mb-sm"
                             square outlined v-model="item.name" 
                             :rules="[ val => val.length <= 30 || 'Please use maximum 30 characters']"
+                            :error="key in errorI && 'name' in errorI[key] && errorI[key]['name']"
                             label="Ingredient Name" />
                         <q-card-section horizontal>
                             <q-input 
                                 class="q-mb-sm q-mr-sm"
                                 square outlined type="number" v-model="item.amount" 
                                 :rules="[ val => val.length <= 30 || 'Please use maximum 30 characters']"
-                                label="Amount" />
-                            <q-btn-dropdown :label="item.measurement" style="height:55px">
+                                label="Amount" 
+                                :error="key in errorI && 'amount' in errorI[key] && errorI[key]['amount']"
+                                />
+                            <q-btn-dropdown :label="item.measurement" style="height:55px"
+                                :class="(key in errorI && 'measure' in errorI[key] && errorI[key]['measure']) ? 'bg-red' : ''">
                                 <q-list>
                                     <q-item clickable v-close-popup @click="item.measurement = 'oz.'">
                                         <q-item-label>oz.</q-item-label>
@@ -83,7 +90,8 @@
                             </q-btn-dropdown>
                         </q-card-section>
                         <q-card-section horizontal>
-                            <q-btn-dropdown :label="item.type" style="height:55px">
+                            <q-btn-dropdown :label="item.type" style="height:55px"
+                            :class="(key in errorI && 'type' in errorI[key] && errorI[key]['type']) ? 'bg-red' : ''">
                                 <q-list>
                                     <q-item clickable v-close-popup @click="item.type = 'MAIN'">
                                         <q-item-label>MAIN INGREDIENT</q-item-label>
@@ -96,6 +104,9 @@
                                     </q-item>
                                     <q-item clickable v-close-popup @click="item.type = 'POP'">
                                         <q-item-label>POP</q-item-label>
+                                    </q-item>
+                                    <q-item clickable v-close-popup @click="item.type = 'HOT'">
+                                        <q-item-label>HOT BEVERAGE</q-item-label>
                                     </q-item>
                                     <q-item clickable v-close-popup @click="item.type = 'SYRUP'">
                                         <q-item-label>SYRUP</q-item-label>
@@ -116,7 +127,7 @@
                         <q-btn 
                             style="margin:auto;width:50%"
                             unelevated color="orange" 
-                            @click="step = 2"
+                            @click="checkError()"
                             label="Design the Graphic" />
                     </q-card-actions>
                 </q-scroll-area>
@@ -132,6 +143,7 @@
                             'glass': graphic.glass,
                             'color': graphic.color,
                             'garnish': graphic.garnish,
+                            'whippedcream': graphic.whippedcream,
                             'fill': graphic.fill,
                             'ice': graphic.ice,
                             'foam': graphic.foam
@@ -206,7 +218,7 @@
                         style="margin:auto;width:50%"
                         unelevated class="q-mx-xs" color="green" 
                         @click="submit()"
-                        label="Submit" />
+                        :label="submitLabel" :disable="submitLabel == '...'"/>
                 </q-card-actions>
             </div>
             <div v-if="step == 4">
@@ -215,7 +227,7 @@
                 </q-card-section>
                 <q-card-actions>
                     <q-btn label="Add new recipe" @click="step = 1"/>
-                    <q-btn label="Home Page" />
+                    <q-btn label="Home Page" @click="$router.push('/')"/>
                 </q-card-actions>
             </div>
         </q-card>
@@ -258,6 +270,7 @@ export default {
                 'glass': 'tall',
                 'color': '#FFFFFF',
                 'garnish': 'none',
+                'whippedcream': 'plain',
                 'fill': 'none',
                 'ice': false,
                 'foam': false
@@ -265,7 +278,10 @@ export default {
             choose: 'glass',
             options: [],
             data: {},
-            selected: false
+            selected: false,
+            submitLabel: 'Submit',
+            error: {},
+            errorI: {}
         }
     },
 
@@ -283,21 +299,43 @@ export default {
         removeIngredient(key) {
             this.ingredients.splice(key)
         },
-        listOf(item) {
-            let res = [];
-            if(item != 'color'){
-                for(let id in this.data[item]) {
-                    let name = this.data[item][id]
-                    res.push({'label': name, 'value': name})
-                }
+        checkError() {
+            let error = false
+            if(this.recipe.name == '') {
+                this.$set(this.error, 'name', true)
+                error = true
             }
-            else {
-                for(let id in this.data[item]) {
-                    let name = this.data[item][id]
-                    res.push({'label': name.name, 'value': name.hex})
-                }
+            else this.error['name'] = false
+            if(this.pub.name == 'Pub') {
+                this.$set(this.error, 'pub', true)
+                error = true
             }
-            return res
+            else this.error['pub'] = false
+            for(let i in this.ingredients) {
+                let item = this.ingredients[i]
+                this.$set(this.errorI, i, {})
+                if(item.name == '') {
+                    this.$set(this.errorI[i], 'name', true)
+                    error = true
+                }
+                else this.errorI[i]['name'] = false
+                if(item.amount == '') {
+                    this.$set(this.errorI[i], 'amount', true)
+                    error = true
+                }
+                else this.$set(this.errorI[i], 'amount', false)
+                if(item.measurement == 'Measurement') {
+                    this.$set(this.errorI[i], 'measure', true)
+                    error = true
+                }
+                else this.$set(this.errorI[i], 'measure', false)
+                if(item.type == 'Type') {
+                    this.$set(this.errorI[i], 'type', true)
+                    error = true
+                }
+                else this.$set(this.errorI[i], 'type', false)
+            }
+            if(!error) this.step = 2
         },
         available() {
             let res = []
@@ -336,6 +374,7 @@ export default {
             return recipe
         },
         submit() {
+            this.submitLabel = '...'
             let ingredients = {}
             for(let id in this.ingredients) {
                 let item = this.ingredients[id]
@@ -346,6 +385,9 @@ export default {
                 }
                 if(item.type == 'ADD. ALCOHOL') {
                     ingredients[id].type = 'ADDITIONAL ALCOHOL'
+                }
+                if(item.type == 'HOT') {
+                    ingredients[id].type = 'HOT BEVERAGE'
                 }
             }
 
@@ -366,9 +408,11 @@ export default {
             var create = this.$functions.httpsCallable('createRecipe');
             create(data).then((result) => {
                 this.step = 4
+                this.submitLabel = 'Submit'
             })
             .catch((error) => {
                 console.log(error)
+                this.submitLabel = 'Submit'
             })
         }
     },
