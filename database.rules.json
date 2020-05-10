@@ -1,6 +1,69 @@
 {
   "rules": {
-    ".read": true,
-    ".write": true
+    "graphics": {
+      ".read": true,
+      ".write": "root.child('users').child(auth.uid).child('admin').val() == true"
+    },
+    "ingredients": {
+      ".read": true,
+      ".write": "root.child('users').child(auth.uid).child('admin').val() == true"
+    },
+    "pubs": {
+      "$pub": {
+        ".read": "root.child('users').child(auth.uid).child('pubs').child('owner').child($pub).exists() && root.child('pubs').child($pub).child('owner').val() == auth.uid",
+        ".write": "root.child('users').child(auth.uid).child('pubs').child('owner').child($pub).exists() && root.child('pubs').child($pub).child('owner').val() == auth.uid",
+        "available": {
+          ".read": true,
+          ".write": "root.child('users').child(auth.uid).child('pubs').child('contribute').child($pub).exists()"
+        },
+        "recipes": {
+          "available": {
+          	".read": true
+          }
+        }
+      }
+    },
+    "recipes": {
+      ".read": true,
+      ".write": "root.child('users').child(auth.uid).child('admin').val() == true",
+      "$type": {
+        "$key": {
+          "likes": {
+            ".write": "root.child('users').child(auth.uid).exists()"
+          },
+          "dislikes": {
+            ".write": "root.child('users').child(auth.uid).exists()"
+          }
+        }
+      }
+    },
+    "users": {
+      "$user": {
+        ".read": "auth.uid == $user",
+        "admin": {
+          ".write": false
+        },
+        "name": {
+          ".read": "auth != null",
+          ".write": "auth.uid == $user"
+        },
+        "filter": {
+          ".write": "auth.uid == $user"
+        },
+        "pubs": {
+          "owner": {
+            ".write": "auth.uid == $user"
+          },
+          "contribute": {
+            "$pub": {
+              ".write": "auth.uid == $user || auth.uid == root.child('pubs').child($pub).child('owner').val()"
+            }
+          }
+        },
+        "recipes": {
+          ".write": "auth.uid == $user"
+        }
+      }
+    }
   }
 }
