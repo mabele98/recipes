@@ -257,6 +257,7 @@ export default {
                 'ADDITIONAL ALCOHOL': {},
                 'JUICE': {},
                 'POP': {},
+                'HOT BEVERAGE': {},
                 'ADD IN': {},
                 'SYRUP': {},
                 'GARNISH': {}

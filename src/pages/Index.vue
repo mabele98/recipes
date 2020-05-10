@@ -1,9 +1,11 @@
 <template>
     <q-page class="flex flex-center">
         <div class="fit column wrap items-center content-center justify-center">
-            <div v-if="loggedIn" class="q-mt-md text-white text-h3 text-center">
-                Dia duit {{user}}!
+            <div class="q-mt-md text-white text-h3 text-center">
+                <div v-if="loggedIn"> Dia duit {{user}}! </div>
+                <div v-else> Fáilte to PubLuck!</div>
             </div>
+
             <div class="q-mb-lg">
                 <q-btn 
                     size="sm" color="grey-9"
