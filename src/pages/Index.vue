@@ -44,15 +44,15 @@
                         icon="cancel"
                         @click="cancel()" />
                 </div>
-                <div class="fit column wrap justify-center items-start content-center">
-                    <div class="q-mt-sm text-white text-center caption"> Available pubs below </div>
+                <div class="column justify-center items-start">
+                    <div class="q-mt-sm text-white text-center self-center caption"> Available pubs below </div>
                     <q-scroll-area
                         horizontal
                         style="height:40px;width:300px;"
                         class="rounded-borders"
                     >
                         <q-btn-toggle
-                            class="self-center text-no-wrap"
+                            class="text-no-wrap"
                             v-model="selected"
                             toggle-color="primary" flat
                             :options="listOf(available)"
