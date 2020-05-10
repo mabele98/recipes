@@ -97,10 +97,9 @@ export default {
       
       for(let drink in this.recipes){
         this.index.push(drink);
-        this.recipes[drink].show = {
-          'available': true,
-          'filter': true
-        }
+        this.$set(this.recipes[drink], 'show', {})
+        this.$set(this.recipes[drink].show, 'available', true)
+        this.$set(this.recipes[drink].show, 'filter', true)
         
         this.recipes[drink]['key'] = drink
         this.recipes[drink]["like"] = false
@@ -116,6 +115,7 @@ export default {
         pub = pub.replace('-', '')
         let ref = this.$database.ref("pubs/" + pub + '/available')
         ref.on("value", data => {
+          console.log('test')
           this.availableItems(data.val());
         });
       }
