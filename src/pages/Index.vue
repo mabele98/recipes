@@ -54,8 +54,7 @@
                         <q-btn-toggle
                             class="self-center text-no-wrap"
                             v-model="selected"
-                            toggle-color="primary"
-                            flat
+                            toggle-color="primary" flat
                             :options="listOf(available)"
                             @input="update()"
                         />
@@ -68,12 +67,18 @@
                 What recipes would you like to look at?
             </div>
             <div class="row justify-center items-start content-start wrap" >
+                <div v-if="view">
+                    <q-btn
+                        push class="q-ma-sm text-white"
+                        style="width:200px" color="green"
+                        :label="available[selected] + ' Drinks'"
+                        @click="loadRecipes(selected)"
+                    />
+                </div>
                 <div v-for="drink in recipes" :key="drink">
                     <q-btn
-                        push
-                        class="q-ma-sm text-white"
-                        style="width:200px"
-                        color="green"
+                        push class="q-ma-sm text-white"
+                        style="width:200px" color="green"
                         :label="drink + ' Drinks'"
                         @click="loadRecipes(drink)"
                     />
@@ -99,7 +104,6 @@ export default {
             size: this.$q.screen,
             
             available: {},
-            users: {},
 
             view: false,
             recipes: [],
@@ -115,19 +119,17 @@ export default {
             for(let item in list) {
                 res.push({'label': list[item], 'value': item})
             }
-            for(let item in this.users) {
-                res.push({'label': this.users[item], 'value': item})
-            }
             return res
         },
         loadPub() {
+            if(this.pub.length < 8) return
             let pub = this.pub.replace('-', '')
-            if(!(pub in this.users)){
-                let ref = this.$database.ref('pubs/' + pub)
+            if(!(pub in this.available)){
+                let ref = this.$database.ref('pubs/' + pub + '/name')
                 ref.once('value', data => {
                     if(data.exists()) {
-                        this.$set(this.available, pub, data.val().name)
-                        this.current = data.val().name
+                        this.$set(this.available, pub, data.val())
+                        this.current = data.val()
                         this.selected = this.pub.replace('-', '')
                         this.$q.sessionStorage.set('pub', {
                             'id': this.pub,
@@ -136,15 +138,6 @@ export default {
                         })
                         this.$q.sessionStorage.set('available', this.available)
                     }
-                })
-            }
-            else {
-                this.selected = this.pub.replace('-', '')
-                this.current = this.users[this.selected]
-                this.$q.sessionStorage.set('pub', {
-                    'id': this.pub,
-                    'name': this.current,
-                    'selected': this.selected
                 })
             }
         },
@@ -158,7 +151,7 @@ export default {
         update() {
             this.pub = this.selected.slice(0, 3) + "-" + this.selected.slice(3)
             if(this.selected in this.available) this.current = this.available[this.selected]
-            else this.current = this.users[this.selected]
+            else this.current = this.available[this.selected]
             this.$q.sessionStorage.set('pub', {
                 'id': this.pub,
                 'name': this.current,
@@ -196,7 +189,9 @@ export default {
                 this.$database.ref('users/' + user.uid + '/pubs/owner').once("value", data => {
                     if(data.exists()) {
                         for(let key in data.val()){
-                            this.users[data.val()[key].id] = data.val()[key].name
+                            this.$database.ref('pubs/' + key + '/name').once('value', snap => {
+                                this.$set(this.available, key, snap.val())
+                            })
                         }
                         this.own = true
                     }
@@ -211,7 +206,12 @@ export default {
             }
         })
 
-        if(this.$q.sessionStorage.has('available')) this.available = this.$q.sessionStorage.getItem('available')
+        if(this.$q.sessionStorage.has('available')) {
+            let available = this.$q.sessionStorage.getItem('available')
+            for(let id in available) {
+                this.$set(this.available, id, available[id])
+            }
+        }
 
         if(this.$q.sessionStorage.has('pub')) {
             let data = this.$q.sessionStorage.getItem('pub')

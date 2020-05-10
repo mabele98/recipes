@@ -91,54 +91,51 @@ export default {
   },
 
   methods: {
-    loadDrinks(){
-      let ref = this.$database.ref("recipes/" + this.id)
-      ref.orderByKey().once('value', data => {
-        this.recipes = data.val();
-        this.index = [];
+    loadDrinks(data){
+      this.recipes = data;
+      this.index = [];
+      
+      for(let drink in this.recipes){
+        this.index.push(drink);
+        this.recipes[drink].show = {
+          'available': true,
+          'filter': true
+        }
         
-        for(let drink in this.recipes){
-          this.index.push(drink);
-          this.recipes[drink].show = {
-            'available': true,
-            'filter': true
-          }
-          
-          this.recipes[drink]['key'] = drink
-          this.recipes[drink]["like"] = false
-          this.recipes[drink]["dislike"] = false
+        this.recipes[drink]['key'] = drink
+        this.recipes[drink]["like"] = false
+        this.recipes[drink]["dislike"] = false
 
-          this.selectedDrink = null
-        }
+        this.selectedDrink = null
+      }
 
-        this.loadedAvailable = true
-        if(this.$q.sessionStorage.has('pub')){
-          this.pub = this.$q.sessionStorage.getItem('pub').name
-          let pub = this.$q.sessionStorage.getItem('pub').id
-          pub = pub.replace('-', '')
-          let ref = this.$database.ref("pubs/" + pub + '/available')
-          ref.on("value", data => {
-            this.availableItems(data.val());
-          });
-        }
+      this.loadedAvailable = true
+      if(this.$q.sessionStorage.has('pub')){
+        this.pub = this.$q.sessionStorage.getItem('pub').name
+        let pub = this.$q.sessionStorage.getItem('pub').id
+        pub = pub.replace('-', '')
+        let ref = this.$database.ref("pubs/" + pub + '/available')
+        ref.on("value", data => {
+          this.availableItems(data.val());
+        });
+      }
 
-        if(this.loggedIn){
-          this.loadedFilter = false
-          ref = this.$database.ref("users/" + this.user + "/filter/" + this.id)
-          ref.orderByKey().on("value", data => {
-            this.filterItems(data.val());
-          });
+      if(this.loggedIn){
+        this.loadedFilter = false
+        let ref = this.$database.ref("users/" + this.user + "/filter/" + this.id)
+        ref.orderByKey().on("value", data => {
+          this.filterItems(data.val());
+        });
 
-          this.loadedOpinion = false
-          ref = this.$database.ref("users/" + this.user + "/recipes/" + this.id)
-          ref.on("value", data => {
-            this.opinion(data.val());
-          })
-        }
-        else {
-          this.filterItems(null)
-        }
-      })
+        this.loadedOpinion = false
+        ref = this.$database.ref("users/" + this.user + "/recipes/" + this.id)
+        ref.on("value", data => {
+          this.opinion(data.val());
+        })
+      }
+      else {
+        this.filterItems(null)
+      }
     },
 
     filterItems(list) {
@@ -251,6 +248,14 @@ export default {
           this.admin = data.val();
         })
       }
+      this.$database.ref('recipes/' + this.id).once('value', data => {
+        if(data.exists()) this.loadDrinks(data.val())
+        else {
+          this.$database.ref('pubs/' + this.id + '/recipes/available').once('value', snap => {
+            this.loadDrinks(snap.val())
+          })
+        }
+      })
       this.loadDrinks();
     });
     this.$q.screen.setSizes({sm: 300, md: 500, lg: 1100, xl: 2000 })

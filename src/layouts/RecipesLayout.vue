@@ -82,6 +82,11 @@ export default {
             for(let drink in data.val()) {
                 this.recipes.push(drink)
             }
+            if(!(this.type in data.val())){
+                this.$database.ref('pubs/' + this.type + '/name').once('value', snap => {
+                    this.type = snap.val().toLowerCase()
+                })
+            }
         })
         if(window.location.hash.includes('select')) {
             this.select = true
