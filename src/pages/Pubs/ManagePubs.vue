@@ -205,7 +205,8 @@
                                             :selected="select == id" @selected="select==id ? select = '' : select = id"
                                         /> 
                                         <q-card-actions v-if="available[key].type == 'owner'">
-                                            <q-btn label="remove" color="red" style="margin:auto" @click="removeRecipe(key,id,'available')"/>
+                                            <q-btn label="remove" color="red" style="margin:auto" 
+                                            @click="type=='pending' ? removeRecipe(key,id,'pending') : removeRecipe(key,id,'available')"/>
                                             <q-btn v-if="type=='pending'" label="add" color="green" style="margin:auto" @click="addRecipe(key,id)"/>
                                         </q-card-actions>
                                     </q-expansion-item>
@@ -540,7 +541,9 @@ export default {
             })
         },
         removeRecipe(pub, key, type) {
-            for(let id in this.custom[pub][id].ingredients){
+            console.log(pub, key, type, this.custom)
+            console.log(this.custom[pub][type][key])
+            for(let id in this.custom[pub][type][key]['ingredients']){
                 this.$database.ref('pubs/available/' + id).remove()
             }
             this.$database.ref('pubs/' + pub + '/recipes/' + type + '/' + key).remove()
