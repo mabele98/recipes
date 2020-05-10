@@ -67,7 +67,7 @@
                 What recipes would you like to look at?
             </div>
             <div class="row justify-center items-start content-start wrap" >
-                <div v-if="view">
+                <div v-if="view && selected != ''">
                     <q-btn
                         push class="q-ma-sm text-white"
                         style="width:200px" color="green"
