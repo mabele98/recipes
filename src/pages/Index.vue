@@ -9,16 +9,9 @@
             <div class="q-mb-lg">
                 <q-btn 
                     size="sm" color="grey-9"
-                    v-if="loggedIn && !own" 
                     class="q-mt-sm" 
-                    label="Start your own pub?" 
-                    @click="$router.push('/createpub')"/>
-                <q-btn 
-                    size="sm" color="grey-9"
-                    v-if="loggedIn && own" 
-                    class="q-mt-sm" 
-                    label="Manage your pubs" 
-                    @click="$router.push('/managepubs')"/>
+                    label="View your Liked Recipes" 
+                    @click="loadRecipes('liked')"/>
             </div>
             <q-toggle v-model="view" @input="pubSearch()"
                 label="Want to view available drinks at a pub?" 

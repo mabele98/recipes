@@ -140,8 +140,6 @@ export default {
       else {
         this.filterItems(null)
       }
-
-      console.log(this.recipes)
     },
 
     filterItems(list) {
@@ -262,9 +260,18 @@ export default {
             for(let recipe in data.val()[drink]){
               if(data.val()[drink][recipe].like){
                 this.$database.ref('recipes/' + drink + '/' + recipe).once('value', snap => {
-                  res[recipe] = snap.val()
-                  res[recipe]['drink'] = drink
-                  this.loadDrinks(res)
+                  if(snap.exists()){
+                    res[recipe] = snap.val()
+                    res[recipe]['drink'] = drink
+                    this.loadDrinks(res)
+                  }
+                  else{
+                    this.$database.ref('pubs/' + drink + '/recipes/available/' + recipe).once('value', shot => {
+                      res[recipe] = shot.val()
+                      res[recipe]['drink'] = drink
+                      this.loadDrinks(res)
+                    })
+                  }
                 })
               }
             }
