@@ -6,7 +6,7 @@
           v-for="key in index" :key="key" v-show="display(key)"
           :size="$q.screen" :width="!size.lg ? size.sm ? '92vw' : '46vw' : '31vw'"
           :pub="pub" :selected="selectedDrink == key"
-          :recipe="recipes[key]"
+          :recipe="recipes[key]" :kind="kind"
           :loggedIn="loggedIn" :user="user" :id="id"
           @selected="selectedDrink==key ? selectedDrink = '' : selectedDrink = key"
         />
@@ -21,7 +21,7 @@
         >
         <q-btn-toggle
             dense push rounded
-            v-if="pub != ''"
+            v-if="pub.name != ''"
             v-model="filterAvailable"
             class="q-mx-xs"
             toggle-color="orange"
@@ -73,7 +73,8 @@ export default {
       admin: false,
       size: this.$q.screen,
       id: this.$route.params.id,
-      pub: '',
+      kind: 'recipe',
+      pub: {'name': '', 'id': ''},
       
       loadedAvailable: false,
       loadedFilter: true,
@@ -102,7 +103,7 @@ export default {
         this.$set(this.recipes[drink].show, 'filter', true)
         
         this.recipes[drink]['key'] = drink
-        this.recipes[drink]["like"] = false
+        this.recipes[drink]["like"] = true
         this.recipes[drink]["dislike"] = false
 
         this.selectedDrink = null
@@ -110,12 +111,14 @@ export default {
 
       this.loadedAvailable = true
       if(this.$q.sessionStorage.has('pub')){
-        this.pub = this.$q.sessionStorage.getItem('pub').name
         let pub = this.$q.sessionStorage.getItem('pub').id
         pub = pub.replace('-', '')
+        this.pub = {
+          'name': this.$q.sessionStorage.getItem('pub').name,
+          'id': pub
+        }
         let ref = this.$database.ref("pubs/" + pub + '/available')
         ref.on("value", data => {
-          console.log('test')
           this.availableItems(data.val());
         });
       }
@@ -126,16 +129,19 @@ export default {
         ref.orderByKey().on("value", data => {
           this.filterItems(data.val());
         });
-
-        this.loadedOpinion = false
-        ref = this.$database.ref("users/" + this.user + "/recipes/" + this.id)
-        ref.on("value", data => {
-          this.opinion(data.val());
-        })
+        if(this.id != 'liked'){
+          this.loadedOpinion = false
+          ref = this.$database.ref("users/" + this.user + "/recipes/" + this.id)
+          ref.on("value", data => {
+            this.opinion(data.val());
+          })
+        }
       }
       else {
         this.filterItems(null)
       }
+
+      console.log(this.recipes)
     },
 
     filterItems(list) {
@@ -248,15 +254,34 @@ export default {
           this.admin = data.val();
         })
       }
-      this.$database.ref('recipes/' + this.id).once('value', data => {
-        if(data.exists()) this.loadDrinks(data.val())
-        else {
-          this.$database.ref('pubs/' + this.id + '/recipes/available').once('value', snap => {
-            this.loadDrinks(snap.val())
-          })
-        }
-      })
-      this.loadDrinks();
+      if(this.id == 'liked'){
+        this.kind = 'liked'
+        this.$database.ref('users/' + this.user + '/recipes').on('value', data => {
+          let res = {}
+          for(let drink in data.val()){
+            for(let recipe in data.val()[drink]){
+              if(data.val()[drink][recipe].like){
+                this.$database.ref('recipes/' + drink + '/' + recipe).once('value', snap => {
+                  res[recipe] = snap.val()
+                  res[recipe]['drink'] = drink
+                  this.loadDrinks(res)
+                })
+              }
+            }
+          }
+        })
+      }
+      else {
+        this.$database.ref('recipes/' + this.id).once('value', data => {
+          if(data.exists()) this.loadDrinks(data.val())
+          else {
+            this.kind = 'pub'
+            this.$database.ref('pubs/' + this.id + '/recipes/available').once('value', snap => {
+              this.loadDrinks(snap.val())
+            })
+          }
+        })
+      }
     });
     this.$q.screen.setSizes({sm: 300, md: 500, lg: 1100, xl: 2000 })
   },

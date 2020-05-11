@@ -19,10 +19,10 @@
                 </div>
                 <div 
                 class="text-caption text-center text-no-wrap text-italic"
-                v-if="pub != ''"
+                v-if="pub.name != ''"
                 >
-                <div v-if="recipe.show.available"> Available at {{pub}}</div>
-                <div v-else> Not Available at {{pub}} </div>
+                <div v-if="recipe.show.available"> Available at {{pub.name}}</div>
+                <div v-else> Not Available at {{pub.name}} </div>
                 </div>
                 
 
@@ -122,12 +122,16 @@ export default {
             default: false
         },
         pub: {
-            type: String,
-            default: ''
+            type: Object,
+            default: {'name': '', 'id': ''}
         },
         id: {
             type: String,
             default: ''
+        },
+        kind: {
+            type: String,
+            default: 'recipe'
         },
         user: {
             type: String,
@@ -154,7 +158,6 @@ export default {
             }, 1000)
         },
         like(like) {
-            console.log
             let prev = null
 
             if(like) {
@@ -178,7 +181,9 @@ export default {
 
                 ref.set({"dislike": _dislike, "like": _like})
                 
-                let recipe = this.$database.ref("recipes/" + this.id + "/" + this.recipe.key)
+                let path = "recipes/" + this.id + "/" + this.recipe.key
+                if(this.kind == 'pub') path = 'pubs/' + this.pub.id + '/recipes/available/' + this.recipe.key
+                let recipe = this.$database.ref(path)
                 recipe.once("value", info => {
                     let _likes = info.val()["likes"];
                     let _dislikes = info.val()["dislikes"];
@@ -227,11 +232,11 @@ export default {
         this.$set(this.change, 'dislike', false)
 
         if(this.id != ''){
-            let ref = this.$database.ref("recipes/" + this.id + "/" + this.recipe.key + '/likes')
-            ref.on("value", data => { this.opinionChange('like') })
+            let path = "recipes/" + this.id + "/" + this.recipe.key
+            if(this.kind == 'pub') path = "pubs/" + this.pub.id + "/recipes/available/" + this.recipe.key
+            this.$database.ref(path + '/likes').on("value", data => { this.opinionChange('like') })
 
-            ref = this.$database.ref("recipes/" + this.id + "/" + this.recipe.key + '/dislikes')
-            ref.on("value", data => { this.opinionChange('dislike') })
+            this.$database.ref(path + '/dislikes').on("value", data => { this.opinionChange('dislike') })
         }
 
         if(this.recipe.graphic.color == '#FFFFFF' || this.recipe.graphic.color == '#FCEBD2') {
