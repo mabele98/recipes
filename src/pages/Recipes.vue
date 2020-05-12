@@ -6,7 +6,7 @@
           v-for="key in index" :key="key" v-show="display(key)"
           :size="$q.screen" :width="!size.lg ? size.sm ? '92vw' : '46vw' : '31vw'"
           :pub="pub" :selected="selectedDrink == key"
-          :recipe="recipes[key]" :kind="kind"
+          :recipe="recipes[key]"
           :loggedIn="loggedIn" :user="user" :id="id"
           @selected="selectedDrink==key ? selectedDrink = '' : selectedDrink = key"
         />
@@ -32,7 +32,7 @@
               {label: 'Available', value: true}
             ]" />
           <q-btn-toggle
-            v-if="loggedIn"
+            v-if="loggedIn && id != 'liked'"
             dense push rounded
             class="q-mx-xs"
             v-model="filterLiked"
@@ -73,7 +73,6 @@ export default {
       admin: false,
       size: this.$q.screen,
       id: this.$route.params.id,
-      kind: 'recipe',
       pub: {'name': '', 'id': ''},
       
       loadedAvailable: false,
@@ -92,7 +91,7 @@ export default {
   },
 
   methods: {
-    loadDrinks(data){
+    loadDrinks(data, kind){
       this.recipes = data;
       this.index = [];
       
@@ -105,6 +104,8 @@ export default {
         this.recipes[drink]['key'] = drink
         this.recipes[drink]["like"] = true
         this.recipes[drink]["dislike"] = false
+
+        if(kind != '') this.recipes[drink]['kind'] = kind
 
         this.selectedDrink = null
       }
@@ -263,13 +264,15 @@ export default {
                   if(snap.exists()){
                     res[recipe] = snap.val()
                     res[recipe]['drink'] = drink
-                    this.loadDrinks(res)
+                    res[recipe]['kind'] = 'recipeLike'
+                    this.loadDrinks(res, '')
                   }
                   else{
                     this.$database.ref('pubs/' + drink + '/recipes/available/' + recipe).once('value', shot => {
                       res[recipe] = shot.val()
                       res[recipe]['drink'] = drink
-                      this.loadDrinks(res)
+                      res[recipe]['kind'] = 'pubLike'
+                      this.loadDrinks(res, '')
                     })
                   }
                 })
@@ -280,11 +283,10 @@ export default {
       }
       else {
         this.$database.ref('recipes/' + this.id).once('value', data => {
-          if(data.exists()) this.loadDrinks(data.val())
+          if(data.exists()) this.loadDrinks(data.val(), 'recipe')
           else {
-            this.kind = 'pub'
             this.$database.ref('pubs/' + this.id + '/recipes/available').once('value', snap => {
-              this.loadDrinks(snap.val())
+              this.loadDrinks(snap.val(), 'pub')
             })
           }
         })

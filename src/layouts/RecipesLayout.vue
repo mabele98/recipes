@@ -8,16 +8,16 @@
                 class="text-weight-bold"
                 @click="$router.push('/')"
             > 
-                {{type}}
+                {{name}}
             </q-toolbar-title>
             <q-toolbar-title 
                 v-else 
                 class="text-weight-bold"
                 @click="$router.push('/')"
             > 
-                {{type}} recipes 
+                {{name}} recipes 
             </q-toolbar-title>
-            <q-btn-dropdown v-if="!select" stretch flat label="Recipes">
+            <q-btn-dropdown v-if="!select" stretch flat :label="size.sm ? '' : 'Recipes'">
                 <q-list v-for="drink in recipes" :key="drink">
                   <q-item
                     :class="drink == type ? 'bg-green-3' : 'bg-white'"
@@ -33,7 +33,7 @@
             </q-btn-dropdown>
             <q-btn v-if="select" unelevated label="Return" @click="goTo(type)"/>
         </q-toolbar>
-        <div v-if="!select" class="q-ml-md row">
+        <div v-if="!select && type != 'liked'" class="q-ml-md row">
             <div class="q-mr-md text-italic"
                 :class="size.sm ? 'text-caption' : 'text-subtitle2'"
             > Bolded ingredients are your filter choices. </div>
@@ -61,6 +61,7 @@ export default {
             type: this.$route.params.id,
             size: this.$q.screen,
             select: false,
+            name: this.$route.params.id,
         }
     },
     methods: {
@@ -84,7 +85,7 @@ export default {
             }
             if(!(this.type in data.val()) && this.type != 'liked'){
                 this.$database.ref('pubs/' + this.type + '/name').once('value', snap => {
-                    this.type = snap.val().toLowerCase()
+                    this.name = snap.val().toLowerCase()
                 })
             }
         })

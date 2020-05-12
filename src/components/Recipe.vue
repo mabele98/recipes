@@ -146,7 +146,8 @@ export default {
             loaded: false,
             color_: "#000000",
             mult: 1,
-            change: {}
+            change: {},
+            path: ''
         }
     },
     methods: {
@@ -167,8 +168,9 @@ export default {
                 prev = this.recipe.like
             }
 
-            let ref = this.$database.ref("users/" + this.user + "/recipes/" + this.id + "/" + this.recipe.key)
-            ref.once("value", data => {
+            let path_ = "users/" + this.user + "/recipes/" + this.id + "/" + this.recipe.key
+            if(this.id == 'liked') path_ = "users/" + this.user + "/recipes/" + this.recipe.drink + "/" + this.recipe.key
+            this.$database.ref(path_).once("value", data => {
                 let _like = false;
                 let _dislike = false;
 
@@ -179,11 +181,7 @@ export default {
                     if(!data.exists() || data.val()['dislike'] == false) _dislike = true;
                 }
 
-                ref.set({"dislike": _dislike, "like": _like})
-                
-                let path = "recipes/" + this.id + "/" + this.recipe.key
-                if(this.kind == 'pub') path = 'pubs/' + this.pub.id + '/recipes/available/' + this.recipe.key
-                let recipe = this.$database.ref(path)
+                let recipe = this.$database.ref(this.path)
                 recipe.once("value", info => {
                     let _likes = info.val()["likes"];
                     let _dislikes = info.val()["dislikes"];
@@ -210,6 +208,8 @@ export default {
                     this.recipe.likes = _likes;
                     this.recipe.dislike = _dislike;
                     this.recipe.dislikes = _dislikes;
+
+                    this.$database.ref(path_).set({"dislike": _dislike, "like": _like})
                 })
             })
     },
@@ -232,11 +232,14 @@ export default {
         this.$set(this.change, 'dislike', false)
 
         if(this.id != ''){
-            let path = "recipes/" + this.id + "/" + this.recipe.key
-            if(this.kind == 'pub') path = "pubs/" + this.pub.id + "/recipes/available/" + this.recipe.key
-            this.$database.ref(path + '/likes').on("value", data => { this.opinionChange('like') })
+            this.path = "recipes/" + this.id + "/" + this.recipe.key
+            if(this.recipe.kind == 'pub') this.path = "pubs/" + this.pub.id + "/recipes/available/" + this.recipe.key
+            else if(this.recipe.kind == 'recipeLike') this.path = "recipes/" + this.recipe.drink + "/" + this.recipe.key
+            else if(this.recipe.kind == 'pubLike') this.path = "pubs/" + this.recipe.drink + "/recipes/available/" + this.recipe.key
 
-            this.$database.ref(path + '/dislikes').on("value", data => { this.opinionChange('dislike') })
+            this.$database.ref(this.path + '/likes').on("value", data => { this.opinionChange('like') })
+
+            this.$database.ref(this.path + '/dislikes').on("value", data => { this.opinionChange('dislike') })
         }
 
         if(this.recipe.graphic.color == '#FFFFFF' || this.recipe.graphic.color == '#FCEBD2') {

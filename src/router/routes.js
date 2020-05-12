@@ -26,9 +26,9 @@ const routes = [
     component: () => import('layouts/RecipesLayout.vue'),
     children: [
       { path: '', component: () => import('pages/Recipes.vue')},
-      { path: 'select', component: () => import('pages/Select/Personal.vue') },
+      { path: 'select', component: () => import('pages/Select/Personal.vue') }
     ]
-  },
+  }
 ]
 
 // Always leave this as last one
