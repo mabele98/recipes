@@ -57,7 +57,6 @@
                         <q-input 
                             class="q-mb-sm"
                             square outlined v-model="item.name" 
-                            :rules="[ val => val.length <= 30 || 'Please use maximum 30 characters']"
                             :error="key in errorI && 'name' in errorI[key] && errorI[key]['name']"
                             label="Ingredient Name" />
                         <q-card-section horizontal>

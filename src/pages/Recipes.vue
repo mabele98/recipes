@@ -103,6 +103,7 @@ export default {
         
         this.recipes[drink]['key'] = drink
         this.recipes[drink]["like"] = true
+        if(!this.loggedIn) this.recipes[drink]["like"] = false
         this.recipes[drink]["dislike"] = false
 
         if(kind != '') this.recipes[drink]['kind'] = kind

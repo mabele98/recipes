@@ -78,6 +78,7 @@
                 </div>
             </div>
         </div>
+        <q-btn label="test" @click="loadRecipes('captain morgan')"/>
         <q-footer v-if="admin" class="transparent">
             <q-toolbar>
                 <q-btn push class="q-ma-sm" color="orange" label="Add Graphics" @click="loadGraphics"/>
