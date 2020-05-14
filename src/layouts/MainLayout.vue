@@ -51,7 +51,7 @@
                             <q-item-label>Print a Menu</q-item-label>
                         </q-item-section>
                     </q-item>
-                    <q-item clickable v-close-popup>
+                    <q-item clickable v-close-popup @click="$router.push('/accountsettings')">
                         <q-item-section>
                             <q-item-label>Account Settings</q-item-label>
                         </q-item-section>

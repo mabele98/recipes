@@ -7,6 +7,7 @@ const routes = [
       { path: '/create', component: () => import('pages/ManageUser/Email.vue')},
       { path: '/create/update', component: () => import('pages/ManageUser/CreateAccount.vue')},
       { path: '/signin', component: () => import('pages/ManageUser/SignIn.vue')},
+      { path: '/accountsettings', component: () => import('pages/ManageUser/Settings.vue')},
       { path: '/createpub', component: () => import('pages/Pubs/CreatePub.vue') },
       { path: '/managepubs', component: () => import('pages/Pubs/ManagePubs.vue')},
       { path: '/contributepub', component: () => import('pages/Pubs/ContributePub.vue')},
