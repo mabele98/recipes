@@ -10,14 +10,16 @@
     },
     "pubs": {
       "$pub": {
-        ".read": "root.child('users').child(auth.uid).child('pubs').child('owner').child($pub).exists() && 'owner' == root.child('pubs').child($pub).child('contributors').child(auth.uid).val()",
+        ".read": "auth != null",
         ".write": "root.child('users').child(auth.uid).child('pubs').child('owner').child($pub).exists() && 'owner' == root.child('pubs').child($pub).child('contributors').child(auth.uid).val()",
         "available": {
           ".read": true,
           ".write": "root.child('users').child(auth.uid).child('pubs').child('contribute').child($pub).exists()"
         },
     		"contributors": {
-          ".write": "auth != null"
+          "$user": {
+            ".write": "auth.uid == $user"
+          }
         },
         "recipes": {
           "available": {
