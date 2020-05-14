@@ -179,6 +179,8 @@ export default {
                     this.admin = data.val();
                 })
 
+                this.$database.ref('users/' + user.uid + '/name').set(user.displayName)
+
                 this.$database.ref('users/' + user.uid + '/pubs/owner').once("value", data => {
                     if(data.exists()) {
                         for(let key in data.val()){
