@@ -8,7 +8,6 @@
                 label="email"
                 filled
                 bg-color="white"
-                style="width: 300px"
             />
             <div class="q-mt-lg text-h6 text-white"> Enter password </div>
             <q-input 

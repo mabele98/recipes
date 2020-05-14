@@ -16,8 +16,8 @@
                 filled bg-color="white" style="width: 300px"
                 :error="errorLast()" error-message="Spaces are not allowed."
             />
-            <q-btn :disable="nameLoading || errorFirst() || errorLast()" class="q-mt-md" color="green" label="Update Display Name" @click="updateName()"/>
-            <div class="q-mt-lg text-h6 text-white"> Change password </div>
+            <q-btn :disable="nameLoading || errorFirst() || errorLast()" class="q-mt-sm" color="green" label="Update Display Name" @click="updateName()"/>
+            <div class="q-mt-xl text-h6 text-white"> Change password </div>
             <div v-if="!password">
                 <div class="text-white text-caption text-italic"> Confirm your email address below </div>
                 <q-input 
