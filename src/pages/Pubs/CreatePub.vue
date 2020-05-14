@@ -66,6 +66,8 @@ export default {
         },
 
         submit() {
+            this.$q.loading.show()
+
             var idExists = true
             var id = this.generateId(7)
 
@@ -75,9 +77,11 @@ export default {
             }
             var create = this.$functions.httpsCallable('createPub');
             create(data).then((result) => {
+                this.$q.loading.hide()
                 this.created = true
                 this.id = id.slice(0, 3) + "-" + id.slice(3)
             }).catch((error) => {
+                this.$q.loading.hide()
                 console.log(error.message)
             })
         },

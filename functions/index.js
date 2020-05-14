@@ -33,8 +33,11 @@ exports.createPub = functions.https.onCall((data, context) => {
             'one arguments "text" containing the message text to add.');
     }
 
+    var contribute = {}
+    contribute[user] = 'owner'
+
     admin.database().ref('/pubs/' + id).set({
-        'owner': user,
+        'contributors': contribute,
         'name': name,
         'disable': true
     })

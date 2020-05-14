@@ -44,7 +44,7 @@
                             />
                             <q-input 
                             rounded outlined disable class="q-mt-lg"
-                            v-model="value.owner" 
+                            :label="owners(key)" 
                             hint="Owner" 
                             />
                             <div class="q-pa-md q-gutter-md">
@@ -67,9 +67,9 @@
                                 </q-item>
 
                                 <q-scroll-area style="height:200px;">
-                                <div v-if="value.contributors != null" >
+                                <div v-if="value.contributor != null" >
                                     <q-item 
-                                        v-for="(user, id) in value.contributors" :key="id"
+                                        v-for="(user, id) in value.contributor" :key="id"
                                         class="text-green"
                                     >
                                         <q-expansion-item
@@ -97,7 +97,7 @@
                                             style="width:300px"
                                         >
                                             <q-btn class="q-ma-xs" label="Remove" color="red" @click="removeContributor(value.id,id,false)"/>
-                                            <q-btn class="q-ma-xs" label="Add" color="green" @click="addContributor(value.id,value.name,id,user)"/>
+                                            <q-btn class="q-ma-xs" label="Add" color="green" @click="addContributor(value.id,value.name,id)"/>
                                         </q-expansion-item>
                                     </q-item>
                                 </div>
@@ -283,15 +283,28 @@ export default {
     },
     methods: {
         owner(id) {
-            this.$database.ref('/pubs/' + id).on('value', data => {
-                this.$set(this.available[id], 'contributors', data.val().contributors)
-                this.$set(this.available[id], 'pending', data.val().pending)
+            this.$database.ref('/pubs/' + id + '/contributors').on('value', data => {
+                this.$set(this.available[id], 'contributor', {})
+                this.$set(this.available[id], 'pending', {})
+                this.$set(this.available[id], 'owner', {})
 
-                let owner = data.val().owner
-                this.$database.ref('/users/' + owner + '/name').once('value', user => {
-                    this.$set(this.available[id], 'owner', user.val())
-                })
+                for(let friend in data.val()) {
+                    let type = data.val()[friend]
+                    this.$database.ref('/users/' + friend + '/name').once('value', user => {
+                        this.$set(this.available[id][type], friend, user.val())
+                    })
+                }
             })
+            console.log(id, this.available)
+        },
+        owners(id) {
+            let res = ''
+            for(let friend in this.available[id].owner) {
+                let name = this.available[id].owner[friend]
+                if(res == '') res += name
+                else res += ', ' + name
+            }
+            return res
         },
         loadIngredients() {
             let ref = this.$database.ref("ingredients")
@@ -463,18 +476,14 @@ export default {
             this.$database.ref('users/' + this.user + '/pubs/owner/' + pub).set(this.available[pub].name)
         },
         removeContributor(pub,uid,contributor) {
-            let ref = null
             if(contributor) {
-                ref = this.$database.ref('pubs/' + pub + '/contributors/' + uid)
                 this.$database.ref('users/' + uid + '/pubs/contribute/' + pub).remove()
             }
-            else ref = this.$database.ref('pubs/' + pub + '/pending/' + uid)
 
-            ref.remove()
+            this.$database.ref('pubs/' + pub + '/contributors/' + uid).remove()
         },
-        addContributor(pub,pubName,uid,uName) {
-            this.$database.ref('pubs/' + pub + '/pending/' + uid).remove()
-            this.$database.ref('pubs/' + pub + '/contributors/' + uid).set(uName)
+        addContributor(pub,pubName,uid) {
+            this.$database.ref('pubs/' + pub + '/contributors/' + uid).set('contributor')
             this.$database.ref('users/' + uid + '/pubs/contribute/' + pub).set(pubName)
         },
         updateDatabase(type, main, name, pub) {
@@ -520,15 +529,18 @@ export default {
             this.$router.push('/')
         },
         remove(pub) {
-            let friends = {}
-            if('contributors' in this.available[pub]) friends = this.available[pub].contributors
+            this.$q.loading.show()
+            let contributors = this.available[pub].contributor
+            let owners = this.available[pub].owner
             var data = {
                 'id': pub,
-                'contributors': friends
+                'contributors': contributors,
+                'owners': owners
             }
             var remove = this.$functions.httpsCallable('removePub');
             remove(data).then((result) => {
                 this.$delete(this.available, pub)
+                this.$q.loading.hide()
             }).catch((error) => {
                 console.log(error.message)
             })
@@ -541,8 +553,6 @@ export default {
             })
         },
         removeRecipe(pub, key, type) {
-            console.log(pub, key, type, this.custom)
-            console.log(this.custom[pub][type][key])
             for(let id in this.custom[pub][type][key]['ingredients']){
                 this.$database.ref('pubs/available/' + id).remove()
             }

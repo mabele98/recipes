@@ -10,11 +10,14 @@
     },
     "pubs": {
       "$pub": {
-        ".read": "root.child('users').child(auth.uid).child('pubs').child('owner').child($pub).exists() && root.child('pubs').child($pub).child('owner').val() == auth.uid",
-        ".write": "root.child('users').child(auth.uid).child('pubs').child('owner').child($pub).exists() && root.child('pubs').child($pub).child('owner').val() == auth.uid",
+        ".read": "root.child('users').child(auth.uid).child('pubs').child('owner').child($pub).exists() && 'owner' == root.child('pubs').child($pub).child('contributors').child(auth.uid).val()",
+        ".write": "root.child('users').child(auth.uid).child('pubs').child('owner').child($pub).exists() && 'owner' == root.child('pubs').child($pub).child('contributors').child(auth.uid).val()",
         "available": {
           ".read": true,
           ".write": "root.child('users').child(auth.uid).child('pubs').child('contribute').child($pub).exists()"
+        },
+    		"contributors": {
+          ".write": "auth != null"
         },
         "recipes": {
           "available": {
@@ -35,10 +38,10 @@
       "$type": {
         "$key": {
           "likes": {
-            ".write": "root.child('users').child(auth.uid).exists()"
+            ".write": "root.child('users').child(auth.uid).exists()",
           },
           "dislikes": {
-            ".write": "root.child('users').child(auth.uid).exists()"
+            ".write": "root.child('users').child(auth.uid).exists()",
           }
         }
       }
@@ -47,7 +50,7 @@
       "$user": {
         ".read": "auth.uid == $user",
         "admin": {
-          ".write": false
+          ".write": false,
         },
         "name": {
           ".read": "auth != null",
@@ -57,14 +60,12 @@
           ".write": "auth.uid == $user"
         },
         "pubs": {
-          "owner": {
-            ".write": "auth.uid == $user"
-          },
+          ".write": "auth.uid == $user",
           "contribute": {
             "$pub": {
-              ".write": "auth.uid == $user || auth.uid == root.child('pubs').child($pub).child('owner').val()"
+              ".write": "'owner' == root.child('pubs').child($pub).child('contributors').child(auth.uid).val()"
             }
-          }
+          },
         },
         "recipes": {
           ".write": "auth.uid == $user"

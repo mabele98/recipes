@@ -65,10 +65,13 @@ export default {
         },
 
         check() {
+            if(this.pub.length < 8) return
+            this.$q.loading.show()
             this.loading = true
             let ref = this.$database.ref('/pubs/' + this.pub.replace('-', '') )
             ref.once('value', data => {
                 if(!data.exists()) {
+                    this.$q.loading.hide()
                     this.loading = false
                     this.submitted = this.pub
                     this.error = true
@@ -76,36 +79,39 @@ export default {
                 }
                 else {
                     if(data.val().disable) {
+                        this.$q.loading.hide()
                         this.loading = false
                         this.submitted = this.pub
                         this.error = true
                         this.message = 'This pub (' + this.submitted + ') is not taking requests'
                     }
                     else{
-                        let contributors = {}
-                        let pending = {}
-                        if(data.val().contributors != null) contributors = data.val().contributors
-                        if(data.val().pending != null) pending = data.val().pending
-                        if(this.user.uid in contributors ||  this.user.uid in pending) {
+                        if(this.user.uid in data.val().contributors) {
+                            this.$q.loading.hide()
                             this.loading = false
                             this.submitted = this.pub
                             this.error = true
-                            this.message = 'You have already sent a request to (' + this.submitted + ')'
+                            if(data.val().contributors[this.user.uid] == 'owner') this.message = 'You are already an owner to (' + this.submitted + ')'
+                            else this.message = 'You have already sent a request to (' + this.submitted + ')'
                         }
                         else {
                             this.error = false
-                            this.submit(pending)
+                            this.submit()
                         }
                     }
                 }
             })
         },
-        submit(pending) {
-            
-            pending[this.user.uid] = this.user.displayName
-            this.$database.ref('pubs/' + this.pub.replace('-', '') + '/pending').set(pending).then(() => {
+        submit() {
+            //let ref = this.$database.ref().child('pubs').child(this.pub.replace('-', '')).child('contributors')
+            let ref = this.$database.ref('pubs/' + this.pub.replace('-', '') + '/contributors/' + this.user.uid)
+            ref.set('pending').then(() => {
+                this.$q.loading.hide()
                 this.loading = false
                 this.requested = true
+            }).error(error => {
+                this.$q.loading.hide()
+                console.log(error)
             })
         },
 
