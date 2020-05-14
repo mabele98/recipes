@@ -202,7 +202,7 @@
                     <Recipe
                         :recipe="loadRecipe()"
                         :size="$q.screen" width="315px"
-                        :pub="pub.name == 'None' ? '' : pub.name"
+                        :pub="pub.name == 'None' ? {'name': ''} : pub"
                         :selected="selected"
                         @selected="selected = !selected"
                     />
@@ -370,6 +370,11 @@ export default {
             recipe['dislikes'] = 0
             recipe['dislike'] = false
             recipe['show'] = {'available': true}
+            recipe['kind'] = 'pub'
+
+            if(this.pub.name == 'None') {
+                recipe['kind'] = 'recipe'
+            }
 
             return recipe
         },
