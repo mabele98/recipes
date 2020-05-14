@@ -201,7 +201,7 @@
                                     >
                                         <Recipe
                                             :size="$q.screen" :width="!size.lg ? size.sm ? '80vw' : '40vw' : '27vw'"
-                                            :recipe="recipe" :pub="value.name" class="q-my-sm"
+                                            :recipe="recipe" :pub="{'id': value.id, 'name': value.name}" class="q-my-sm"
                                             :selected="select == id" @selected="select==id ? select = '' : select = id"
                                         /> 
                                         <q-card-actions v-if="available[key].type == 'owner'">
