@@ -6,19 +6,17 @@
                 class="q-mt-xs"
                 v-model="first"
                 label="First Name"
-                filled
-                bg-color="white"
-                style="width: 300px"
+                filled bg-color="white" style="width: 300px"
+                :error="errorFirst()" error-message="Spaces are not allowed."
             />
             <q-input 
-                class="q-mt-xs"
+                class="q-mt-sm"
                 v-model="last"
                 label="Last Name"
-                filled
-                bg-color="white"
-                style="width: 300px"
+                filled bg-color="white" style="width: 300px"
+                :error="errorLast()" error-message="Spaces are not allowed."
             />
-            <q-btn :disable="nameLoading" class="q-mt-lg" color="green" label="Update Display Name" @click="updateName()"/>
+            <q-btn :disable="nameLoading || errorFirst() || errorLast()" class="q-mt-md" color="green" label="Update Display Name" @click="updateName()"/>
             <div class="q-mt-lg text-h6 text-white"> Change password </div>
             <div v-if="!password">
                 <div class="text-white text-caption text-italic"> Confirm your email address below </div>
@@ -82,6 +80,12 @@ export default {
             }
             else this.error = true
         },
+        errorFirst(){
+            return /\s/.test(this.first)
+        },
+        errorLast() {
+            return /\s/.test(this.last)
+        }
     },
     mounted () {
         this.$auth.onAuthStateChanged(user => {
