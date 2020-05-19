@@ -1,33 +1,33 @@
 <template>
     <q-page class="flex flex-center">
         <div class="fit column wrap content-center">
-            <div class="text-h6 text-white"> Change display name </div>
+            <div class="text-h6 text-white text-center"> Change display name </div>
             <q-input 
-                class="q-mt-xs"
-                v-model="first"
+                class="q-mt-xs q-mx-sm"
+                v-model="first" style="width:300px"
                 label="First Name"
-                filled bg-color="white" style="width: 300px"
+                filled bg-color="white" 
                 :error="errorFirst()" error-message="Spaces are not allowed."
             />
             <q-input 
-                class="q-mt-sm"
-                v-model="last"
+                class="q-mt-sm q-mx-sm"
+                v-model="last" style="width:300px"
                 label="Last Name"
-                filled bg-color="white" style="width: 300px"
+                filled bg-color="white"
                 :error="errorLast()" error-message="Spaces are not allowed."
             />
             <q-btn :disable="nameLoading || errorFirst() || errorLast()" class="q-mt-sm" color="green" label="Update Display Name" @click="updateName()"/>
-            <div class="q-mt-xl text-h6 text-white"> Change password </div>
+            <div class="q-mt-xl text-h6 text-white text-center"> Change password </div>
             <div v-if="!password">
-                <div class="text-white text-caption text-italic"> Confirm your email address below </div>
-                <q-input 
-                    class="q-mt-xs" 
-                    v-model="email"
-                    label="Email"
-                    filled bg-color="white" style="width: 300px"
-                    :error="error" error-message="email does not match our records."
-                />
-                <q-btn class="q-mt-xs" style="width:300px" color="green" label="Reset Password" @click="reset()"/>
+                <div class="text-white text-caption text-italic text-center"> Confirm your email address below </div>
+                    <q-input 
+                        class="q-mt-xs q-mx-sm" 
+                        v-model="email" style="width:300px"
+                        label="Email"
+                        filled bg-color="white"
+                        :error="error" error-message="email does not match our records."
+                    />
+                <q-btn class="q-mt-xs self-stretch" color="green" size="md" label="Reset Password" @click="reset()"/>
             </div>
             <div v-if="password">
                 <div class="q-mt-sm text-white text-h7 text-italic"> A reset link has been sent to {{email}} </div>

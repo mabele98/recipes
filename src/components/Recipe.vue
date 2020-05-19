@@ -8,7 +8,7 @@
             >
                 <div 
                 v-bind:class="size.sm ? 'text-h5' : 'text-h4'"
-                class="q-pt-lg text-center text-weight-bolder text-no-wrap"
+                class="q-pt-lg text-center text-weight-bolder"
                 >
                 <div 
                     v-bind:style="selected ? 'color:white' : 'color:' + color_"
