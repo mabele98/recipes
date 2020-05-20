@@ -142,6 +142,7 @@ export default {
       else {
         this.filterItems(null)
       }
+      console.log(this.recipes)
     },
 
     filterItems(list) {
@@ -243,17 +244,7 @@ export default {
       }
       this.index = temp;
     },
-  },
-  mounted() {
-    this.$auth.onAuthStateChanged(user => {
-      if(user) {
-        this.loggedIn = true
-        this.user = user.uid
-        let ref = this.$database.ref("users/" + user.uid + "/admin")
-        ref.on("value", data => {
-          this.admin = data.val();
-        })
-      }
+    gatherData() {
       if(this.id == 'liked'){
         this.kind = 'liked'
         this.$database.ref('users/' + this.user + '/recipes').on('value', data => {
@@ -292,16 +283,30 @@ export default {
           }
         })
       }
-    });
+    }
+  },
+  mounted() {
+
+    this.$auth.onAuthStateChanged(user => {
+      if(user) {
+        this.loggedIn = true
+        this.user = user.uid
+        let ref = this.$database.ref("users/" + user.uid + "/admin")
+        ref.on("value", data => {
+          this.admin = data.val();
+        })
+        this.gatherData()
+      }
+    })
     this.$q.screen.setSizes({sm: 300, md: 500, lg: 1100, xl: 2000 })
   },
   watch: {
     $route (to, from) {
       if(to.fullPath != from.fullPath) {
         this.id = to.params.id
-        this.index = []
-        this.loadDrinks()
       }
+      this.index = []
+      this.gatherData()
     }
   }
 }

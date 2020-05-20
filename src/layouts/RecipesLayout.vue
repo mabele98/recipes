@@ -75,20 +75,22 @@ export default {
         filter(drink) {
             this.$router.push('/recipes/' + drink + '/select')
         },
-
+        naming() {
+            let ref = this.$database.ref('recipes')
+            ref.once("value", data => {
+                for(let drink in data.val()) {
+                    this.recipes.push(drink)
+                }
+                if(!(this.type in data.val()) && this.type != 'liked'){
+                    this.$database.ref('pubs/' + this.type + '/name').once('value', snap => {
+                        this.name = snap.val().toLowerCase()
+                    })
+                }
+            })
+        },
     },
     mounted () {
-        let ref = this.$database.ref('recipes')
-        ref.once("value", data => {
-            for(let drink in data.val()) {
-                this.recipes.push(drink)
-            }
-            if(!(this.type in data.val()) && this.type != 'liked'){
-                this.$database.ref('pubs/' + this.type + '/name').once('value', snap => {
-                    this.name = snap.val().toLowerCase()
-                })
-            }
-        })
+        this.naming()
         if(window.location.hash.includes('select')) {
             this.select = true
         }
@@ -96,6 +98,12 @@ export default {
     beforeRouteUpdate (to, from, next) {
         if(to.path.includes('select')) this.select = true
         else this.select = false
+
+        this.recipes = []
+    
+        this.name = to.params.id
+        this.type = to.params.id
+        this.naming()
         next()
     }
     
